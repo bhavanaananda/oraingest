@@ -78,11 +78,6 @@ class DatasetsController < ApplicationController
 
   def index
     redirect_to list_datasets_path
-    #@datasets = Dataset.all
-    #Grab users recent documents
-    #recent_me_not_draft
-    #recent_me_draft
-    #@model = 'dataset'
   end
 
   def show
@@ -96,6 +91,8 @@ class DatasetsController < ApplicationController
     @pid = Sufia::Noid.noidify(SecureRandom.uuid)
     @pid = Sufia::Noid.namespaceize(@pid)
     @dataset = Dataset.new
+    @doi = @dataset.doi(mint=true)
+    @files = []
     @agreement = DatasetAgreement.new
     @agreement.title = "Agreement for #{@pid}"
     @agreement.agreementType = "Individual"
@@ -107,11 +104,15 @@ class DatasetsController < ApplicationController
   end
 
   def edit
+    # Only edits for drafts and referred allowed. Not published items. So need not check for doi_requested in workflow
     authorize! :edit, params[:id]
-    if @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
-       authorize! :review, params[:id]
+    if @dataset.workflows.first.current_status == "Migrate"
+      raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Dataset)
+    elsif @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
+      authorize! :review, params[:id]
     end
     @pid = params[:id]
+    @doi = @dataset.doi(mint=true)
     @files = contents
     if !@files and @dataset.medium[0].empty?
       @dataset.medium[0] = Sufia.config.data_medium["Digital"]
@@ -163,7 +164,9 @@ class DatasetsController < ApplicationController
 
   def destroy
     authorize! :destroy, params[:id]
-    if @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
+    if @dataset.workflows.first.current_status == "Migrate"
+      raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Dataset)
+    elsif @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
        authorize! :review, params[:id]
     end
     @dataset.delete_dir(@dataset.id)

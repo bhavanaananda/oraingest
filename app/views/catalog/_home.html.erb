@@ -13,3 +13,9 @@
   <%= render :partial=>'/catalog/recent_datasets', :locals => {:recent_datasets=>@recent_datasets} %>
   <%= render :partial=>'/catalog/_action_partials/list_datasets' %>
 <% end %>
+<% content_for :column2 do %>
+	<h2><img src="/assets/ora/icons/data.svg" class="icon"/>Conference</h2>
+  <%= render :partial=>'/catalog/_action_partials/add_conference_items' %>
+  <%= render :partial=>'/catalog/recent_conference_items', :locals => {:recent_conference_items=>@recent_conference_items} %>
+  <%= render :partial=>'/catalog/_action_partials/list_conference_items' %>
+<% end %>

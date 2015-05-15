@@ -38,6 +38,7 @@ module RDF
     property :TitularAgent
     property :hadCreationActivity
     property :hadPublicationActivity
+    property :hadConferenceActivity
     property :hadTitularActivity
     property :hasAgreement
     property :hasDataset

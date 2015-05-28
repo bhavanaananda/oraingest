@@ -27,5 +27,7 @@ module RDF
     property :Periodical  
     property :annotates  
     property :owner
+    property :Proceedings
+    property :presentedAt
   end
 end

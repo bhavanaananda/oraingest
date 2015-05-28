@@ -4,17 +4,18 @@ require 'rdf'
 #Vocabularies
 require 'vocabulary/bibo'
 require 'vocabulary/ora'
+
 require 'vocabulary/event'
 require 'vocabulary/dbpedia'
 #require 'vocabulary/foaf'
 # Fields
-require 'fields/creation_activity'
-require 'fields/conference_activity'
+#require 'fields/creation_activity'
+#require 'fields/conference_activity'
 
 
 class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
  # include ActiveFedora::RdfObject
- # extend ActiveModel::Naminga
+ # extend ActiveModel::Naming
  # include ActiveModel::Conversion
   attr_accessor  :time, :season, :place , :wasAssociatedWith, :conferenceAssociation, :conferenceName, :conferenceAbbreviation, :conferenceHomepage, :conferenceProceeding, :hadCreationActivity
 
@@ -41,7 +42,6 @@ class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.conferenceProceeding(:to => "generated", :in => RDF::PROV, class_name:"ConferenceProceeding")
     map.hadCreationActivity(:in => RDF::ORA, class_name:"CreationActivity")
   end
-
   accepts_nested_attributes_for :wasAssociatedWith
   accepts_nested_attributes_for :conferenceAssociation
   accepts_nested_attributes_for :conferenceProceeding
@@ -57,19 +57,20 @@ class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     solr_doc[Solrizer.solr_name("desc_metadata__time", :displayable)] = self.time.first
     solr_doc[Solrizer.solr_name("desc_metadata__place", :displayable)] = self.place.first
     solr_doc[Solrizer.solr_name("desc_metadata__wasAssociatedWith", :displayable)] = self.wasAssociatedWith.first
-    solr_doc[Solrizer.solr_name("desc_metadata__conferenceAssociation", :displayable)] = self.desc_metadata__conferenceAssociation.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceAssociation", :displayable)] = self.conferenceAssociation.first
     solr_doc[Solrizer.solr_name("desc_metadata__conferenceName", :displayable)] = self.conferenceName.first
     solr_doc[Solrizer.solr_name("desc_metadata__conferenceAbbreviation", :displayable)] = self.conferenceAbbreviation.first
     solr_doc[Solrizer.solr_name("desc_metadata__conferenceHomepage", :displayable)] = self.conferenceHomepage.first
     solr_doc[Solrizer.solr_name("desc_metadata__conferenceProceeding", :displayable)] = self.conferenceProceeding.first
     solr_doc[Solrizer.solr_name("desc_metadata__hadCreationActivity", :displayable)] = self.hadCreationActivity.first
 
-    # Index each conferenceOrganization individually
+    # Index each conferenceOrganization individually:
+
         self.wasAssociatedWith.each do |corg|
           already_indexed = []
-          unless corg.title.empty? || already_indexed.include?(corg.title.first)
+          unless corg.name.empty? || already_indexed.include?(corg.name.first)
             corg.to_solr(solr_doc)
-            already_indexed << corg.title.first
+            already_indexed << corg.name.first
           end
         end
 
@@ -86,7 +87,7 @@ class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
         end
 
         # Index each creationActivity individually
-        self.creationActivity.each do |c|
+        self.hadCreationActivity.each do |c|
           c.to_solr(solr_doc)
         end
     solr_doc
@@ -103,6 +104,7 @@ class ConferenceOrganization
 
   rdf_subject { |ds|
     if ds.pid.nil?
+
       RDF::URI.new
     else
       RDF::URI.new("info:fedora/" + ds.pid + "#conferenceOrganization")
@@ -230,7 +232,7 @@ class ConferenceProceeding
     end
   }
   rdf_type rdf_type RDF::BIBO.Proceedings
-  rdf_type rdf_type RDF::PROV.Entity
+  #rdf_type rdf_type RDF::PROV.Entity
   map_predicates do |map|
     map.title(:in => RDF::DC)
     map.issn(:in => RDF::BIBO)
@@ -241,6 +243,7 @@ class ConferenceProceeding
     map.conferenceProceedingAttributor(:to =>  "wasAttributedTo", :in => RDF::PROV, class_name:"ConferenceProceedingAttributor")
     map.conferenceProceedingAttribution(:to => "qualifiedAttribution", :in => RDF::PROV, class_name:"ConferenceProceedingAttribution")
   end
+
 
   accepts_nested_attributes_for :ConferenceProceedingAttributor
   accepts_nested_attributes_for :ConferenceProceedingAttribution
@@ -255,7 +258,6 @@ class ConferenceProceeding
     solr_doc[Solrizer.solr_name("desc_metadata__eissn", :symbol)] = self.eissn.first
     solr_doc[Solrizer.solr_name("desc_metadata__isbn", :symbol)] = self.isbn.first
     solr_doc[Solrizer.solr_name("desc_metadata__volume", :displayable)] = self.volume.first
-    solr_doc[Solrizer.solr_name("desc_metadata__issue", :displayable)] = self.issue.first
     solr_doc[Solrizer.solr_name("desc_metadata__pages", :displayable)] = self.pages.first
 
     # Index each ConferenceProceedingAttributor individually
@@ -308,7 +310,7 @@ class ConferenceProceedingAttributor
 end
 
 
-class ConferenceAttribution
+class ConferenceProceedingAttribution
   include ActiveFedora::RdfObject
   extend ActiveModel::Naming
   include ActiveModel::Conversion

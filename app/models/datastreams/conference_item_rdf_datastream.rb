@@ -5,7 +5,7 @@ require 'fields/conference_activity'
 require 'fields/publication_activity'
 require 'conference'
 
-class ConferenceItemRDFDatastream < ActiveFedora::NtriplesRDFDatastream
+class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
   attr_accessor  :presentedAt, :hadConferenceActivity, :hadPublicationActivity
   rdf_type rdf_type RDF::PROV.Entity
 

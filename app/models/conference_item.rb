@@ -31,8 +31,8 @@ class ConferenceItem < ActiveFedora::Base
   has_attributes *ConferenceItemRdfDatastream.fields, datastream: :descMetadata, multiple: true
   has_attributes *RelationsRdfDatastream.fields, datastream: :relationsMetadata, multiple: true
   has_attributes *ConferenceItemAdminRdfDatastream.fields, datastream: :adminMetadata, multiple: true
-  #has_and_belongs_to_many :authors, :property=> :has_author, :class_name=>"Person"
-  #has_and_belongs_to_many :contributors, :property=> :has_contributor, :class_name=>"Person"
+
+  belongs_to :conferenceItem, :property=>:isPartOf, :class_name=>"Conference"
 
   def to_solr(solr_doc={}, opts={})
     super(solr_doc, opts)

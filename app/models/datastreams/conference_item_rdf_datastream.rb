@@ -11,11 +11,11 @@ class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
   map_predicates do |map|
     map.type(:in => RDF::DC)
-    map.presentedAt( :in => RDF::BIBO,  class_name:"Conference")
+#    map.presentedAt( :in => RDF::BIBO,  class_name:"Conference")
     map.hadConferenceActivity( :in => RDF::ORA,  class_name:"ConferenceActivity")
     map.hadPublicationActivity( :in => RDF::ORA,  class_name:"PublicationActivity")
   end
-  accepts_nested_attributes_for :presentedAt
+#  accepts_nested_attributes_for :presentedAt
   accepts_nested_attributes_for :hadConferenceActivity
   accepts_nested_attributes_for :hadPublicationActivity
 
@@ -27,13 +27,13 @@ class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
     # Index each conference individually:
 
-    self.presentedAt.each do |conf|
-      already_indexed = []
-      unless conf.name.empty? || already_indexed.include?(conf.name.first)
-        conf.to_solr(solr_doc)
-        already_indexed << conf.name.first
-      end
-    end
+    # self.presentedAt.each do |conf|
+    #   already_indexed = []
+    #   unless conf.name.empty? || already_indexed.include?(conf.name.first)
+    #     conf.to_solr(solr_doc)
+    #     already_indexed << conf.name.first
+    #   end
+    # end
 
     # Index each conferenceActivity individually
     self.hadConferenceActivity.each do |c|

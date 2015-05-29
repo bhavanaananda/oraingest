@@ -32,7 +32,7 @@ class ConferenceItem < ActiveFedora::Base
   has_attributes *RelationsRdfDatastream.fields, datastream: :relationsMetadata, multiple: true
   has_attributes *ConferenceItemAdminRdfDatastream.fields, datastream: :adminMetadata, multiple: true
 
-  belongs_to :conferenceItem, :property=>:isPartOf, :class_name=>"Conference"
+  belongs_to :conferenceItem, :property=>:presentedAt, :class_name=>"Conference"
 
   def to_solr(solr_doc={}, opts={})
     super(solr_doc, opts)

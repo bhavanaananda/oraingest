@@ -42,6 +42,7 @@ module RDF
     property :hadTitularActivity
     property :hasAgreement
     property :hasDataset
+    property :hasConferenceItem
     property :hasDataManagementPlan
     property :hasInvoice
     property :isPartOfSeries

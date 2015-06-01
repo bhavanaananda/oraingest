@@ -11,11 +11,9 @@ class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
   map_predicates do |map|
     map.type(:in => RDF::DC)
-#    map.presentedAt( :in => RDF::BIBO,  class_name:"Conference")
     map.hadConferenceActivity( :in => RDF::ORA,  class_name:"ConferenceActivity")
     map.hadPublicationActivity( :in => RDF::ORA,  class_name:"PublicationActivity")
   end
-#  accepts_nested_attributes_for :presentedAt
   accepts_nested_attributes_for :hadConferenceActivity
   accepts_nested_attributes_for :hadPublicationActivity
 

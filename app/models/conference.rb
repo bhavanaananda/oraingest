@@ -3,7 +3,6 @@ require "datastreams/conference_rdf_datastream"
 #require "datastreams/relations_rdf_datastream"
 #require "datastreams/conference_admin_rdf_datastream"
 #require "person"
-require "conference_item"
 require "rdf"
 
 class Conference < ActiveFedora::Base
@@ -73,9 +72,12 @@ class Conference < ActiveFedora::Base
 
   def remove_blank_assertions
     ConferenceRdfDatastream.fields.each do |key|
-      self[key] = nil if self[key] == ['']
+      if !["spatial"].include?(key)
+        self[key] = nil if self[key] == ['']
+      end
     end
   end
+
 
   def self.find_or_create(pid)
     begin

@@ -1,6 +1,7 @@
 require 'vocabulary/bibo'
 require 'vocabulary/fabio'
 require 'vocabulary/ora'
+require 'conference'
 
 class ConferenceActivity
   include ActiveFedora::RdfObject
@@ -13,7 +14,6 @@ class ConferenceActivity
       RDF::URI.new
     else
       RDF::URI.new("info:fedora/" + ds.pid + "#conferenceActivity")
-      RDF::URI.new("info:fedora/" + ds.pid + "#conferenceActivity")
     end
     }
   rdf_type rdf_type RDF::PROV.Activity
@@ -22,7 +22,7 @@ class ConferenceActivity
     map.documentationStatus(:to => "DocumentStatus", :in => RDF::BIBO)
     map.reviewStatus(:in => RDF::ORA)
     map.dateAccepted(:in => RDF::DC)
-    map.hadActivity(:in => RDF::PROV, class_name:"Conference")
+    map.hadActivity(:in => RDF::PROV)
   end
   accepts_nested_attributes_for :hadActivity
 

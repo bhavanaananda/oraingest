@@ -29,5 +29,6 @@ module RDF
     property :owner
     property :Proceedings
     property :presentedAt
+    property :Organizer
   end
 end

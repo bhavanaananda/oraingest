@@ -74,5 +74,6 @@ module RDF
     property :translator
     # funding
     property :hasFundingAward
+    property :hasConferenceDuration
   end
 end

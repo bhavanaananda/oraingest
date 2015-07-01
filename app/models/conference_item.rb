@@ -2,7 +2,6 @@ require "datastreams/workflow_rdf_datastream"
 require "datastreams/conference_item_rdf_datastream"
 require "datastreams/relations_rdf_datastream"
 require "datastreams/conference_item_admin_rdf_datastream"
-#require "person"
 require "conference"
 require "rdf"
 

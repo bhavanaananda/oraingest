@@ -6,7 +6,7 @@ module WorkflowMethods
   def perform_action(current_user)
     model = self.class.model_name.to_s
     # send email
-    models = { "Article" => 'articles', "DatasetAgreement" => "dataset_agreements", "Dataset" => "datasets" }
+    models = { "Article" => 'articles', "DatasetAgreement" => "dataset_agreements", "Dataset" => "datasets", "Conference" => "conferences" , "ConferenceItem" => "conference_items" }
     record_url = Rails.application.routes.url_helpers.url_for(:controller => models[model], :action=>'show', :id => self.id)
     data = {"record_id" => self.id, "record_url" => record_url, "doi_requested"=>self.doi_requested}
     if self.doi_requested

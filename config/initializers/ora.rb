@@ -17,6 +17,10 @@ Sufia.config do |config|
   }
 
   config.subtypes = {
+    "conferenceItem" => {
+          "ConferenceItem" => "ConferenceItem",
+          "Other" => "Other"
+      },
     "article" => {
       "Article" => "Article",
       "Discussion paper" => "Discussion paper",
@@ -64,6 +68,22 @@ Sufia.config do |config|
       "Working paper" => RDF::CAMELOT::workingPaper,
       "Other" => RDF::CAMELOT::article
     },
+    "conferenceitem" => {
+        "ConferenceItem" => RDF::CAMELOT::conferenceitem,
+        "Discussion paper" => RDF::CAMELOT::discussionPaper,
+        "Journal article" => RDF::CAMELOT::journalArticle,
+        "Newsletter" => RDF::CAMELOT::newsletter,
+        "Policy briefing" => RDF::CAMELOT::policyBriefing,
+        "Press article" => RDF::CAMELOT::pressArticle,
+        "Pamphlet" => RDF::CAMELOT::pamphlet,
+        "Patent" => RDF::CAMELOT::patent,
+        "Report" => RDF::CAMELOT::report,
+        "Research Paper" => RDF::CAMELOT::researchPaper,
+        "Review" => RDF::CAMELOT::review,
+        "Technical report" => RDF::CAMELOT::technicalReport,
+        "Working paper" => RDF::CAMELOT::workingPaper,
+        "Other" => RDF::CAMELOT::article
+    },
     "dataset" => {
       "Dataset" => RDF::CAMELOT::dataset,
     }
@@ -75,6 +95,14 @@ Sufia.config do |config|
     "Not published" => "Not published",
     "Published" => "Published",
     "Submitted" => "Submitted"
+  }
+
+  config.documentation_status = {
+      "Accepted" => "Accepted",
+      "In Press" => "In Press",
+      "Not published" => "Not published",
+      "Published" => "Published",
+      "Submitted" => "Submitted"
   }
 
   config.review_status = {
@@ -103,6 +131,18 @@ Sufia.config do |config|
       "LGPL v2.1" => "LGPL v2.1",
       "MIT licence" => "MIT licence",
       "Bespoke licence" => "Bespoke licence"
+    },
+    "conferenceItem" => {
+        "CC Attribution (CC BY 2.5)" => "CC Attribution (CC BY 2.5)",
+        "CC Attribution-NoDerivs (CC BY-ND 2.5)" => "CC Attribution-NoDerivs (CC BY-ND 2.5)",
+        "CC Attribution-NonCommercial-NoDerivs (CC BY-NC-ND 2.5)" => "CC Attribution-NonCommercial-NoDerivs (CC BY-NC-ND 2.5)",
+        "CC Attribution-NonCommercial (CC BY-NC 2.5)" => "CC Attribution-NonCommercial (CC BY-NC 2.5)",
+        "CC Attribution-NonCommercial-ShareAlike (CC BY-NC-SA 2.5)" => "CC Attribution-NonCommercial-ShareAlike (CC BY-NC-SA 2.5)",
+        "CC Attribution-ShareAlike (CC BY-SA 2.5)" => "CC Attribution-ShareAlike (CC BY-SA 2.5)",
+        "GPL v2" => "GPL v2",
+        "LGPL v2.1" => "LGPL v2.1",
+        "MIT licence" => "MIT licence",
+        "Bespoke licence" => "Bespoke licence"
     },
     "dataset" => {
       "ODC Attribution for data/databases (ODC-By)" => "ODC Attribution for data/databases (ODC-By)",
@@ -197,6 +237,16 @@ Sufia.config do |config|
       "Author" => RDF::ORA.author,
       "Editor" => RDF::BIBO.editor,
       "Contributor" => RDF::DC.contributor
+    },
+    "conference" => {
+        "Author" => RDF::ORA.author,
+        "Editor" => RDF::BIBO.editor,
+        "Contributor" => RDF::DC.contributor
+    },
+    "conferenceItem" => {
+        "Author" => RDF::ORA.author,
+        "Editor" => RDF::BIBO.editor,
+        "Contributor" => RDF::DC.contributor
     },
     "thesis" => {
       "Author" => RDF::ORA.author,

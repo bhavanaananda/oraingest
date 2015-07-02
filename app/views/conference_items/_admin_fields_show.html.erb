@@ -1,26 +1,26 @@
-<% if (!conferenceitem.oaStatus.empty? && !conferenceitem.oaStatus[0].empty?) || (!conferenceitem.apcPaid.empty? && !conferenceitem.apcPaid[0].empty?) || (!conferenceitem.oaReason.empty? && !conferenceitem.oaReason[0].empty?) || (!conferenceitem.refException.empty? && !conferenceitem.refException[0].empty? ) %>
+<% if (!@conferenceItem.oaStatus.empty? && !@conferenceItem.oaStatus[0].empty?) || (!@conferenceItem.apcPaid.empty? && !@conferenceItem.apcPaid[0].empty?) || (!@conferenceItem.oaReason.empty? && !@conferenceItem.oaReason[0].empty?) || (!@conferenceItem.refException.empty? && !@conferenceItem.refException[0].empty? ) %>
 <div class="accordian">
   <div class="accordian-header">Administration details - <small>APC's and Ref</small></div>
   <div class="accordian-content">
-    <% if !conferenceitem.oaStatus.empty? && !conferenceitem.oaStatus.first.empty? %>
+    <% if !@conferenceItem.oaStatus.empty? && !@conferenceItem.oaStatus.first.empty? %>
       <h6>Open access status:</h6>
-      <p><%= conferenceitem.oaStatus.first %></p>
+      <p><%= @conferenceItem.oaStatus.first %></p>
     <% end %>
-    <% if !conferenceitem.apcPaid.empty? && !conferenceitem.apcPaid.first.empty? %>
+    <% if !@conferenceItem.apcPaid.empty? && !@conferenceItem.apcPaid.first.empty? %>
       <h6>Paid for:</h6>
-      <% if conferenceitem.apcPaid.first == "Yes" %>
-        <p>Article processing charge was paid for this conferenceitem</p>
+      <% if @conferenceItem.apcPaid.first == "Yes" %>
+        <p>Conference item processing charge was paid for this @conferenceItem</p>
       <% else %>
-        <p>Article processing charge was not paid for this conferenceitem</p>
+        <p>Conference item  processing charge was not paid for this @conferenceItem</p>
       <% end %>
     <% end %>
-    <% if !conferenceitem.oaReason.empty? && !conferenceitem.oaReason.first.empty? %>
+    <% if !@conferenceItem.oaReason.empty? && !@conferenceItem.oaReason.first.empty? %>
       <h6>Basis of the APC:</h6>
-      <p><%= conferenceitem.oaReason.first %></p>
+      <p><%= @conferenceItem.oaReason.first %></p>
     <% end %>
-    <% if !conferenceitem.refException.empty? && !conferenceitem.refException.first.empty? %>
+    <% if !@conferenceItem.refException.empty? && !@conferenceItem.refException.first.empty? %>
       <h6>Ref exception:</h6>
-      <p><%= conferenceitem.refException.first %></p>
+      <p><%= @conferenceItem.refException.first %></p>
     <% end %>
   </div>
 </div>

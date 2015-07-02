@@ -1,36 +1,36 @@
 <p id="notice"><%= notice %></p>
 
 <h6>Title:</h6>
-<% if !conferenceitem.title.empty? && !conferenceitem.title[0].empty? %>
-  <h3><%= conferenceitem.title.first %></h3>
+<% if !@conferenceItem.title.empty? && !@conferenceItem.title[0].empty? %>
+  <h3><%= @conferenceItem.title.first %></h3>
 <% else %>
   <h3>Article</h3>
 <% end %>
       
-<% if !conferenceitem.subtitle.empty? && !conferenceitem.subtitle[0].empty? %>
+<% if !@conferenceItem.subtitle.empty? && !@conferenceItem.subtitle[0].empty? %>
   <h6>Subtitle:</h6>
-  <h3><%= conferenceitem.subtitle.first %></h3>
+  <h3><%= @conferenceItem.subtitle.first %></h3>
 <% end %>
       
-<%= render partial: "shared/work_type_fields_show", :locals => { :conferenceitem => @conferenceitem } %>
+<%= render partial: "shared/work_type_fields_show", :locals => { :article => @conferenceItem } %>
 
-<% if !conferenceitem.abstract.empty? && !conferenceitem.abstract[0].empty? %>
+<% if !@conferenceItem.abstract.empty? && !@conferenceItem.abstract[0].empty? %>
   <h6>Abstract:</h6>
-  <p><%= simple_format(conferenceitem.abstract.first) %></p>
+  <p><%= simple_format(@conferenceItem.abstract.first) %></p>
 <% end %>
 
-<% if !conferenceitem.medium.empty? && !conferenceitem.medium[0].empty? %>
+<% if !@conferenceItem.medium.empty? && !@conferenceItem.medium[0].empty? %>
   <h6>Medium or material:</h6>
-  <p><%= conferenceitem.medium.first %></p>
+  <p><%= @conferenceItem.medium.first %></p>
 <% end %>
 
-<% if !conferenceitem.keyword.empty? %>
+<% if !@conferenceItem.keyword.empty? %>
   <h6>Keywords:</h6>
-   <% conferenceitem.keyword.each do |tag|%>
+   <% @conferenceItem.keyword.each do |tag|%>
       <p style="margin: 0"><%=tag %></p>     
    <% end %>
 </p>
 <% end %>
 
-<%= render partial: "shared/mads_language_fields_show", :locals => { :conferenceitem => @conferenceitem } %>
-<%= render partial: "shared/mads_subject_fields_show", :locals => { :conferenceitem => @conferenceitem } %>
+<%= render partial: "shared/mads_language_fields_show", :locals => { :article => @conferenceItem } %>
+<%= render partial: "shared/mads_subject_fields_show", :locals => { :article => @conferenceItem } %>

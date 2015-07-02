@@ -1,0 +1,17 @@
+<div class="blue-bar">
+  <form action="<%= new_conference_item_path %>" method="get">
+    <div class="float-left">
+      <img src="/assets/ora/icons/plus.svg" class="icon"/>
+             Add a Conference item
+    </div>
+    <div class="float-right">
+      <select name="type">
+        <option>Conference Item</option>
+        <!-- <option>Author accepted manuscript</option> -->
+      </select>
+      <%# types = Sufia.config.subtypes["article"].reject{|_,v| v.empty?} %>
+      <%#= select_tag "typeLabel", options_for_select(types, :selected=>"Journal article") %>
+      <button type="submit" class="button button-small button-arrow">GO</button>
+    </div>
+  </form>
+</div>

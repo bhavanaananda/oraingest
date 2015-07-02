@@ -1,12 +1,14 @@
 <div class="blue-bar">
-  <form action="<%= new_article_path %>" method="get">
+  <form id="publications_form" action="<%= new_article_path %>" method="get">
     <div class="float-left">
       <img src="/assets/ora/icons/plus.svg" class="icon"/>
       Add a publication
     </div>
     <div class="float-right">
-      <select name="type">
-        <option>Journal article</option>
+      <select id="publications_options" name="type">
+          <option value=<%=new_article_path %>>Journal article</option>
+          <option value=<%=new_conference_path %>>Conference</option>
+          <option value=<%=new_conference_item_path %>>Conference Item</option>
         <!-- <option>Author accepted manuscript</option> -->
       </select>
       <%# types = Sufia.config.subtypes["article"].reject{|_,v| v.empty?} %>

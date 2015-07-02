@@ -28,9 +28,19 @@ $(function() {
     }
   });
 
+
   /* -------------------------------------------------------------
-   * ACCORDIAN
+   * Main Form
    * -----------------------------------------------------------*/
+
+    // Change the form action according to the drop down selection
+    $("select#publications_options").on("change",function(){
+      $('#publications_form').attr('action', $(this).val());
+    });
+
+    /* -------------------------------------------------------------
+     * ACCORDIAN
+     * -----------------------------------------------------------*/
   $(document).on("click",".accordian-header",function(){
     var accordian = $(this).parents(".accordian").first();
     accordian.toggleClass("open");

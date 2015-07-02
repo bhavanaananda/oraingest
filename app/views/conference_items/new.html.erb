@@ -1,0 +1,47 @@
+  <h2>Deposit conference item</h2>
+  <% path = { :list => conference_items_path } %>
+  <br/><%= render partial: "shared/actions/new", :locals => { :path => path } %>
+
+  <% if @conferenceItem.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@conferenceItem.errors.count, "error") %> prohibited this conference item from being saved:</h2>
+      <ul>
+        <% @conferenceItem.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+<!--<div class="gutter-container">-->
+  <!--<div class="col col3of4">-->
+        <!--<%# using partials rather than inlining, so implementers can add or change stuff on this page without much duplication %>-->
+        <!--<%#= render partial: 'conference_items/_edit_detailed/tabs' %>-->
+  <!--</div>-->
+  <!--&lt;!&ndash; <div class="col col3of4">-->
+        <!--<%#= render partial: 'articles/_edit_detailed/form' %>-->
+  <!--</div> &ndash;&gt;-->
+  <!--<div class="col col3of4">-->
+    <!--<%#= render partial: 'conference_items/_edit_detailed/form' %>-->
+  <!--</div>-->
+
+  <!--<div class="col col1of4">-->
+    <!--<%#= render :partial => 'shared/progress_tracker' %>-->
+  <!--</div>-->
+<!--</div>-->
+
+  <div class="gutter-container">
+
+      <div class="col col3of4">
+          <%# using partials rather than inlining, so implementers can add or change stuff on this page without much duplication %>
+          <%= render partial: 'tabs' %>
+      </div>
+
+      <div class="col col3of4">
+          <%= render partial: 'form' %>
+      </div>
+
+      <div class="col col1of4">
+          <%= render :partial => 'shared/progress_tracker' %>
+      </div>

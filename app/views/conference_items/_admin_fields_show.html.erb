@@ -1,0 +1,27 @@
+<% if (!conferenceitem.oaStatus.empty? && !conferenceitem.oaStatus[0].empty?) || (!conferenceitem.apcPaid.empty? && !conferenceitem.apcPaid[0].empty?) || (!conferenceitem.oaReason.empty? && !conferenceitem.oaReason[0].empty?) || (!conferenceitem.refException.empty? && !conferenceitem.refException[0].empty? ) %>
+<div class="accordian">
+  <div class="accordian-header">Administration details - <small>APC's and Ref</small></div>
+  <div class="accordian-content">
+    <% if !conferenceitem.oaStatus.empty? && !conferenceitem.oaStatus.first.empty? %>
+      <h6>Open access status:</h6>
+      <p><%= conferenceitem.oaStatus.first %></p>
+    <% end %>
+    <% if !conferenceitem.apcPaid.empty? && !conferenceitem.apcPaid.first.empty? %>
+      <h6>Paid for:</h6>
+      <% if conferenceitem.apcPaid.first == "Yes" %>
+        <p>Article processing charge was paid for this conferenceitem</p>
+      <% else %>
+        <p>Article processing charge was not paid for this conferenceitem</p>
+      <% end %>
+    <% end %>
+    <% if !conferenceitem.oaReason.empty? && !conferenceitem.oaReason.first.empty? %>
+      <h6>Basis of the APC:</h6>
+      <p><%= conferenceitem.oaReason.first %></p>
+    <% end %>
+    <% if !conferenceitem.refException.empty? && !conferenceitem.refException.first.empty? %>
+      <h6>Ref exception:</h6>
+      <p><%= conferenceitem.refException.first %></p>
+    <% end %>
+  </div>
+</div>
+<% end %>

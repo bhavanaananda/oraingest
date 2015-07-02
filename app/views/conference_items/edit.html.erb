@@ -1,0 +1,34 @@
+<h2 style="margin-left: 10px;">Update conference Items</h2>
+
+<div>
+    <% if @conferenceItem.errors.any? %>
+        <div id="error_explanation">
+            <h2><%= pluralize(@conferenceItem.errors.count, "error") %> prohibited this conference item from being saved:</h2>
+            <ul>
+                <% @conferenceItem.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+            </ul>
+        </div>
+    <% end %>
+</div>
+
+
+<div class="gutter-container">
+
+    <% path = { :new => new_conference_item_path, :show => conference_item_path(@pid), :edit => edit_conference_item_path(@pid), :list => conference_items_path } %>
+    <%= render partial: "shared/actions/edit", :locals => { :path => path } %>
+
+    <div class="col col3of4">
+        <%= render partial: 'tabs' %>
+    </div>
+
+    <div class="col col3of4">
+        <%= render partial: 'form' %>
+    </div>
+
+    <div class="col col1of4">
+        <%= render :partial => 'shared/progress_tracker' %>
+    </div>
+
+</div>

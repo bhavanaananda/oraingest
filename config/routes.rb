@@ -49,6 +49,19 @@ OraHydra::Application.routes.draw do
     end
   end
 
+  resources :conference_items do
+    collection do
+      get '/', :controller => 'list_conference_items', :action => :index
+      get 'page/:page',:controller => 'list_conference_items', :action => :index
+      get 'activity', :controller => 'list_conference_items',:action => :activity, :as => :dashboard_activity
+      get 'facet/:id', :controller => 'list_conference_items', :action => :facet, :as => :dashboard_facet
+      delete ':id/permissions', :action => :revoke_permissions
+      get ':id/file/:dsid', :controller => 'conference_item__files', :action => :show
+      delete ':id/file/:dsid', :controller => 'conference_item__files', :action => :destroy
+    end
+  end
+
+
   resources :datasets, :except => :index do
     collection do
       get '/', :controller => 'list_datasets', :action => :index

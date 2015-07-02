@@ -2,6 +2,8 @@ module RDF
   class CAMELOT < RDF::Vocabulary("http://vocab.ox.ac.uk/camelot#")
     property :keyword
     property :article
+    property :conferenceitem
+    property :conference
     property :dataset
     property :discussionPaper
     property :journalArticle

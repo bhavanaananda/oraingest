@@ -24,7 +24,7 @@ require 'parsing_nesting/tree'
 require "utils"
 
 class ConferenceItemsController < ApplicationController
-  before_action :set_conference_item, only: [:show, :edit, :edit_detailed, :update, :destroy, :revoke_permissions]
+  before_action :set_conference_item, only: [:show, :edit, :update, :destroy, :revoke_permissions]
   include Blacklight::Catalog
   # Extend Blacklight::Catalog with Hydra behaviors (primarily editing).
   include Hydra::Controller::ControllerBehavior
@@ -90,46 +90,20 @@ class ConferenceItemsController < ApplicationController
     @model = 'conferenceItem'
   end
 
-  # def new
-  #   @pid = Sufia::Noid.noidify(SecureRandom.uuid)
-  #   @pid = Sufia::Noid.namespaceize(@pid)
-  #   @dataset = Dataset.new
-  #   @doi = @dataset.doi(mint=true)
-  #   @files = []
-  #   @agreement = DatasetAgreement.new
-  #   @agreement.title = "Agreement for #{@pid}"
-  #   @agreement.agreementType = "Individual"
-  #   @agreement.contributor = current_user.user_key
-  #   @dataset.hasRelatedAgreement = @agreement
-  #   relevant_agreements
-  #   principal_agreement
-  #   @model = 'dataset'
-  # end
-
-
   def edit
     authorize! :edit, params[:id]
-    if @conferenceItem.workflows.first.current_status == "Migrate"
+
+    unless Sufia.config.next_workflow_status.keys.include?(@conferenceItem.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, ConferenceItem)
-    elsif @conferenceItem.workflows.first.current_status != "Draft" && @conferenceItem.workflows.first.current_status !=  "Referred"
+    end
+    unless Sufia.config.user_edit_status.include?(@conferenceItem.workflows.first.current_status)
       authorize! :review, params[:id]
     end
+
     @pid = params[:id]
     @files = contents
     @model = 'conferenceItem'
   end
-
-  # def edit_detailed
-  #   authorize! :edit, params[:id]
-  #   if @conferenceItem.workflows.first.current_status == "Migrate"
-  #     raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, ConferenceItem)
-  #   end
-  #   authorize! :review, params[:id]
-  #   @pid = params[:id]
-  #   @files = contents
-  #   @model = 'conferenceItem'
-  #   render "edit_detailed"
-  # end
 
   def create
     @pid = params[:pid]
@@ -140,9 +114,6 @@ class ConferenceItemsController < ApplicationController
       create_from_upload(params)
     elsif params.has_key?(:conference_item)
       add_metadata(params[:conference_item], "")
-    # elsif can? :review, @conferenceItem
-    #     format.html { render action: 'edit_detailed' }
-    #     format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }
     else
       format.html { render action:'edit' }
       format.json { render json:@conferenceItem.errors, status: :unprocessable_entity }
@@ -159,9 +130,6 @@ class ConferenceItemsController < ApplicationController
       create_from_upload(params)
     elsif conference_item_params
       add_metadata(params[:conference_item], redirect_field)
-    # elsif can? :review, @conferenceItem
-    #   format.html { render action: 'edit_detailed' }
-    #   format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }
     else
       format.html { render action: 'edit' }
       format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }
@@ -324,16 +292,8 @@ class ConferenceItemsController < ApplicationController
     end
     respond_to do |format|
       if @conferenceItem.save
-        if can? :review, @conferenceItem
-          format.html { redirect_to edit_conference_item_path(@conferenceItem), notice: 'Conference item was successfully updated.', flash:{ redirect_field: redirect_field } }
+          format.html { redirect_to edit_conference_item_path(@conferenceItem), notice: 'Conference item was successfully updated.' , flash:{ redirect_field: redirect_field }}
           format.json { head :no_content }
-        else
-          format.html { redirect_to edit_conference_item_path(@conferenceItem), notice: 'Conference item was successfully updated.' }
-          format.json { head :no_content }
-        end
-      # elsif can? :review, @conferenceItem
-      #   format.html { render action: 'edit_detailed' }
-      #   format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }
       else
         format.html { render action: 'edit' }
         format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }

@@ -16,7 +16,7 @@
 # -*- encoding : utf-8 -*-
 
 class ConferenceItemFilesController < ApplicationController
-  before_action :set_conferenceItem, only: [:destroy]
+  before_action :set_conference_item, only: [:destroy]
 
   include Hydra::Controller::DownloadBehavior
 

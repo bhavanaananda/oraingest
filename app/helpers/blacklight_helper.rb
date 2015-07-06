@@ -7,7 +7,7 @@ module BlacklightHelper
 
   def document_url(model, action, id="")
     actions = ['index', 'show', 'new', 'edit', 'destroy']
-    models = { "Article" => 'articles', "DatasetAgreement" => "dataset_agreements", "Dataset" => "datasets", "ConferenceItem" =>"conference_items" }
+    models = { "Article" => 'articles', "DatasetAgreement" => "dataset_agreements", "Dataset" => "datasets", 'Thesis' => 'theses', "ConferenceItem" =>"conference_items" }
     path = ""
     if actions.include?(action) && models.keys.include?(model)
       if action == 'edit' and model == 'Article' and can? :review, :all

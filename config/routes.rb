@@ -7,16 +7,21 @@ OraHydra::Application.routes.draw do
   HydraHead.add_routes(self)
   Hydra::BatchEdit.add_routes(self)
 
-  devise_for :users#, skip: [:sessions]
-  #devise_scope :user do
-  #  get "users/auth/webauth" => "login#login", as: :new_user_session
-  #  match 'users/sign_out' => 'devise/sessions#destroy', :as => :destroy_user_session, :via => Devise.mappings[:user].sign_out_via
-  #end
+  if Rails.env.production?
+    devise_for :users, skip: [:sessions]
+    devise_scope :user do
+      get "users/auth/webauth" => "login#login", as: :new_user_session
+      match 'users/sign_out' => 'devise/sessions#destroy', :as => :destroy_user_session, :via => Devise.mappings[:user].sign_out_via
+    end
+  else
+    devise_for :users
+  end
 
   if defined?(Sufia::ResqueAdmin)
     namespace :admin do
       constraints Sufia::ResqueAdmin do
         mount Resque::Server, at: 'queues'
+        resources :qs
       end
     end
   end
@@ -76,6 +81,16 @@ OraHydra::Application.routes.draw do
   end
 
   resources :dataset_agreements
+
+  resources :theses, except: :index do
+    member do
+      get 'file/:dsid', controller: :thesis_files, action: :show
+      delete 'file/:dsid', controller: :thesis_files, action: :destroy
+    end
+    collection do
+      get '/', controller: :list_theses, action: :index
+    end
+  end
 
   #mount Hydra::Collections::Engine => '/' 
   mount Sufia::Engine => '/'

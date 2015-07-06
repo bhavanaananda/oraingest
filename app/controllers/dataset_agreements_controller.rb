@@ -200,7 +200,12 @@ class DatasetAgreementsController < ApplicationController
 
   def process_file(file)
     #Sufia::GenericFile::Actions.create_content(@dataset_agreement, file, file.original_filename, datastream_id, current_user)
+    current_title = @dataset_agreement.title
     @dataset_agreement.add_file(file, datastream_id, file.original_filename)
+    # Do not replace title with filename when empty
+    unless @dataset_agreement.title == current_title
+      @dataset_agreement.title = current_title
+    end
     save_tries = 0
     begin
       @dataset_agreement.save!
@@ -230,7 +235,7 @@ class DatasetAgreementsController < ApplicationController
 
   def add_metadata(dataset_agreement_params)
     #TODO: All data stewards should be added to list of contibutors
-    @dataset_agreement.buildMetadata(dataset_agreement_params, contents, current_user.user_key)
+    MetadataBuilder.new(@dataset_agreement).build(dataset_agreement_params, contents, current_user.user_key)
     respond_to do |format|
       if @dataset_agreement.save
         format.html { redirect_to edit_dataset_agreement_path(@dataset_agreement), notice: 'Dataset agreement was successfully updated.' }

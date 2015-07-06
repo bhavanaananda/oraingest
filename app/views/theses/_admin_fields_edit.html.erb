@@ -1,0 +1,29 @@
+<div class="fieldset">
+  <fieldset class="small-text">
+    <%= f.label :dispensationFromConsultation, "Have you applied for dispensation from consultation?", :class=>"control-label reqlabel" %>
+    <label panel="dataset-dispensation">
+      <%= f.radio_button :dispensationFromConsultation, "yes", checked: thesis.dispensationFromConsultation.first == "yes", class: "required" %>
+      <span></span>Yes
+    </label>
+    <label>
+      <%= f.radio_button :dispensationFromConsultation, "no", checked: thesis.dispensationFromConsultation.first == "no", class: "required" %>
+      <span></span>No
+    </label>
+  </fieldset>
+  <%= render partial: '/shared/tooltip', locals: {:tipType => "documentation" , :tipTitle => "Dispensation from consultation" , :tipDescription => "TODO" } %>
+</div>
+
+<div class="fieldset">
+  <fieldset class="small-text">
+    <%= f.label :hasThirdPartyCopyrightMaterial, "Does your thesis contain 3rd party copyright material?", :class=>"control-label reqlabel" %>
+    <label panel="dataset-third-party">
+      <%= f.radio_button :hasThirdPartyCopyrightMaterial, "yes", checked: thesis.hasThirdPartyCopyrightMaterial.first == "yes", class: "required" %>
+      <span></span>Yes
+    </label>
+    <label>
+      <%= f.radio_button :hasThirdPartyCopyrightMaterial, "no", checked: thesis.hasThirdPartyCopyrightMaterial.first == "no", class: "required" %>
+      <span></span>No
+    </label>
+  </fieldset>
+  <%= render partial: '/shared/tooltip', locals: {:tipType => "documentation" , :tipTitle => "Third party copyright material" , :tipDescription => "TODO" } %>
+</div>

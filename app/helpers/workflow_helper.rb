@@ -1,7 +1,7 @@
 module WorkflowHelper
   
   def application_name
-    'ORA Contribute'
+    'MyORA'
   end
   
   # Renders a <span> with submission workflow status, flagged in css with either info, success, or important
@@ -9,9 +9,9 @@ module WorkflowHelper
   def workflow_status_indicator(document)
     html_classes = ["label"]
     case document.submission_workflow_status
-    when "Approved"
+    when Sufia.config.published_status, Sufia.config.doi_status
       html_classes << "label-success"
-    when "Draft", "Rejected"
+    when Sufia.config.draft_status, Sufia.config.rejected_status, Sufia.config.referred_status
       html_classes << "label-important"
     else
       html_classes << "label-info"

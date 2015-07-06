@@ -87,7 +87,6 @@ class DatasetsController < ApplicationController
     @pid = Sufia::Noid.noidify(SecureRandom.uuid)
     @pid = Sufia::Noid.namespaceize(@pid)
     @dataset = Dataset.new
-    @doi = @dataset.doi(mint=true)
     @files = []
     @agreement = DatasetAgreement.new
     @agreement.title = "Agreement for #{@pid}"
@@ -102,16 +101,18 @@ class DatasetsController < ApplicationController
   def edit
     # Only edits for drafts and referred allowed. Not published items. So need not check for doi_requested in workflow
     authorize! :edit, params[:id]
-    if @dataset.workflows.first.current_status == "Migrate"
+    unless Sufia.config.next_workflow_status.keys.include?(@dataset.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Dataset)
-    elsif @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
+    end
+    unless Sufia.config.user_edit_status.include?(@dataset.workflows.first.current_status)
       authorize! :review, params[:id]
     end
     @pid = params[:id]
-    @doi = @dataset.doi(mint=true)
     @files = contents
-    if !@files and @dataset.medium[0].empty?
-      @dataset.medium[0] = Sufia.config.data_medium["Digital"]
+    if @files.any?
+      unless @dataset.medium.any? && @dataset.medium.include?(Sufia.config.data_medium["Digital"])
+        @dataset.medium[0] = Sufia.config.data_medium["Digital"]
+      end
     end
     relevant_agreements
     principal_agreement
@@ -160,12 +161,13 @@ class DatasetsController < ApplicationController
 
   def destroy
     authorize! :destroy, params[:id]
-    if @dataset.workflows.first.current_status == "Migrate"
+    unless Sufia.config.next_workflow_status.keys.include?(@dataset.workflows.first.current_status)
       raise CanCan::AccessDenied.new("Not authorized to edit while record is being migrated!", :read, Dataset)
-    elsif @dataset.workflows.first.current_status != "Draft" && @dataset.workflows.first.current_status !=  "Referred"
+    end
+    unless Sufia.config.user_edit_status.include?(@dataset.workflows.first.current_status)
        authorize! :review, params[:id]
     end
-    @dataset.delete_dir(@dataset.id)
+    @dataset.delete_dir(force=true)
     @dataset.destroy
     respond_to do |format|
       format.html { redirect_to datasets_url }
@@ -267,8 +269,6 @@ class DatasetsController < ApplicationController
       return json_error "Error! No file for upload", 'unknown file', :status => :unprocessable_entity
     elsif (empty_file?(file))
       return json_error "Error! Zero Length File!", file.original_filename
-    #elsif (!terms_accepted?)
-    #  return json_error "You must accept the terms of service!", file.original_filename
     else
       process_file(file)
     end
@@ -281,31 +281,10 @@ class DatasetsController < ApplicationController
   end
 
   def process_file(file)
-    dsid = datastream_id
     # Save file to disk
-    location = @dataset.save_file(file, @dataset.id)
-    #Save the location and add the file size to the admin datastream
-    if !@dataset.adminLocator.include?(File.dirname(location))
-      @dataset.adminLocator << File.dirname(location)
-    end
-    size = Integer(@dataset.adminDigitalSize.first) rescue 0
-    @dataset.adminDigitalSize = size + file.size
-    @dataset.medium = Sufia.config.data_medium["Digital"]
-     
-    # Not doing this as the URI may break if the file names are funny and the size of the file is stored as 0, not the value passed in
-    #ds = @dataset.create_external_datastream(dsid, url, File.basename(location), file.size)
-    #@dataset.add_datastream(ds)
-
-    # Prepare data for associated datastream
-    file_name =  file.original_filename
-    file_name = File.basename(file_name)
-    mime_types = MIME::Types.of(file_name)
-    mime_type = mime_types.empty? ? "application/octet-stream" : mime_types.first.content_type
-    opts = {:dsLabel => file_name, :controlGroup => "E", :dsLocation=>location, :mimeType=>mime_type, :dsid=>dsid, :size=>file.size}
-    dsfile = StringIO.new(opts.to_json)
-    # Add data as file datastream
-    @dataset.add_file(dsfile, dsid, "attributes.json")
-    @dataset.title = file.original_filename
+    filename = File.basename(file.original_filename)
+    dsid = @dataset.add_content(file, filename)
+    # Save the dataset
     save_tries = 0
     begin
       @dataset.save!
@@ -336,8 +315,8 @@ class DatasetsController < ApplicationController
   def revoke_permissions
     authorize! :destroy, params[:id]
     if params.has_key?(:access) && params.has_key?(:name) && params.has_key?(:type)
-      new_params = @dataset.validatePermissionsToRevoke(params, @dataset.workflowMetadata.depositor[0])
-      respond_to do |format|
+      new_params = MetadataBuilder.new(@dataset).validatePermissionsToRevoke(params, @dataset.workflowMetadata.depositor[0])
+          respond_to do |format|
         if @dataset.update(new_params)
           format.html { redirect_to edit_dataset_path(@dataset), notice: 'Dataset was successfully updated.' }
           format.json { head :no_content }
@@ -353,11 +332,6 @@ class DatasetsController < ApplicationController
   end
 
   def add_metadata(dataset_params, redirect_field)
-    if !@dataset.workflows.nil? && !@dataset.workflows.first.entries.nil?
-      old_status = @dataset.workflows.first.current_status
-    else
-      old_status = nil
-    end
     # find or create the dataset agreement, if included in the params
     if dataset_params.has_key?(:hasAgreement) or dataset_params.has_key?(:hasRelatedAgreement)
       @@dataset_agreement, created = add_agreement(dataset_params)
@@ -368,16 +342,14 @@ class DatasetsController < ApplicationController
       dataset_params[:hasAgreement] = @dataset_agreement.id
     end
     # Update params
-    @dataset.buildMetadata(dataset_params, contents, current_user.user_key)
+    MetadataBuilder.new(@dataset).build(dataset_params, contents, current_user.user_key)
     if @dataset.medium.first != Sufia.config.data_medium["Digital"] && !contents.empty?
       @dataset.medium = [Sufia.config.data_medium["Digital"]]
     end
     if @dataset_agreement
       @dataset.hasRelatedAgreement = @dataset_agreement
     end
-    if old_status != @dataset.workflows.first.current_status
-      @dataset.perform_action(current_user.user_key)
-    end
+    WorkflowPublisher.new(@dataset).perform_action(current_user)
     respond_to do |format|
       if @dataset.save
         format.html { redirect_to edit_dataset_path(@dataset), notice: 'Dataset was successfully updated.', flash: { redirect_field: redirect_field } }
@@ -394,9 +366,8 @@ class DatasetsController < ApplicationController
   end
 
   def contents
-    choicesUsed = @dataset.datastreams.keys.select { |key| key.start_with?('content') and @dataset.datastreams[key].content != nil }
     files = []
-    for dsid in choicesUsed
+    @dataset.content_datastreams.each do |dsid|
       opts = @dataset.datastream_opts(dsid)
       files.push(@dataset.to_jq_upload(opts['dsLabel'], opts['size'], @dataset.id, dsid))
     end
@@ -438,17 +409,12 @@ class DatasetsController < ApplicationController
       dataset_agreement_params[:title] = "Agreement for #{@dataset.id}"
       dataset_agreement_params[:agreementType] = "Individual"
       dataset_agreement_params[:contributor] = current_user.user_key
-      @dataset_agreement.buildMetadata(dataset_agreement_params, [], current_user.user_key)
+      MetadataBuilder.new(@dataset_agreement).build(dataset_agreement_params, [], current_user.user_key)
       if !@dataset_agreement.save
         @dataset_agreement = nil
       end 
     end
     return @dataset_agreement, created
-  end
-
-  def datastream_id
-    #choicesUsed = @dataset.datastreams.keys.select { |key| key.start_with?('content') and @dataset.datastreams[key].content != nil }
-    dsid = "content%s"% Sufia::Noid.noidify(Sufia::IdService.mint)
   end
 
   private
@@ -498,22 +464,6 @@ class DatasetsController < ApplicationController
   def s_type
     Solrizer.solr_name("desc_metadata__agreementType", :symbol)
   end
-
-  #def filter_not_mine 
-  #  "{!lucene q.op=AND #{depositor}:-#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
-
-  #def filter_mine
-  #  "{!lucene q.op=AND #{depositor}:#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
-
-  #def filter_mine_draft
-  #  "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{workflow_status}:Draft #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
-
-  #def filter_mine_not_draft
-  #  "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} -#{workflow_status}:Draft #{s_model}:\"info:fedora/afmodel:Dataset\""
-  #end
 
   def filter_relevant_agreement
     # All people including the data steward should be listed in the contributor, if allowed to contribute

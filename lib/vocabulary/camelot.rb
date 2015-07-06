@@ -16,6 +16,7 @@ module RDF
     property :researchPaper
     property :review
     property :technicalReport
+    property :thesis
     property :workingPaper
   end
 end

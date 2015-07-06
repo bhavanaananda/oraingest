@@ -73,13 +73,45 @@ function displayDatasetAgreement(id, val) {
   }
 }
 
-function displayDoi(id) {
-  var doi = $("#mintedDoi").val();
-  $("#dataset_doi").val(doi);
-  $("#dataset_doi").attr("value", doi);
-  $("#workflow_submit_involves").val("Register doi:"+doi);
-  $("#workflow_submit_involves").attr("value", "Register doi:"+doi);
-  $("#dataset_doi").attr("readonly", "true");
+function displayDoi() {
+  var doiShoulder = $("#doiShoulder").val();
+  var doi = $("#dataset_doi").val();
+  var eventVal = $("#workflow_submit_involves").val();
+  if ($('#workflow_submit_involves').is(':checked')) {
+    $("#workflow_submit_involves_hidden").val(eventVal);
+    if (doi.startsWith(doiShoulder)) {
+      $("#dataset_doi").val(doi);
+      $("#dataset_doi").prop("value", doi);
+      $("#dataset_doi").prop("readonly", true);
+      $("#dataset_doi").show();
+      $("#dataset_doi_fieldset").show();
+      $("#doiNote").hide();
+    } else {
+      $("#dataset_doi").val("");
+      $("#dataset_doi").prop("value", "");
+      $("#dataset_doi").prop("readonly", true);
+      $("#dataset_doi").hide();
+      $("#dataset_doi_fieldset").hide();
+      $("#doiNote").show();
+    }
+    $('#dataset_accessRights_embargoStatus_open_access').trigger('click');
+    $("#catalog_accessRights").hide();
+  } else {
+    $("#workflow_submit_involves_hidden").val('false');
+    $("#dataset_doi_fieldset").show();
+    $("#dataset_doi").show();
+    $("#dataset_doi").removeAttr("readonly");
+    $("#doiNote").hide();
+    if (doi.startsWith(doiShoulder)) {
+      if (confirm('Are you sure you want to delete the minted doi?')) {
+       $("#dataset_doi").val('') ;
+       $("#dataset_doi").attr("value", '');
+      }
+    }
+    $('#catalog_accessRights').show();
+    $('#dataset_accessRights_embargoStatus_open_access').trigger('click');
+    $('#dataset_accessRights_embargoStatus_open_access').prop('checked', false);
+  }
 }
 
 function setStatus(eleId, wstatus) {

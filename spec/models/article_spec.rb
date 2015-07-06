@@ -1,6 +1,8 @@
-require "rails_helper"
+require 'rails_helper'
 
 describe Article do
+
+  it_behaves_like 'doi_methods'
 
   describe 'attributes' do
 
@@ -29,7 +31,6 @@ describe Article do
       it { is_expected.to respond_to(:license) }
       it { is_expected.to respond_to(:dateCopyrighted) }
       it { is_expected.to respond_to(:rightsHolder) }
-      it { is_expected.to respond_to(:rightsHolderGroup) }
       it { is_expected.to respond_to(:rights) }
       it { is_expected.to respond_to(:rightsActivity) }
       it { is_expected.to respond_to(:creation) }
@@ -58,9 +59,16 @@ describe Article do
       @article = Article.new
     end
 
+    after do
+      @article.delete
+    end
+
     it 'initializes the submission workflow' do
       @article.save
-      expect(@article.workflows).not_to be_empty
+      expect(@article.workflows.count).to eq(1)
+      workflow = @article.workflows.first
+      expect(workflow.identifier).to eq(["MediatedSubmission"])
+      expect(workflow.current_status).to eq("Draft")
     end
 
     it 'removes blank assertions' do

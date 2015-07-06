@@ -1,6 +1,95 @@
 Changelog
 =========
 
+1.4
+------------------
+- Added support for new object type - thesis 
+- Enable multi-valued creator roles
+- Added copyright related fields to forms
+- New workflow for minting DOI
+- Catalog access condition set to open access for datasets with minted DOI
+- Fixed error with downloading files from Databank
+- Moved all names for workflow states into config file
+
+1.3.1
+------------------
+- Modified user model methods to minimize queries to CUD
+
+1.3
+------------------
+- changed list_datasets endpoint to /datasets
+- Updated Kaminari and fixed pagination in dashboards
+- Facet 'Workflow status' added to reviewer dashboard
+- Method to add large files (> 2GB)
+- Databank client library for ruby
+- Added resque jobs
+-    to migrate dataset contents to databank
+-    to update status of record after it is published
+-    to register DOIs after publish
+- Added new methods
+-    save, read and delete files in Dataset model
+-    check all access rights are defined
+-    check if doi registered
+-    check minimum metadata
+-    update_status in workflow model
+- Added tests
+-    Article
+-    DatasetAgreement
+-    GenericFile
+-    DoiMethods
+-    BuildMetadata
+-    Embargo date validation
+- If two files with the same name are uploaded, save with a modified filename
+- Files served from Databank after they have been migrated
+- New wokflow states - data migrated,  system verified, DOI registered
+- Added timeout for cud responses
+- The file url is saved along with the silo name, dataset name and the filename in the datastream
+- Mounted resque web, available to reviewers
+- Added controller to monitor queues in redis (for non-oradeposit jobs)
+- Labels and text messages in webui cutomized for articles
+- Logic for edits allowed based on next workflow status being defined
+- List of roles for data steward expanded further and a default value is selected
+
+1.2
+------------------
+- Improve workflow and limits for file upload in forms and add help text
+- Modify inheritance of javascript files
+- Mint DOIs for Datasets and register once published
+- Funder field is no longer mandatory
+- Fix rdf model for publication activity
+- Index and display published records in ORA
+- Modify workflow and corresponding states for reviewing
+- Display DOI's as hypertexts
+- Updated helper text
+- List of roles for data steward expanded
+- Removed the form fill tracker
+- Disambiguate user and admin file sizes
+
+1.1
+------------------
+
+- Embargo options are displayed in archving section in form
+- Enabled search
+- Added sections to manage workflow and permissions in dataset form
+- Added facets to list of publications and datasets
+- Added new form for article review
+- Published records pushed to redis queue
+- Embargo options displayed in an accoridon on the record page
+- Page redirects made based on user roles
+- Cleaned up the data progress in forms
+- Display of file embargo options in form improved
+- Made improvements to reviewer dashboard
+- Improved checks for mandatory fields
+- Improved code sharing by adding commn classes to models
+- Removed unused views 
+- Form user experience improved
+
+1.0.1
+------------------
+
+- Replaced CUD IP with domain name
+- Added sso ids to rolemap
+
 1.0.0 - Unreleased
 ------------------
 

@@ -22,7 +22,7 @@ class ListConferenceItemsController < ApplicationController
     solr_parameters[:fq] ||= []
     # Only include GenericFile and Collection objects
     #solr_parameters[:fq] << "active_fedora_model_ssi:GenericFile OR active_fedora_model_ssi:Collection"
-    solr_parameters[:fq] << "active_fedora_model_ssi:Conference"
+    solr_parameters[:fq] << "active_fedora_model_ssi:ConferenceItem"
   end
 
 end

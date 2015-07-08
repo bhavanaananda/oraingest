@@ -1,5 +1,5 @@
 <% if !worktypeLabel.nil? %>
-  <% types = ['journal', 'dataset', 'thesis', 'working-paper', 'tech-report', 'book', 'conference', 'article', 'book-section', 'general-item', 'technical'] %>
+  <% types = ['journal', 'dataset', 'thesis', 'working-paper', 'tech-report', 'book', 'conference', 'conferenceitem', 'article', 'book-section', 'general-item', 'technical'] %>
   <% if types.include?(worktypeLabel.downcase.tr(" ", "-")) %>
     <% tag = worktypeLabel.downcase.tr(" ", "-") %>
   <% elsif ["technical-document", "technical-report"].include?(worktypeLabel.downcase.tr(" ", "-")) %>

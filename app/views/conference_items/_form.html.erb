@@ -27,60 +27,78 @@
 <%= form_for @conferenceItem, :html => {:id => "new_record_fields", :class => "ora-validate-form"} do |f| %>
 <%= hidden_field_tag(:pid, @pid) %>
 <%= hidden_field_tag(:redirect_field, flash[:redirect_field]) %>
-<section class="form-step">
-  <div class="content-box padding-0">
-    <div class="content-box-header">
-      2. About your publication
-    </div>
-    <div class="padding-0">
-      <%= render partial: "shared/work_type_fields_edit", :locals => { :f => f, :worktype => @conferenceItem.worktype } %>
-      <%= render partial: "describe_fields_edit", as: :conferenceItem, :locals => { :f => f } %>
-    </div>
-  </div>
 
-  <h2 class="blue-text" style="margin-top: 30px;">Optional fields</h2>
-  <p>Enhance your deposit by making your publication more discoverable via search engines.</p>
+  <% unless @conferenceItem.workflows.first.nil? %>
+      <% @wf = @conferenceItem.workflows.first %>
+      <% @wf_id = @wf.rdf_subject.to_s %>
+      <% @currentStatus = @wf.current_status %>
+  <% else %>
+      <% @conferenceItem.workflows.build %>
+      <% @wf = @conferenceItem.workflows.first %>
+      <% @wf_id = nil %>
+      <% @currentStatus = Sufia.config.draft_status %>
+  <% end %>
 
-  <div class="content-box padding-0">
-    <div class="content-box-header expand-header">
-      <div class="space-right">Add journal and publisher information to your publication</div>
-    </div>
-    <div class="expand-content">
-      <%= render partial: 'shared/publication_activity/article_fields_edit', :locals => { :f => f, :publication => @conferenceItem.publication } %>
-    </div>
-  </div>
+  <%= f.fields_for :workflows, @wf do |f_wf| %>
+    <% unless @wf_id.nil? %>
+        <%= f_wf.hidden_field :id, :value => @wf_id, :id => "workflow_submit_id" %>
+    <% end %>
 
-  <div class="content-box padding-0">
-    <div class="content-box-header expand-header">
-      <div class="space-right">Add subject, keywords, and language information to your publication</div>
-    </div>
-    <div class="expand-content">
-      <%= render partial: "shared/mads_subject_fields_edit", :locals => { :f => f, :subject => @conferenceItem.subject } %>
-      <div class="padding-side-25">
-        <div class="bottom-border"></div>
+  <section class="form-step">
+    <div class="content-box padding-0">
+      <div class="content-box-header">
+        2. About your publication
       </div>
-
-      <%= render partial: "shared/keyword_fields_edit", :locals => { :f => f, :keyword => @conferenceItem.keyword } %>
-      <div class="padding-side-25">
-        <div class="bottom-border"></div>
+      <div class="padding-0">
+        <%= render partial: "shared/work_type_fields_edit", :locals => { :f => f, :worktype => @conferenceItem.worktype } %>
+        <%= render partial: "describe_fields_edit", as: :conferenceItem, :locals => { :f => f } %>
       </div>
-
-      <%= render partial: "shared/mads_language_fields_edit", :locals => { :f => f, :language => @conferenceItem.language } %>
     </div>
-  </div>
 
-  <nav class="form-nav">
-    <div class="form-nav-prev">
-      <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-    </div>
-    <div class="form-nav-next">
-      <div class="float-left">
-        <strong>Continue to Step 3</strong> - About the conference
+    <h2 class="blue-text" style="margin-top: 30px;">Optional fields</h2>
+    <p>Enhance your deposit by making your publication more discoverable via search engines.</p>
+
+    <div class="content-box padding-0">
+      <div class="content-box-header expand-header">
+        <div class="space-right">Add journal and publisher information to your publication</div>
       </div>
-      <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+      <div class="expand-content">
+        <%= render partial: 'shared/publication_activity/article_fields_edit', :locals => { :f => f, :publication => @conferenceItem.publication } %>
+      </div>
     </div>
-  </nav>
-</section>
+
+    <div class="content-box padding-0">
+      <div class="content-box-header expand-header">
+        <div class="space-right">Add subject, keywords, and language information to your publication</div>
+      </div>
+      <div class="expand-content">
+        <%= render partial: "shared/mads_subject_fields_edit", :locals => { :f => f, :subject => @conferenceItem.subject } %>
+        <div class="padding-side-25">
+          <div class="bottom-border"></div>
+        </div>
+
+        <%= render partial: "shared/keyword_fields_edit", :locals => { :f => f, :keyword => @conferenceItem.keyword } %>
+        <div class="padding-side-25">
+          <div class="bottom-border"></div>
+        </div>
+
+        <%= render partial: "shared/mads_language_fields_edit", :locals => { :f => f, :language => @conferenceItem.language } %>
+      </div>
+    </div>
+
+    <nav class="form-nav">
+      <div class="form-nav-prev">
+        <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
+      </div>
+      <div class="form-nav-next">
+        <div class="float-left">
+          <strong>Continue to Step 3</strong> - About the conference
+        </div>
+        <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+      </div>
+    </nav>
+
+  </section>
 
 
 
@@ -125,163 +143,169 @@
 
 
 
-<section class="form-step">
-  <div class="content-box padding-0">
-    <div class="content-box-header">
-      4. About you
-    </div>
-    <div class="padding-0">
-      <%= render partial: 'shared/creation_activity_fields_edit', :locals => { :f => f, :creation => @conferenceItem.creation, :label => "creator", :required => true } %>
-    </div>
-  </div>
-
-  <nav class="form-nav">
-    <div class="form-nav-prev">
-      <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-    </div>
-    <div class="form-nav-next">
-      <div class="float-left">
-        <strong>Continue to Step 5</strong> - Related publications
-      </div>
-      <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-    </div>
-  </nav>
-</section>
-
-<section class="form-step">
-  <div class="content-box padding-0">
-    <div class="content-box-header">
-      5. Related publications
-    </div>
-    <div class="padding-0">
-      <%= render partial: 'shared/relation_fields_edit', :locals => { :f => f, :qualifiedRelation => @conferenceItem.qualifiedRelation } %>
-    </div>
-  </div>
-
-  <nav class="form-nav">
-    <div class="form-nav-prev">
-      <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-    </div>
-    <div class="form-nav-next">
-      <div class="float-left">
-        <strong>Continue to Step 6</strong> - Archiving and access
-      </div>
-      <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-    </div>
-  </nav>
-
-</section>
-
-<section class="form-step">
-  <div class="content-box padding-0">
-    <div class="content-box-header">
-      6. Archiving and access
-    </div>
-    <div class="padding-25 no-pad-top no-pad-bottom">
-      <%= render partial: "admin_fields_edit", :locals => { :f => f, :article => @conferenceItem } %>
-    </div>
-    <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @conferenceItem } %>
-    <%#= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @conferenceItem.accessRights, :embargo_type => "metadata" } %>
-  </div>
-
-  <nav class="form-nav">
-    <div class="form-nav-prev">
-      <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-    </div>
-    <div class="form-nav-next">
-      <div class="float-left">
-        <strong>Continue to Step 7</strong> - Funders and licences
-      </div>
-      <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-    </div>
-  </nav>
-</section>
-
-<section class="form-step">
-  <div class="content-box padding-0">
-    <div class="content-box-header">
-      7. Funders and licences
-    </div>
-    <div class="padding-25 no-pad-top no-pad-bottom">
-      <%= render partial: 'shared/funding_activity_fields_edit', :locals => { :f => f, :funding => @conferenceItem.funding, :required => false } %>
-    </div>
-
-  </div>
-
-  <h2 class="blue-text" style="margin-top: 30px;">Optional fields</h2>
-  <p>Enhance your deposit by making your publication more discoverable via search engines.</p>
-
-  <div class="content-box padding-0">
-    <div class="content-box-header expand-header">
-      <div class="space-right">License your data</div>
-    </div>
-    <div class="expand-content">
-      <%= render partial: "shared/rights_activity_fields_edit", :locals => { :f => f, :article => @conferenceItem } %>
-    </div>
-  </div>
-
-  <nav class="form-nav">
-    <div class="form-nav-prev">
-      <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-    </div>
-    <% if can? :review, :all %>
-      <div class="form-nav-next">
-        <div class="float-left">
-          <strong>Continue to Step 8</strong> - Review workflow
-        </div>
-        <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-      </div>
-    <% end %>
-  </nav>
-
-</section>
-
-<% if can? :review, :all %>
   <section class="form-step">
     <div class="content-box padding-0">
       <div class="content-box-header">
-        8. Review workflow
+        4. About you
       </div>
-      <div class="padding-25 no-pad-top no-pad-bottom">
-        <%= render partial: 'shared/workflow_edit', :locals => { :f => f, :article => @conferenceItem } %>
-      </div>
-    </div>
-
-    <div class="content-box padding-0">
-      <div class="padding-25 no-pad-top no-pad-bottom">
-        <%= render partial: "shared/workflow_show", :locals => { :article => @conferenceItem } %>
+      <div class="padding-0">
+        <%= render partial: 'shared/creation_activity_fields_edit', :locals => { :f => f, :creation => @conferenceItem.creation, :label => "creator", :required => true } %>
       </div>
     </div>
-
-    <% if !@conferenceItem.permissions.nil? && !@conferenceItem.permissions.empty? %>
-      <div class="content-box padding-0">
-        <div class="content-box-header expand-header">
-          <div class="space-right">Set permissions</div>
-        </div>
-        <div class="expand-content">
-          <%= render partial: "shared/permissions_edit", :locals => {:f => f, :permissions => @conferenceItem.permissions, :depositor => @conferenceItem.workflowMetadata.depositor[0]} %>
-        </div>
-      </div>
-    <% end %>
 
     <nav class="form-nav">
       <div class="form-nav-prev">
         <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
       </div>
+      <div class="form-nav-next">
+        <div class="float-left">
+          <strong>Continue to Step 5</strong> - Related publications
+        </div>
+        <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+      </div>
     </nav>
   </section>
-<% end %>
 
-<nav class="form-nav" style="margin-top: 20px;">
-  <div class="form-nav-next" style="text-align: right">
-    <% unless can? :review, :all %>
-      <%= f.submit "Save", class: "button light-blue", :onclick => "setStatus(\"workflow_submit_entries_status\", \"default\")", data: {"submit-without-validation" => true} %>
-      <%= render partial: "shared/workflow_submit", :locals => {:f => f, :article => @conferenceItem, :validate => true} %>
+  <section class="form-step">
+    <div class="content-box padding-0">
+      <div class="content-box-header">
+        5. Related publications
+      </div>
+      <div class="padding-0">
+        <%= render partial: 'shared/relation_fields_edit', :locals => { :f => f, :qualifiedRelation => @conferenceItem.qualifiedRelation } %>
+      </div>
+    </div>
+
+    <nav class="form-nav">
+      <div class="form-nav-prev">
+        <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
+      </div>
+      <div class="form-nav-next">
+        <div class="float-left">
+          <strong>Continue to Step 6</strong> - Archiving and access
+        </div>
+        <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+      </div>
+    </nav>
+
+  </section>
+
+  <section class="form-step">
+    <div class="content-box padding-0">
+      <div class="content-box-header">
+        6. Archiving and access
+      </div>
+      <div class="padding-25 no-pad-top no-pad-bottom">
+        <%= render partial: "admin_fields_edit", :locals => { :f => f, :article => @conferenceItem } %>
+      </div>
+      <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @conferenceItem } %>
+      <%#= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @conferenceItem.accessRights, :embargo_type => "metadata" } %>
+    </div>
+
+    <nav class="form-nav">
+      <div class="form-nav-prev">
+        <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
+      </div>
+      <div class="form-nav-next">
+        <div class="float-left">
+          <strong>Continue to Step 7</strong> - Funders and licences
+        </div>
+        <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+      </div>
+    </nav>
+  </section>
+
+  <section class="form-step">
+    <div class="content-box padding-0">
+      <div class="content-box-header">
+        7. Funders and licences
+      </div>
+      <div class="padding-25 no-pad-top no-pad-bottom">
+        <%= render partial: 'shared/funding_activity_fields_edit', :locals => { :f => f, :funding => @conferenceItem.funding, :required => false } %>
+      </div>
+
+    </div>
+
+    <h2 class="blue-text" style="margin-top: 30px;">Optional fields</h2>
+    <p>Enhance your deposit by making your publication more discoverable via search engines.</p>
+
+    <div class="content-box padding-0">
+      <div class="content-box-header expand-header">
+        <div class="space-right">License your data</div>
+      </div>
+      <div class="expand-content">
+        <%= render partial: "shared/rights_activity_fields_edit", :locals => { :f => f, :article => @conferenceItem } %>
+      </div>
+    </div>
+
+    <nav class="form-nav">
+      <div class="form-nav-prev">
+        <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
+      </div>
+      <% if can? :review, :all %>
+        <div class="form-nav-next">
+          <div class="float-left">
+            <strong>Continue to Step 8</strong> - Review workflow
+          </div>
+          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+        </div>
+      <% end %>
+    </nav>
+
+  </section>
+
+  <% if can? :review, :all %>
+    <section class="form-step">
+      <div class="content-box padding-0">
+        <div class="content-box-header">
+          8. Review workflow
+        </div>
+        <div class="padding-25 no-pad-top no-pad-bottom">
+          <%#= render partial: 'shared/workflow_edit', :locals => { :f => f, :article => @conferenceItem } %>
+          <%= render partial: 'shared/workflow_edit', :locals => { :f => f, :f_wf => f_wf, :wf => @wf, :wf_id => @wf_id, :currentStatus => @currentStatus } %>
+
+        </div>
+      </div>
+
+      <div class="content-box padding-0">
+        <div class="padding-25 no-pad-top no-pad-bottom">
+          <%= render partial: "shared/workflow_show", :locals => { :article => @conferenceItem } %>
+        </div>
+      </div>
+
+      <% if !@conferenceItem.permissions.nil? && !@conferenceItem.permissions.empty? %>
+        <div class="content-box padding-0">
+          <div class="content-box-header expand-header">
+            <div class="space-right">Set permissions</div>
+          </div>
+          <div class="expand-content">
+            <%= render partial: "shared/permissions_edit", :locals => {:f => f, :permissions => @conferenceItem.permissions, :depositor => @conferenceItem.workflowMetadata.depositor[0]} %>
+          </div>
+        </div>
+      <% end %>
+
+      <nav class="form-nav">
+        <div class="form-nav-prev">
+          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
+        </div>
+      </nav>
+    </section>
+  <% end %>
+
+  <nav class="form-nav" style="margin-top: 20px;">
+    <div class="form-nav-next" style="text-align: right">
+      <% unless can? :review, :all %>
+        <%= f.submit "Save", class: "button light-blue", :onclick => "setStatus(\"workflow_submit_entries_status\", \"default\")", data: {"submit-without-validation" => true} %>
+        <%#= render partial: "shared/workflow_submit", :locals => {:f => f, :article => @conferenceItem, :validate => true} %>
+        <%= render partial: "shared/workflow_submit", :locals => {:f => f, :f_wf => f_wf, :wf => @wf, :wf_id => @wf_id, :currentStatus => @currentStatus, :validate => true} %>
+
     <% else %>
-      <%= f.submit "Save", class: "button light-blue", data: {"submit-without-validation" => true} %>
-      <%= f.submit "Check mandatory fields and Save", class: "button light-blue" %>
-    <% end %>
-  </div>
-</nav>
+        <%= f.submit "Save", class: "button light-blue", data: {"submit-without-validation" => true} %>
+        <%= f.submit "Check mandatory fields and Save", class: "button light-blue" %>
+      <% end %>
+    </div>
+  </nav>
 
-<% end %>
+  <% end #fields_for workflows %>
+<% end #form %>
+

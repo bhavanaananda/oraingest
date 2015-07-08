@@ -1,6 +1,7 @@
     <tr>
       <td>
         <%= render :partial => "shared/show_document", :locals => {:document => document} %>
+         <%= render partial: "conference_items/worktype_label_show", :locals => { :worktypeLabel => document.worktypeLabel } %>
       </td>
       <td>
         <% if !document.submission_workflow_status.nil? %>

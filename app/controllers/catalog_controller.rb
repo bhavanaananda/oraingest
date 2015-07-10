@@ -54,6 +54,7 @@ class CatalogController < ApplicationController
     #recent_me
     #grab my recent publications
     my_recent_publications
+    my_recent_conference_items
     #grab my recent publications
     my_recent_datasets
     #my_recent_theses
@@ -87,6 +88,13 @@ class CatalogController < ApplicationController
   def my_recent_datasets
     if user_signed_in?
       (_, @recent_datasets) = get_search_results(:q =>filter_mine_datasets,
+                                                 :sort=>sort_field, :rows=>5)
+    end
+  end
+
+  def my_recent_conference_items
+    if user_signed_in?
+      (_, @recent_conference_items) = get_search_results(:q =>filter_mine_conference_items,
                                         :sort=>sort_field, :rows=>5)
     end
   end
@@ -129,6 +137,9 @@ class CatalogController < ApplicationController
     "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:Dataset\""
   end
 
+  def filter_mine_conference_items
+    "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:ConferenceItem\""
+  end
   #def filter_mine_theses
   #  "{!lucene q.op=AND} #{depositor}:#{current_user.user_key} #{s_model}:\"info:fedora/afmodel:Thesis\""
   #end

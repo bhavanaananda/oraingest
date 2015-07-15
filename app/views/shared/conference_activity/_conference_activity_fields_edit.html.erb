@@ -19,7 +19,7 @@
 
     <div class="fieldset">
         <p class="small">Date Accepted</p>
-        <%= f.date_field :dateAccepted, :value=>c.dateAccepted.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+        <%= f_p.date_field :dateAccepted, :value=>c.dateAccepted.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
         <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Abstract", :tipDescription =>"If you would like to give us the date accepted, enter it here." } %>
     </div>
     <% end %>

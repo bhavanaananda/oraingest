@@ -11,8 +11,8 @@ class ConferenceItem < ActiveFedora::Base
   #include Sufia::GenericFile::WebForm
   include Sufia::Noid
   include Hydra::ModelMethods
-  include WorkflowMethods
-  include BuildMetadata
+  #include WorkflowMethods
+  #include BuildMetadata
   include DoiMethods
 
   attr_accessible *(ConferenceItemRdfDatastream.fields + RelationsRdfDatastream.fields + [:permissions, :permissions_attributes, :workflows, :workflows_attributes] + ConferenceItemAdminRdfDatastream.fields)
@@ -37,7 +37,6 @@ class ConferenceItem < ActiveFedora::Base
   def to_solr(solr_doc={}, opts={})
     super(solr_doc, opts)
     solr_doc[Solrizer.solr_name('label')] = self.label
-    #index_collection_pids(solr_doc)
     return solr_doc
   end
 
@@ -62,6 +61,11 @@ class ConferenceItem < ActiveFedora::Base
         "delete_url" => "/conferenceitems/#{pid}/file/#{dsid}", #"/conferenceitem/#{noid}",
         "delete_type" => "DELETE"
     }
+  end
+
+
+  def model_klass
+    self.class.model_name.to_s
   end
 
   private

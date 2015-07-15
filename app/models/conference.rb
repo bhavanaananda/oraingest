@@ -11,8 +11,8 @@ class Conference < ActiveFedora::Base
   #include Sufia::GenericFile::WebForm
   include Sufia::Noid
   include Hydra::ModelMethods
-  include WorkflowMethods
-  include BuildMetadata
+  #include WorkflowMethods
+  #include BuildMetadata
   include DoiMethods
 
 
@@ -77,7 +77,6 @@ class Conference < ActiveFedora::Base
       end
     end
   end
-
 
   def self.find_or_create(pid)
     begin

@@ -102,44 +102,44 @@
 
 
 
-<!--<section class="form-step">-->
-    <!--<div class="content-box padding-0">-->
-        <!--<div class="content-box-header">-->
-            <!--3. About the conference-->
-        <!--</div>-->
-        <!--<div class="content-box padding-0">-->
-            <!--<div class="padding-0">-->
-              <!--<%#= render partial: "shared/conference_activity/conference_activity_fields_edit", :locals => { :f => f, :conferenceActivity => @conferenceItem.conferenceActivity } %>-->
-            <!--</div>-->
-            <!--<div class="padding-0">-->
-                <!--<div class="fieldset">-->
-                    <!--&lt;!&ndash; <p class="small reqlabel">Conference</p> &ndash;&gt;-->
-                    <!--<%#= f.text_field :conference, :value=>@conference.conferenceName.first,  :class=>"conferenceName", :style=>'width: 60%', data: {"progress" => "discoverability"} %>-->
-                    <!--<%#= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Season", :tipDescription =>"If you would like to tell us the name of your conference, enter it here" } %>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="content-box-header expand-header">-->
-                <!--<div class="space-right">Enter details of the conference if not found above</div>-->
-            <!--</div>-->
-            <!--<div class="expand-content">-->
-                <!--<%#= render partial: "conference_fields_edit", :locals => { :f => f, :conference => @conferenceItem.conference } %>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
+<section class="form-step">
+    <div class="content-box padding-0">
+        <div class="content-box-header">
+            3. About the conference
+        </div>
+        <div class="content-box padding-0">
+            <div class="padding-0">
+              <%= render partial: "shared/conference_activity/conference_activity_fields_edit", :locals => { :f => f, :conferenceActivity => @conferenceItem.conferenceActivity } %>
+            </div>
+            <div class="padding-0">
+                <div class="fieldset">
+                    <!-- <p class="small reqlabel">Conference</p> -->
+                    <%#= f.text_field :conference, :value=>@conference.conferenceName.first,  :class=>"conferenceName", :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+                    <%#= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Season", :tipDescription =>"If you would like to tell us the name of your conference, enter it here" } %>
+                </div>
+            </div>
+            <div class="content-box-header expand-header">
+                <div class="space-right">Enter details of the conference if not found above</div>
+            </div>
+            <div class="expand-content">
+                <%#= render partial: "conference_fields_edit", :locals => { :f => f, :conference => @conferenceItem.conference } %>
+            </div>
+        </div>
+    </div>
 
-    <!--<nav class="form-nav">-->
-        <!--<div class="form-nav-prev">-->
-            <!--<a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>-->
-        <!--</div>-->
-        <!--<div class="form-nav-next">-->
-            <!--<div class="float-left">-->
-                <!--<strong>Continue to Step 4</strong> - About you-->
-            <!--</div>-->
-            <!--<a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>-->
-        <!--</div>-->
-    <!--</nav>-->
+    <nav class="form-nav">
+        <div class="form-nav-prev">
+            <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
+        </div>
+        <div class="form-nav-next">
+            <div class="float-left">
+                <strong>Continue to Step 4</strong> - About you
+            </div>
+            <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
+        </div>
+    </nav>
 
-<!--</section>-->
+</section>
 
 
 

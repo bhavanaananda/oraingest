@@ -18,7 +18,7 @@ require 'blacklight/catalog'
 require 'blacklight_advanced_search'
 
 # bl_advanced_search 1.2.4 is doing unitialized constant on these because we're calling ParseBasicQ directly
-require 'parslet'  
+require 'parslet'
 require 'parsing_nesting/tree'
 
 require "utils"
@@ -155,7 +155,7 @@ class ConferenceItemsController < ApplicationController
       # grab other people's documents
       (_, @recent_documents) = get_search_results(:q =>filter_not_mine,
                                         :sort=>sort_field, :rows=>5)
-    else 
+    else
       # grab any documents we do not know who you are
       (_, @recent_documents) = get_search_results(:q =>'', :sort=>sort_field, :rows=>5)
     end
@@ -269,39 +269,36 @@ class ConferenceItemsController < ApplicationController
     end
   end
 
-
   def add_metadata(conference_item_params, redirect_field)
-    if !@conferenceItem.workflows.nil? && !@conferenceItem.workflows.first.entries.nil?
-      old_status = @conferenceItem.workflows.first.current_status
-    else
-      old_status = nil
+    #find or create the conference, if included in the params
+    if conference_item_params.has_key?(:presented_at) or conference_item_params.has_key?(:conference)
+      @@conference, created = add_conference(conference_item_params)
     end
-    # find or create the conference, if included in the params
-    # if conference_item_params.has_key?(:presented_at) or conference_item_params.has_key?(:conference)
-    #   @@conference, created = add_conference(conference_item_params)
-    # end
-    # conference_item_params[:conference] = nil
-    # conference_item_params[:presented_at] = nil
-    # if @conference
-    #   conference_item_params[:presented_at] = @conference.id
-    # end
-
-    @conferenceItem.buildMetadata(conference_item_params, contents, current_user.user_key)
-    if old_status != @conferenceItem.workflows.first.current_status
-      @conferenceItem.perform_action(current_user.user_key)
+    conference_item_params[:conference] = nil
+    #conference_item_params[:presented_at] = nil
+    if @conference
+      conference_item_params[:presented_at] = @conference.id
     end
+        # Update params
+    MetadataBuilder.new(@conferenceItem).build(conference_item_params, contents, current_user.user_key)
+    if @conference
+      @conferenceItem.conference = @conference
+    end
+    WorkflowPublisher.new(@conferenceItem).perform_action(current_user)
     respond_to do |format|
       if @conferenceItem.save
           format.html { redirect_to edit_conference_item_path(@conferenceItem), notice: 'Conference item was successfully updated.' , flash:{ redirect_field: redirect_field }}
           format.json { head :no_content }
       else
+        # If a conference was created newly, roll back changes
+        if @conference and created
+          @conference.destroy
+        end
         format.html { render action: 'edit' }
         format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }
       end
     end
   end
-
-
 
   def add_conference(conference_item_params)
     @conference = nil
@@ -398,7 +395,7 @@ class ConferenceItemsController < ApplicationController
     Solrizer.solr_name('all_workflow_statuses', :stored_searchable, type: :symbol)
   end
 
-  def filter_not_mine 
+  def filter_not_mine
     "{!lucene q.op=AND df=#{depositor}}-#{current_user.user_key}"
   end
 

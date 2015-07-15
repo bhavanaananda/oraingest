@@ -63,6 +63,7 @@ class MetadataBuilder
       buildPublicationActivity(params[:publication])
       params.except!(:publication)
     end
+
     # get the publication date to calculate embargo dates for access rights
     if model.class.to_s != "DatasetAgreement"
       datePublished = nil
@@ -71,9 +72,18 @@ class MetadataBuilder
       end
     end
 
+    logger.error "params #{params}\n"
+    #remove_blank_assertions for conference activity and build
+    if params.has_key?(:conferenceActivity)
+      #logger.error "GenericFilesController::create rescued #{error.class}\n\t#{error.to_s}\n #{error.backtrace.join("\n")}\n\n"
+      buildConferenceActivity(params[:conferenceActivity])
+      params.except!(:conferenceActivity)
+    end
+
     # Remove blank assertions for dataset access rights and build
     if params.has_key?(:accessRights)
-      buildAccessRights(params[:accessRights], datePublished)
+     go
+     buildAccessRights(params[:accessRights], datePublished)
       params.except!(:accessRights)
     end
 
@@ -246,7 +256,7 @@ class MetadataBuilder
       if Sufia.config.type_authorities[model.model_klass.downcase].include?(params[:typeLabel])
         params[:typeAuthority] = Sufia.config.type_authorities[model.model_klass.downcase][params[:typeLabel]]
       end
-      params['id'] = "info:fedora/#{model.id}#type"
+      params['id'] = "info:fedora/#{model.id}#typublicationpe"
       model.worktype.build(params)
     else
       params[:typeLabel] = model.model_klass
@@ -570,6 +580,25 @@ class MetadataBuilder
         end # if affiliation
       end #for each titular
     end #if titular attributes
+  end
+
+
+  def buildConferenceActivity(params)
+    logger.error "Building conference activity}\n"
+    model.conferenceActivity = nil
+    params.each do |k, v|
+      params[k] = nil if v.empty?
+    end
+    id0 = "info:fedora/%s#conferenceActivity" % model.id
+    params['id'] = id0
+    params[:type] = RDF::PROV.Activity
+    #params[:documentationStatus] = params['documentationStatus']
+    #params[:reviewStatus] = params['reviewStatus']
+    #params[:dateAccepted] = params['dateAccepted']
+    #params[:hadActivity] = RDF::PROV.hadActivity
+    params[:type] = RDF::PROV.Activity
+    model.conferenceActivity.build(params)
+    logger.info "built conference activity}\n"
   end
 
   def buildPublicationActivity(params)

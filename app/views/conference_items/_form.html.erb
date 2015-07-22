@@ -101,7 +101,6 @@
   </section>
 
 
-
 <section class="form-step">
     <div class="content-box padding-0">
         <div class="content-box-header">
@@ -113,16 +112,18 @@
             </div>
             <div class="padding-0">
                 <div class="fieldset">
-                    <!-- <p class="small reqlabel">Conference</p> -->
-                    <%#= f.text_field :conference, :value=>@conference.conferenceName.first,  :class=>"conferenceName", :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+                     <!-- <p class="small reqlabel">Conference</p> -->
+                    <%#= f.text_field :conferenceName, :value=>@conference.conferenceName.first,  :class=>"conferenceName", :style=>'width: 60%', data: {"progress" => "discoverability"} %>
                     <%#= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Season", :tipDescription =>"If you would like to tell us the name of your conference, enter it here" } %>
                 </div>
             </div>
             <div class="content-box-header expand-header">
                 <div class="space-right">Enter details of the conference if not found above</div>
             </div>
+
+
             <div class="expand-content">
-                <%#= render partial: "conference_fields_edit", :locals => { :f => f, :conference => @conferenceItem.conference } %>
+                <%= render partial: "conference_fields_edit", :locals => { :f => f, :conference => @conferenceItem.conference } %>
             </div>
         </div>
     </div>
@@ -140,7 +141,6 @@
     </nav>
 
 </section>
-
 
 
   <section class="form-step">

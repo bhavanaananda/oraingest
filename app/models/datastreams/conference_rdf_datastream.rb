@@ -250,14 +250,6 @@ class ConferenceProceeding
       RDF::URI.new
     else
       RDF::URI.new("info:fedora/" + ds.pid + "#conferenceProceeding")# class Conference
-#   include ActiveFedora::RdfObject
-#   extend ActiveModel::Naming
-#   include ActiveModel::Conversion
-#   attr_accessor  :generatedAtTime, :season, :startedAtTime, :endedAtTime, :atLocation, :wasAssociatedWith, :conferenceAssociation, :conferenceName, :conferenceAbbreviation, :conferenceHomepage, :conferenceProceeding
-# conference_item_rdf_datastream
-#   rdf_subject { |ds|
-
-
     end
   }
   rdf_type rdf_type RDF::BIBO.Proceedings
@@ -340,6 +332,7 @@ end
 
 
 class ConferenceProceedingAttribution
+
   include ActiveFedora::RdfObject
   extend ActiveModel::Naming
   include ActiveModel::Conversion

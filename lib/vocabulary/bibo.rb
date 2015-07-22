@@ -30,5 +30,6 @@ module RDF
     property :Proceedings
     property :presentedAt
     property :Organizer
+    property :Conference
   end
 end

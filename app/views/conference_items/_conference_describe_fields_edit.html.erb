@@ -1,19 +1,20 @@
+<%= f.fields_for :conference do |f_p| %>
 <div class="fieldset">
     <p class="small reqlabel">Conference name</p>
-    <%= f.text_field :conferenceName, :value=>@conference.conferenceName.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+    <%= f_p.text_field :conferenceName, :value=>conference.conferenceName.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference name", :tipDescription =>"If you would like to tell us the name of the conference, enter it here" } %>
 </div>
 
 <div class="fieldset">
     <p class="small">Conference abbreviation</p>
-    <%= f.text_field :conferenceAbbreviation, :value=>@conference.conferenceAbbreviation.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+    <%= f_p.text_field :conferenceAbbreviation, :value=>conference.conferenceAbbreviation.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference abbreviation", :tipDescription =>"If you would like to tell us the abbreaviation of your conference, enter it here" } %>
 </div>
 
 <div class="fieldset">
     <p class="small">Conference homepage</p>
 
-    <%= f.text_field :conferenceHomepage, :value=>@conference.conferenceHomepage.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+    <%= f_p.text_field :conferenceHomepage, :value=>conference.conferenceHomepage.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference homepage", :tipDescription =>"If you would like to tell us the link to your conference homepage, enter it here" } %>
 </div>
 
@@ -68,7 +69,7 @@
 
 <div class="fieldFt">
     <p class="small">Season</p>
-    <%= f.text_field :season, :value=>@conference.season.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+    <%= f_p.text_field :season, :value=>conference.season.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Season", :tipDescription =>"If you would like to tell us the season of your conference, enter it here" } %>
 </div>
 
@@ -83,14 +84,15 @@
 
 <div class="fieldset">
     <p class="small">Conference organization</p>
-    <% if @conference.wasAssociatedWith.empty? %>
-        <% @conference.wasAssociatedWith.build %>
+    <% if conference.wasAssociatedWith.empty? %>
+        <% conference.wasAssociatedWith.build %>
     <% end %>
 
-    <% @conference.wasAssociatedWith.each do |p| %>
-        <%= f.fields_for :conferenceOrganization, p do |f_p| %>
-            <%= f_p.text_field :name, :value=>p.name.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+    <%= f_p.fields_for:wasAssociatedWith, p do |f_p3| %>
+        <%= f_p3.fields_for :conferenceOrganization, p do |f_p2| %>
+            <%= f_p2.text_field :name, :value=>conference.wasAssociatedWith.first.name.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
             <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference organization", :tipDescription =>"If you would like to tell us the name of the conference organization, enter it here" } %>
         <% end %>
     <% end %>
 </div>
+<% end %>

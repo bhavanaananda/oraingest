@@ -1,4 +1,5 @@
 require 'vocabulary/ora'
+require 'vocabulary/bibo'
 
 class MetadataBuilder
 
@@ -65,19 +66,39 @@ class MetadataBuilder
     end
 
     # get the publication date to calculate embargo dates for access rights
-    if model.class.to_s != "DatasetAgreement"
+    if model.class.to_s != "DatasetAgreement" and model.class.to_s != "Conference"
       datePublished = nil
       if !model.publication[0].nil? && !model.publication[0].datePublished.nil?
         datePublished = model.publication[0].datePublished.first
       end
     end
 
-    logger.error "params #{params}\n"
     #remove_blank_assertions for conference activity and build
     if params.has_key?(:conferenceActivity)
-      #logger.error "GenericFilesController::create rescued #{error.class}\n\t#{error.to_s}\n #{error.backtrace.join("\n")}\n\n"
       buildConferenceActivity(params[:conferenceActivity])
       params.except!(:conferenceActivity)
+    end
+
+
+    #remove_blank_assertions for conference activity and build
+    if params.has_key?(:conference)
+      if !(params[:conference]).instance_of? String
+        buildConference(params[:conference])
+      end
+      params.except!(:conference)
+    end
+
+    if params.has_key?(:wasAssociatedWith)
+      buildConferenceOrganization(params[:wasAssociatedWith][:conferenceOrganization])
+      buildConferenceAssociation(params[:wasAssociatedWith][:conferenceOrganization])
+      params.except!(:wasAssociatedWith)
+    end
+
+    if params.has_key?(:conferenceProceeding)
+      buildConferenceProceeding(params[:conferenceProceeding])
+      params.except!(:conferenceProceeding)
+      params.except!(:conferenceProceedingAttributor)
+
     end
 
     # Remove blank assertions for dataset access rights and build
@@ -136,6 +157,8 @@ class MetadataBuilder
       buildInvoiceData(params[:invoice])
       params.except!(:invoice)
     end
+    params.except!(:type)
+    params.except!(:hadRole)
     model.attributes = params
   end
 
@@ -526,7 +549,7 @@ class MetadataBuilder
         end
         model.creation[0].creator.build(c1)
         model.creation[0].creator[c1_index].agent = nil
-        model.creation[0].creator[c1_index].agent.build(agent)
+        model.creation[0].creator[c1_index].agent.buiConferenceAssociationld(agent)
         model.creation[0].creator[c1_index].agent[0].affiliation = nil
         if c1[:affiliation] && c1[:affiliation].has_key?(:name) and !c1[:affiliation][:name].empty?
           c1[:affiliation]['id'] = "info:fedora/%s#affiliation%d" % [model.id, affiliationCount]
@@ -582,9 +605,77 @@ class MetadataBuilder
     end #if titular attributes
   end
 
+  def buildConferenceOrganization(params)
+     model.wasAssociatedWith = nil
+    # params.each do |k, v|
+    #   params[k] = nil if v.empty?
+    # end
+
+
+    id0 = "info:fedora/%s#conferenceOrganization" % model.id
+    params['id'] = id0
+    params[:type] = RDF::FOAF.Organization
+    model.wasAssociatedWith.build(params)
+  end
+
+
+  def buildConferenceAssociation(params)
+    model.conferenceAssociation = nil
+    id0 = "info:fedora/%s#conferenceAssociation" % model.id
+    params['id'] = id0
+    params[:type] = RDF::PROV.Association
+    params[:hadRole] = RDF::BIBO.Organizer
+    model.conferenceAssociation.build(params)
+    model.conferenceAssociation.first.conferenceOrganization = model.wasAssociatedWith
+  end
+
+
+  def buildConferenceProceeding(params)
+    model.conferenceProceeding = nil
+    params.each do |k, v|
+      params[k] = nil if v.empty?
+    end
+    id0 = "info:fedora/%s#conferenceProceeding" % model.id
+    params['id'] = id0
+    params[:type] = RDF::BIBO.Proceedings
+    model.conferenceProceeding.build(params)
+    buildConferenceProceedingAttributor(params[:conferenceProceedingAttributor])
+    buildConferenceProceedingAttribution(params[:conferenceProceedingAttributor])
+  end
+
+  def buildConferenceProceedingAttribution(params)
+    model.conferenceProceeding.first.conferenceProceedingAttribution = nil
+    # params.each do |k, v|
+    #  params[k] = nil if v.empty?
+    # end
+    id0 = "info:fedora/%s#conferenceProceedingAttribution" % model.id
+    params['id'] = id0
+    params[:type] = RDF::PROV.Attribution
+    params[:hadRole] = RDF::PROV.hadRole
+    model.conferenceProceeding.first.conferenceProceedingAttribution.build(params)
+    model.conferenceProceeding.first.conferenceProceedingAttribution.first.conferenceProceedingAttributor =  model.conferenceProceeding.first.conferenceProceedingAttributor
+  end
+
+  def buildConferenceProceedingAttributor(params)
+    model.conferenceProceeding.first.conferenceProceedingAttributor = nil
+    id0 = "info:fedora/%s#conferenceProceedingAttributor" % model.id
+    params['id'] = id0
+    params[:type] = RDF::FOAF.Person
+    model.conferenceProceeding.first.conferenceProceedingAttributor.build(params)
+  end
+
+  def buildConference(params)
+    model.conference = nil
+    params.each do |k, v|
+      params[k] = nil if v.empty?
+    end
+    id0 = "info:fedora/%s#conference" % model.id
+    params['id'] = id0
+    params[:type] = RDF::BIBO.Conference
+    model.conference.build(params)
+  end
 
   def buildConferenceActivity(params)
-    logger.error "Building conference activity}\n"
     model.conferenceActivity = nil
     params.each do |k, v|
       params[k] = nil if v.empty?
@@ -592,13 +683,7 @@ class MetadataBuilder
     id0 = "info:fedora/%s#conferenceActivity" % model.id
     params['id'] = id0
     params[:type] = RDF::PROV.Activity
-    #params[:documentationStatus] = params['documentationStatus']
-    #params[:reviewStatus] = params['reviewStatus']
-    #params[:dateAccepted] = params['dateAccepted']
-    #params[:hadActivity] = RDF::PROV.hadActivity
-    params[:type] = RDF::PROV.Activity
     model.conferenceActivity.build(params)
-    logger.info "built conference activity}\n"
   end
 
   def buildPublicationActivity(params)
@@ -683,6 +768,19 @@ class MetadataBuilder
       #TODO: On adding this the data is not retreived after create (because embargoDate is also of the same type?)
       #params['type'] = RDF::TIME.TemporalEntity
       model.dateCollected.build(params)
+    end
+  end
+
+  def buildConferenceDate(params)
+    model.conferenceDate = nil
+    if !params[:start].empty? || !params[:end].empty?
+      params.each do |k, v|
+        params[k] = nil if v.empty?
+      end
+      params['id'] = "info:fedora/#{model.id}#conferenceDate"
+      #TODO: On adding this the data is not retreived after create (because embargoDate is also of the same type?)
+      #params['type'] = RDF::TIME.TemporalEntity
+      model.conferenceDate.build(params)
     end
   end
 

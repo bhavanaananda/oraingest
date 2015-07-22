@@ -1,3 +1,4 @@
+
 <%= f.fields_for :conference do |f_p| %>
 <div class="fieldset">
     <p class="small reqlabel">Conference name</p>
@@ -13,59 +14,30 @@
 
 <div class="fieldset">
     <p class="small">Conference homepage</p>
-
     <%= f_p.text_field :conferenceHomepage, :value=>conference.conferenceHomepage.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference homepage", :tipDescription =>"If you would like to tell us the link to your conference homepage, enter it here" } %>
 </div>
 
 
-
-<%# if  @conference.conferenceDate.empty? %>
-    <%# @conference.conferenceDate.build %>
-<%# end %>
-
-<%# if @conference.conferenceDate[0].start.empty? %>
-    <%# @conference.conferenceDate[0].start.build %>
-<%# end %>
-
-<%# if @conference.conferenceDate[0].duration.empty? %>
-    <%# @conference.conferenceDate[0].duration.build %>
-<%# end %>
-
-<%# if @conference.conferenceDate[0].end.empty? %>
-    <%# @conference.conferenceDate[0].end.build %>
-<%# end %>
-
 <div class="fieldset">
-  <p class="small">Conference Start Date</p>
-  <%#= f.date_field :start, :value=>@conference.conferenceDate[0].start[0].date.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Time", :tipDescription =>"If you would like to tell us the start date of the conference, enter it here" } %>
-</div>
-
-
-<div class="fieldset">
-    <p class="small">Conference Duration</p>
+    <p class="small">Conference Date</p>
     <div class="row">
-        <div class="col col1of2"><label>Years</label></div>
-        <div class="col col2of2"><label>Months</label></div>
+        <div class="col col1of2"><label>Start Date</label></div>
+        <div class="col col2of2"><label>End Date</label></div>
     </div>
     <div class="row">
         <div class="col col1of2">
-            <%#= f.text_field :years, :value=>@conference.conferenceDate[0].duration[0].years.first, maxlength: "2", size: "2", data: {"progress" => "discoverability"} %>
+            <%= f_p.date_field :conferenceStartDate, :value=>conference.conferenceStartDate.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
         </div>
         <div class="col col2of2">
-            <%#= f.text_field :months, :value=>@conference.conferenceDate[0].duration[0].months.first, maxlength: "2", size: "2", data: {"progress" => "discoverability"} %>
+            <%= f_p.date_field :conferenceEndDate, :value=>conference.conferenceEndDate.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
         </div>
     </div>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Time", :tipDescription =>"If you would like to tell us the duration of the conference, enter it here" } %>
+    <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference Date", :tipDescription =>"If you would like to tell us the start and end of the conference, enter it here" } %>
 </div>
 
 
-<div class="fieldset">
-    <p class="small">Conference End Date</p>
-    <%#= f.date_field :end, :value=>@conference.conferenceDate[0].end[0].date.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Time", :tipDescription =>"If you would like to tell us the end date of the conference, enter it here" } %>
-</div>
+
 
 <div class="fieldFt">
     <p class="small">Season</p>

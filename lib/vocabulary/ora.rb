@@ -81,5 +81,8 @@ module RDF
     property :dateOfAward
     property :dispensationFromConsultation
     property :hasThirdPartyCopyrightMaterial
+    # conference
+    property :conferenceStartDate
+    property :conferenceEndDate
   end
 end

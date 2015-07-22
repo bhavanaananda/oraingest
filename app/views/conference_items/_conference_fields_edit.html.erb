@@ -4,6 +4,7 @@
 
     <% if conference.nil? %>
         <% conference.build %>
+
     <% end %>
 
     <% if conference.conferenceProceeding.empty? %>
@@ -13,7 +14,7 @@
         <%   conference.conferenceProceeding.first.conferenceProceedingAttributor.build %>
     <% end %>
 
-    <%# conference.each do |c| %>
+
         <% unless conference.workflows.first.nil? %>
             <% @wf = conference.workflows.first %>
             <% @wf_id = @wf.rdf_subject.to_s %>
@@ -34,8 +35,6 @@
             <h4 class="padding-side-25">About the conference</h4>
             <div class="padding-0">
                 <%= render partial: "conference_describe_fields_edit",  :locals => { :f => f,  :conference => conference } %>
-                <%#= render partial: "conference_describe_fields_edit", as: :conference, :locals => { :f => f } %>
-                <%#= render partial: "conference_describe_fields_edit", :locals => { :f => f, :conference => conference } %>
             </div>
         </div>
     
@@ -61,7 +60,6 @@
     
     
         <% if can? :review, :all %>
-            <!-- <section class="form-step"> -->
             <div class="content-box padding-0">
                 <h4 class="padding-side-25">
                     Review workflow
@@ -88,17 +86,5 @@
                 </div>
             <% end %>
         <% end %>
-    <%# end %>
-        <!-- <nav class="form-nav" style="margin-top: 20px;">
-            <div class="form-nav-next" style="text-align: right">
-                <%# unless can? :review, :all %>
-            <%#= f.submit "Save", class: "button light-blue", :onclick => "setStatus(\"workflow_submit_entries_status\", \"default\")", data: {"submit-without-validation" => true} %>
-                <%#= render partial: "shared/workflow_submit", :locals => {:f => f, :article => conference, :validate => true} %>
-            <%# else %>
-                <%#= f.submit "Save", class: "button light-blue", data: {"submit-without-validation" => true} %>
-                    <%#= f.submit "Check mandatory fields and Save", class: "button light-blue" %>
-                    <%# end %>
-            </div>
-        </nav> -->
      <% end #fields_for workflows %>
 

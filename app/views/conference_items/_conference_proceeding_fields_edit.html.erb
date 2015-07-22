@@ -1,4 +1,3 @@
-
 <div class="fieldset">
       <%=  f.fields_for :conference ,p do |f_p2| %>
          <%= f_p2.fields_for :conferenceProceeding , p do |f_p| %>
@@ -23,23 +22,12 @@
 
             <p class="small">Pages</p>
             <%= f_p.text_field :pages,:value=> conference.conferenceProceeding.first.pages.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
-
-
-
-
-            <%# p.conferenceProceedingAttributor.each do |p| %>
                 <%= f_p.fields_for :conferenceProceedingAttributor, p do |f_p0| %>
                     <p class="small">Conference Proceeding Attributor name </p>
                     <%= f_p0.text_field :name,:value=> conference.conferenceProceeding.first.conferenceProceedingAttributor.first.name.first, :required=>false, :style=>'width: 60%',  :class=>"creatorName", data: {"progress" => "discoverability"} %>
                     <% attr_desc = "Please enter the name of a conference proceeding attributor. If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed."%>
                     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference proceeding attributor", :tipDescription => attr_desc } %>
-                    <!--<p class="small">OR</p>-->
-                    <!--<p class="small reqlabel">Conference Proceeding Attributor </p>-->
-                    <%#= f_p0.text_field :sameAs,:value=>p.sameAs.first, :required=>true, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
-                    <%#= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "ConferenceProceedingAttributor", :tipDescription =>"If you would like to tell us the name of the conference  proceeding attributor, enter it here" } %>
-                <% end %>
-            <%# end %>
-            <%# end %>
+               <% end %>
         <% end %>
     <% end %>
 </div>

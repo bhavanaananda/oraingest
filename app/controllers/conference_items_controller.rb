@@ -277,7 +277,7 @@ class ConferenceItemsController < ApplicationController
     conference_item_params[:conference] = nil
     #conference_item_params[:presented_at] = nil
     if @conference
-      conference_item_params[:presented_at] = @conference.id
+      conference_item_params[:conference] = @conference.id
     end
         # Update params
     MetadataBuilder.new(@conferenceItem).build(conference_item_params, contents, current_user.user_key)
@@ -325,18 +325,15 @@ class ConferenceItemsController < ApplicationController
       conf_pid = Sufia::Noid.namespaceize(conf_pid)
       created = true
     end
-    #if (@conference.nil? or @conference.agreementType.first == "Individual") and conference_item_params.has_key?(:conference)
+
     if @conference.nil?  and conference_item_params.has_key?(:conference)
-      conference_item_params = {}
-      conference_item_params = conference_item_params[:conference]
+      conference_params = {}
+      conference_params = conference_item_params[:conference]
       if @conference.nil?
         @conference = Conference.find_or_create(conf_pid)
         @conference.apply_permissions(current_user)
       end
-      conference_item_params[:title] = "Conference for #{@conferenceItem.id}"
-      #conference_item_params[:agreementType] = "Individual"
-      conference_item_params[:contributor] = current_user.user_key
-      @conference.buildMetadata(conference_item_params, [], current_user.user_key)
+      MetadataBuilder.new(@conference).build(conference_params, contents, current_user.user_key)
       if !@conference.save
         @conference = nil
       end

@@ -36,7 +36,8 @@ class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.conferenceName(:to => "n", :in => RDF::VCARD)
     map.conferenceAbbreviation(:to => "nickname", :in => RDF::VCARD)
     map.conferenceHomepage(:to => "homepage", :in => RDF::FOAF)
-    map.conferenceDate(:to => "hasConferenceDuration", :in => RDF::ORA, class_name: "ConferenceDate")
+    map.conferenceStartDate(:to => "conferenceStartDate", :in => RDF::ORA)
+    map.conferenceEndDate(:to => "conferenceEndDate", :in => RDF::ORA)
     map.season(:in => RDF::DBPEDIA)
     map.spatial(:in => RDF::DC, class_name:"Location")
     map.wasAssociatedWith( :in => RDF::PROV, class_name:"ConferenceOrganization")
@@ -58,7 +59,8 @@ class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
   def to_solr(solr_doc={})
     solr_doc[Solrizer.solr_name("desc_metadata__season", :symbol)] = self.season.first
-    solr_doc[Solrizer.solr_name("desc_metadata__conferenceDate", :displayable)] = self.conferenceDate.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceDate", :displayable)] = self.conferenceStartDate.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceDate", :displayable)] = self.conferenceEndDate.first
     if !self.spatial.nil? && !self.spatial.first.nil?
       solr_doc[Solrizer.solr_name("desc_metadata__spatial", :stored_searchable)] = self.spatial.first.value
     end
@@ -75,7 +77,8 @@ class ConferenceRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
         self.wasAssociatedWith.each do |corg|
           already_indexed = []
-          unless corg.name.empty? || already_indexed.include?(corg.name.first)
+          unless corg.name.empty? || already_indexed      #WorkflowPublisher.new(@conference).perform_action(current_user)
+.include?(corg.name.first)
             corg.to_solr(solr_doc)
             already_indexed << corg.name.first
           end
@@ -132,71 +135,6 @@ class ConferenceOrganization
   end
 end
 
-# class ConferenceOrganizer
-#   include ActiveFedora::RdfObject
-#   extend ActiveModel::Naming
-#   include ActiveModel::Conversion
-#   attr_accessor :name
-#
-#   rdf_subject { |ds|
-#     if ds.pid.nil?
-#       RDF::URI.new
-#     else
-#       RDF::URI.new("info:fedora/" + ds.pid + "#conferenceOrganizer")
-#     end
-#   }
-#   rdf_type rdf_type RDF::BIBO.Organizer
-#   map_predicates do |map|
-#     map.name(:to => "n", :in => RDF::VCARD)
-#   end
-#
-#   def persisted?
-#     rdf_subject.kind_of? RDF::URI
-#   end
-#
-#   def id
-#     rdf_subject if rdf_subject.kind_of? RDF::URI
-#   end
-#
-#
-#   def to_solr(
-#
-# endsolr_doc={})
-#     solr_doc[Solrizer.solr_name("desc_metadata__name", :stored_searchable)] = self.name.first
-#     solr_doc
-#   end
-#
-# end
-
-
-class ConferenceDate
-  include ActiveFedora::RdfObject
-  extend ActiveModel::Naming
-  include ActiveModel::Conversion
-  attr_accessor :start, :end, :duration
-
-  rdf_type RDF::TIME.TemporalEntity
-  map_predicates do |map|
-    #-- conferenceStart --
-    map.start(:to => "hasBeginning", :in => RDF::TIME, class_name: "LabelledDate")
-    #-- conferenceDuration --
-    map.duration(:to => "hasDurationDescription", :in => RDF::TIME, class_name: "ConferenceDuration")
-    #-- conferenceEnd --
-    map.end(:to => "hasEnd", :in => RDF::TIME, class_name: "LabelledDate")
-  end
-  accepts_nested_attributes_for :start
-  accepts_nested_attributes_for :duration
-  accepts_nested_attributes_for :end
-
-  def persisted?
-    rdf_subject.kind_of? RDF::URI
-  end
-
-  def id
-    rdf_subject if rdf_subject.kind_of? RDF::URI
-  end
-end
-
 
 class ConferenceAssociation
   include ActiveFedora::RdfObject
@@ -218,7 +156,6 @@ class ConferenceAssociation
   end
 
   accepts_nested_attributes_for :conferenceOrganization
-  #accepts_nested_attributes_for :isOrganizedBy
 
   def persisted?
     rdf_subject.kind_of? RDF::URI
@@ -372,80 +309,3 @@ class ConferenceProceedingAttribution
 
 end
 
-
-
-class LabelledDate
-  include ActiveFedora::RdfObject
-  extend ActiveModel::Naming
-  include ActiveModel::Conversion
-  attr_accessor :date, :label
-
-  map_predicates do |map|
-    #-- start date --
-    map.date(:to=> 'value', :in => RDF)
-    #-- start description --
-    map.label(:in => RDF::RDFS)
-  end
-
-  def persisted?
-    rdf_subject.kind_of? RDF::URI
-  end
-
-  def id
-    rdf_subject if rdf_subject.kind_of? RDF::URI
-  end
-
-end
-
-
-class ConferenceDuration
-  include ActiveFedora::RdfObject
-  extend ActiveModel::Naming
-  include ActiveModel::Conversion
-  attr_accessor :years, :months
-
-  map_predicates do |map|
-    #-- embargo duration - years --
-    map.years(:in => RDF::TIME)
-    #-- embargo duration - months --
-    map.months(:in => RDF::TIME)
-  end
-
-  def persisted?
-    rdf_subject.kind_of? RDF::URI
-  end
-
-  def id
-    rdf_subject if rdf_subject.kind_of? RDF::URI
-  end
-
-end
-
-class ConferenceDate
-  include ActiveFedora::RdfObject
-  extend ActiveModel::Naming
-  include ActiveModel::Conversion
-  attr_accessor :start, :end, :duration
-
-  rdf_type RDF::TIME.TemporalEntity
-  map_predicates do |map|
-    #-- conferenceStart --
-    map.start(:to => "hasBeginning", :in => RDF::TIME, class_name: "LabelledDate")
-    #-- conferenceDuration --
-    map.duration(:to => "hasDurationDescription", :in => RDF::TIME, class_name: "ConferenceDuration")
-    #-- embargoEnd --
-    map.end(:to => "hasEnd", :in => RDF::TIME, class_name: "LabelledDate")
-  end
-  accepts_nested_attributes_for :start
-  accepts_nested_attributes_for :duration
-  accepts_nested_attributes_for :end
-
-  def persisted?
-    rdf_subject.kind_of? RDF::URI
-  end
-
-  def id
-    rdf_subject if rdf_subject.kind_of? RDF::URI
-  end
-
-end

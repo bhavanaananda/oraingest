@@ -6,7 +6,8 @@ module RDF
     property :editor  
     property :doi  
     property :issn  
-    property :isbn  
+    property :isbn
+    property :eisbn
     property :eissn  
     property :pmid  
     property :numPages  

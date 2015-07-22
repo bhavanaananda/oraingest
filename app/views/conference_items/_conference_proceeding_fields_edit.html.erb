@@ -2,7 +2,7 @@
       <%=  f.fields_for :conference ,p do |f_p2| %>
          <%= f_p2.fields_for :conferenceProceeding , p do |f_p| %>
 
-            <p class="small">Conference Proceeding Title</p>
+            <p class="small"> Title of the conference proceedings </p>
             <%= f_p.text_field :title,:value=> conference.conferenceProceeding.first.title.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
             <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference proceeding title", :tipDescription =>"If you would like to tell us the conference proceeding title of your conference, enter it here" } %>
 
@@ -11,11 +11,15 @@
 
             <%= f_p.text_field :issn,:value=> conference.conferenceProceeding.first.issn.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
 
-            <p class="small">EISSN</p>
+            <p class="small">eISSN</p>
             <%= f_p.text_field :eissn,:value=> conference.conferenceProceeding.first.eissn.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
 
             <p class="small">ISBN</p>
             <%= f_p.text_field :isbn,:value=> conference.conferenceProceeding.first.isbn.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+
+            <p class="small">eISBN</p>
+            <%= f_p.text_field :eisbn,:value=> conference.conferenceProceeding.first.eisbn.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
+
 
             <p class="small">Volume</p>
             <%= f_p.text_field :volume,:value=> conference.conferenceProceeding.first.volume.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
@@ -23,7 +27,7 @@
             <p class="small">Pages</p>
             <%= f_p.text_field :pages,:value=> conference.conferenceProceeding.first.pages.first, :required=>false, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
                 <%= f_p.fields_for :conferenceProceedingAttributor, p do |f_p0| %>
-                    <p class="small">Conference Proceeding Attributor name </p>
+                    <p class="small">Editor of the conference proceedings </p>
                     <%= f_p0.text_field :name,:value=> conference.conferenceProceeding.first.conferenceProceedingAttributor.first.name.first, :required=>false, :style=>'width: 60%',  :class=>"creatorName", data: {"progress" => "discoverability"} %>
                     <% attr_desc = "Please enter the name of a conference proceeding attributor. If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed."%>
                     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference proceeding attributor", :tipDescription => attr_desc } %>

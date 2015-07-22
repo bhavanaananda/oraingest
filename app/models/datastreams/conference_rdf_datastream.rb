@@ -196,6 +196,7 @@ class ConferenceProceeding
     map.issn(:in => RDF::BIBO)
     map.eissn(:in => RDF::BIBO)
     map.isbn(:in => RDF::BIBO)
+    map.eisbn(:in => RDF::BIBO)
     map.volume(:in => RDF::BIBO)
     map.pages(:in => RDF::BIBO)
     map.conferenceProceedingAttributor(:to =>  "wasAttributedTo", :in => RDF::PROV, class_name:"ConferenceProceedingAttributor")

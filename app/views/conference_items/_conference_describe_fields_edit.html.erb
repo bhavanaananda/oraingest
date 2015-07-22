@@ -1,7 +1,7 @@
 
 <%= f.fields_for :conference do |f_p| %>
 <div class="fieldset">
-    <p class="small reqlabel">Conference name</p>
+    <p class="small reqlabel">Name of the conference</p>
     <%= f_p.text_field :conferenceName, :value=>conference.conferenceName.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference name", :tipDescription =>"If you would like to tell us the name of the conference, enter it here" } %>
 </div>
@@ -22,7 +22,7 @@
 <div class="fieldset">
     <p class="small">Conference Date</p>
     <div class="row">
-        <div class="col col1of2"><label>Start Date</label></div>
+        <div class="col col1of2 "><label class="reqlabel">Start Date</label></div>
         <div class="col col2of2"><label>End Date</label></div>
     </div>
     <div class="row">
@@ -35,8 +35,6 @@
     </div>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Conference Date", :tipDescription =>"If you would like to tell us the start and end of the conference, enter it here" } %>
 </div>
-
-
 
 
 <div class="fieldset">
@@ -55,7 +53,7 @@
 </div>
 
 <div class="fieldset">
-    <p class="small">Conference organization</p>
+    <p class="small">Conference organizing body</p>
     <% if conference.wasAssociatedWith.empty? %>
         <% conference.wasAssociatedWith.build %>
     <% end %>

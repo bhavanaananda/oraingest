@@ -39,20 +39,20 @@
 
 
 
-<div class="fieldFt">
+<div class="fieldset">
     <p class="small">Season</p>
     <%= f_p.text_field :season, :value=>conference.season.first, :style=>'width: 60%', data: {"progress" => "discoverability"} %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Season", :tipDescription =>"If you would like to tell us the season of your conference, enter it here" } %>
 </div>
 
-<!--<div class="fieldset">-->
-    <!--<%# if @conference.spatial.empty? %>-->
-        <!--<%# @conference.spatial.build %>-->
-    <!--<%# end %>-->
-    <!--<p class="small">Location</p>-->
-    <!--<%#= f.text_field "spatial][value", :value=>@conference.spatial.first.value.first, :style=>'width: 50%', data: {"progress" => "discoverability"} %>-->
-    <!--<%#= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Location", :tipDescription =>"If you would like to tell us the location of your conference, enter it here" } %>-->
-<!--</div>-->
+<div class="fieldset">
+    <% if conference.spatial.empty? %>
+        <% conference.spatial.build %>
+    <% end %>
+    <p class="small">Location</p>
+    <%= f_p.text_field "spatial][value", :value=>conference.spatial.first.value.first, :style=>'width: 50%', data: {"progress" => "discoverability"} %>
+    <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability", :tipTitle => "Location", :tipDescription =>"If you would like to tell us the location of your conference, enter it here" } %>
+</div>
 
 <div class="fieldset">
     <p class="small">Conference organization</p>

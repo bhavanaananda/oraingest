@@ -109,7 +109,11 @@
         <% p2.series.each do |p3| %>
           <%= f_p2.fields_for :series, p3 do |f_p3| %>
             <div class="fieldset">
-              <p class="small">Title of series</p>
+                <% if model.class.name == "Article"  %>
+                    <p class="small">Title of series </p>
+                <% elsif model.class.name == "ConferenceItem"  %>
+                    <p class="small">Title of conference proceedings</p>
+                <% end %>
               <%= f_p3.text_field :title, :value => p3.title.first, data: {"progress" => "discoverability"} %>
               <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Series" , :tipDescription => "If your publication is published as a part of a series, add the title of the series here" } %>
             </div>
@@ -121,41 +125,78 @@
         <% p2.journal.each do |p3| %>
           <%= f_p2.fields_for :journal, p3 do |f_p3| %>
 
-            <div class="fieldset">
-              <p class="small">Journal title</p>
-              <%= f_p3.text_field :title, :value => p3.title.first, data: {"progress" => "citation"} %>
-              <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Journal title" , :tipDescription => "If your publication is published in a journal, add the name of the journal here" } %>
-            </div>
+          <% if model.class.name == "Article"  %>
+              <div class="fieldset">
+                <p class="small">Journal title </p>
+                <%= f_p3.text_field :title, :value => p3.title.first, data: {"progress" => "citation"} %>
+                <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Journal title" , :tipDescription => "If your publication is published in a journal, add the name of the journal here" } %>
+              </div>
+          <% end %>
 
             <div class="fieldset">
-              <p class="small">Journal ISSN</p>
-              <%= f_p3.text_field :issn, :value => p3.issn.first, data: {"progress" => "discoverability"} %>
+              <% if model.class.name == "Article"  %>
+                <p class="small">Journal ISSN </p>
+              <% elsif model.class.name == "ConferenceItem"  %>
+                 <p class="small">Conference ISSN</p>
+              <% end %>
+              <%= f_p3.text_field :issn, :value =>  p3.issn.first, data: {"progress" => "discoverability"} %>
               <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Journal ISSN" , :tipDescription => "If your publication is published in a journal, add the ISSN fo the journal here" } %>
             </div>
 
             <div class="fieldset">
-              <p class="small">Journal eISSN</p>
+                <% if model.class.name == "Article"  %>
+                    <p class="small">Journal eISSN </p>
+                <% elsif model.class.name == "ConferenceItem"  %>
+                    <p class="small">Conference eISSN</p>
+                <% end %>
               <%= f_p3.text_field :eissn, :value => p3.eissn.first, data: {"progress" => "discoverability"} %>
               <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Journal eISSN" , :tipDescription => "If your publication is published in an online journal, add the eISSN fo the journal here" } %>
             </div>
 
+            <% if model.class.name == "ConferenceItem"  %>
+                <div class="fieldset">
+                    <p class="small">Conference ISBN</p>
+                    <%= f_p3.text_field :issn, :value =>  p3.issn.first, data: {"progress" => "discoverability"} %>
+                    <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Journal ISSN" , :tipDescription => "If your publication is published in a journal, add the ISSN fo the journal here" } %>
+                </div>
+
+                <div class="fieldset">
+                    <p class="small">Conference eISBN</p>
+                    <%= f_p3.text_field :eissn, :value => p3.eissn.first, data: {"progress" => "discoverability"} %>
+                    <%= render partial: '/shared/tooltip',  :locals => {:tipType => "discoverability" , :tipTitle => "Journal eISSN" , :tipDescription => "If your publication is published in an online journal, add the eISSN fo the journal here" } %>
+                </div>
+            <% end %>
+
             <div class="fieldset">
-              <p class="small">Journal volume</p>
+                <% if model.class.name == "Article"  %>
+                    <p class="small">Journal volume </p>
+                <% elsif model.class.name == "ConferenceItem"  %>
+                    <p class="small">Conference volume</p>
+                <% end %>
               <%= f_p3.text_field :volume, :value => p3.volume.first, data: {"progress" => "citation"} %>
               <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Journal volume" , :tipDescription => "If your publication is published in a journal, add the volume number or name here" } %>
             </div>
-
-            <div class="fieldset">
-              <p class="small">Journal issue</p>
-              <%= f_p3.text_field :issue, :value => p3.issue.first, data: {"progress" => "citation"} %>
-              <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Journal issue" , :tipDescription => "If your publication is published in a journal, add the issue number or name here" } %>
-            </div>
+            <% if model.class.name == "Article"  %>
+                <div class="fieldset">
+                  <p class="small">Journal issue </p>
+                  <%= f_p3.text_field :issue, :value => p3.issue.first, data: {"progress" => "citation"} %>
+                  <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Journal issue" , :tipDescription => "If your publication is published in a journal, add the issue number or name here" } %>
+                </div>
+            <% end %>
 
             <div class="fieldset">
               <p class="small">Page range</p>
               <%= f_p3.text_field :pages, :value => p3.pages.first, data: {"progress" => "citation"} %>
               <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Page range" , :tipDescription => "If your publication is published in a journal, add the page number or range within the issue in whihc it is published" } %>
             </div>
+
+            <% if model.class.name == "ConferenceItem"  %>
+                  <div class="fieldset">
+                    <p class="small">Editor of the conference proceedings </p>
+                    <%= f_p3.text_field :eissn, :value => p3.eissn.first, data: {"progress" => "discoverability"} %>
+                    <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Journal eISSN" , :tipDescription => "If your publication is published in an online journal, add the eISSN fo the journal here" } %>
+                </div>
+            <% end %>
 
           <% end #fields for each journal %>
         <% end #each journal %>

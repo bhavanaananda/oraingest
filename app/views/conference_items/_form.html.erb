@@ -63,7 +63,7 @@
         <div class="space-right">Add journal and publisher information to your publication</div>
       </div>
       <div class="expand-content">
-        <%= render partial: 'shared/publication_activity/article_fields_edit', :locals => { :f => f, :publication => @conferenceItem.publication } %>
+        <%= render partial: 'shared/publication_activity/article_fields_edit', :locals => { :f => f, :publication => @conferenceItem.publication, :model => @conferenceItem } %>
       </div>
     </div>
 
@@ -106,19 +106,7 @@
         <div class="content-box-header">
             3. About the conference
         </div>
-        <div class="content-box padding-0">
-            <!--<div class="padding-0">-->
-              <!--<%#= render partial: "shared/conference_activity/conference_activity_fields_edit", :locals => { :f => f, :conferenceActivity => @conferenceItem.conferenceActivity } %>-->
-            <!--</div>-->
-            <div class="content-box-header expand-header">
-                <div class="space-right">Enter details of the conference if not found above</div>
-            </div>
-
-
-            <div class="expand-content">
-                <%= render partial: "conference_fields_edit", :locals => { :f => f, :conference => @conferenceItem.conference } %>
-            </div>
-        </div>
+        <%= render partial: "conference_describe_fields_edit", :locals => { :f => f, :conferenceItem=> @conferenceItem } %>
     </div>
 
     <nav class="form-nav">
@@ -132,7 +120,6 @@
             <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
         </div>
     </nav>
-
 </section>
 
 

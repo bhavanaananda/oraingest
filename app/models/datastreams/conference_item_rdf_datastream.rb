@@ -7,6 +7,10 @@ require 'vocabulary/camelot'
 require 'vocabulary/ora'
 require 'vocabulary/dams'
 require 'vocabulary/frapo'
+require 'vocabulary/time'
+require 'vocabulary/event'
+require 'vocabulary/dbpedia'
+
 # Fields
 require 'fields/mads_language'
 require 'fields/mads_subject'
@@ -15,12 +19,12 @@ require 'fields/rights_activity'
 require 'fields/funding_activity'
 require 'fields/creation_activity'
 require 'fields/publication_activity'
-require 'fields/conference_activity'
+require 'fields/location'
 
 class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
   #include ModelHelper
 
-  attr_accessor :title, :subtitle, :abstract, :subject, :keyword, :worktype, :medium, :language, :publicationStatus, :reviewStatus, :license, :dateCopyrighted, :rightsHolder, :rights, :rightsActivity, :creation, :funding, :publication, :presentedAt, :conferenceActivity
+  attr_accessor :title, :subtitle, :abstract, :subject, :keyword, :worktype, :medium, :language, :publicationStatus, :reviewStatus, :license, :dateCopyrighted, :rightsHolder, :rights, :rightsActivity, :creation, :funding, :publication, :presentedAt
   rdf_type rdf_type RDF::PROV.Entity
   map_predicates do |map|
     #-- title --
@@ -59,14 +63,8 @@ class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.funding(:to => "isOutputOf", :in => RDF::FRAPO, class_name:"FundingActivity")
     #-- publication activity --
     map.publication(:to => "hadPublicationActivity", :in => RDF::ORA, class_name:"PublicationActivity")
-    #-- conference activity --
-    map.conferenceActivity(:to => "hadConferenceActivity", :in => RDF::ORA,  class_name:"ConferenceActivity")
-
-    # -- Commissioning body --
-    # TODO: Nested attributes using Prov
-    #-- source --
-    # TODO: Nested attributes of name, homepage and uri - one to many
-
+    #-- conference  --
+    map.presentedAt(:in => RDF::BIBO, class_name:"Conference")
   end
   accepts_nested_attributes_for :language
   accepts_nested_attributes_for :subject
@@ -77,7 +75,8 @@ class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
   accepts_nested_attributes_for :creation
   accepts_nested_attributes_for :funding
   accepts_nested_attributes_for :publication
-  accepts_nested_attributes_for :conferenceActivity
+  accepts_nested_attributes_for :presentedAt
+
 
   def to_solr(solr_doc={})
     solr_doc[Solrizer.solr_name("desc_metadata__title", :stored_searchable)] = self.title
@@ -131,76 +130,160 @@ class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     self.funding.each do |f|
       f.to_solr(solr_doc)
     end
+
+    # Index each conference individually
+    self.presentedAt.each do |f|
+      f.to_solr(solr_doc)
+    end
+
+
     solr_doc
   end
 
-  #TODO: Add FAST authority list later
-  #begin
-  #  LocalAuthority.register_vocabulary(self, "subject", "lc_subjects")
-  #  LocalAuthority.register_vocabulary(self, "language", "lexvo_languages")
-  #  LocalAuthority.register_vocabulary(self, "tag", "lc_genres")
-  #rescue
-  #  puts "tables for vocabularies missing"
-  #end
 end
 
 
-# class ConferenceItemRdfDatastream < ActiveFedora::NtriplesRDFDatastream
-#   attr_accessor  :presentedAt, :conferenceActivity, :publication
-#
-#   rdf_subject { |ds|
-#     if ds.pid.nil?
-#       RDF::URI.new
-#     else
-#       RDF::URI.new("info:fedora/" + ds.pid + "#conferenceItem")
-#     end
-#   }
-#
-#   #rdf_type rdf_type RDF::PROV.Entity
-#
-#   map_predicates do |map|
-#     # map.type(:in => RDF::DC)
-#     #-- title --
-#     map.title(:in => RDF::DC)
-#     #-- subtitle --
-#     map.subtitle(:in => RDF::DAMS)
-#     #-- abstract --
-#     map.abstract(:in => RDF::DC)
-#     #-- type --
-#     map.worktype(:to=>"type", :in => RDF::DC, class_name:"WorkType")
-#     map.conferenceActivity( :to => "hadConferenceActivity", :in => RDF::ORA,  class_name:"ConferenceActivity")
-#     map.publication(:to => "hadPublicationActivity", :in => RDF::ORA, class_name:"PublicationActivity")
-#
-#   end
-#   #accepts_nested_attributes_for :conferenceActivity
-#   accepts_nested_attributes_for :publication
-#
-#   def persisted?
-#     rdf_subject.kind_of? RDF::URI
-#   end
-#
-#   def to_solr(solr_doc={})
-#
-#     # Index each conference individually:
-#
-#     # self.presentedAt.each do |conf|
-#     #   already_indexed = []
-#     #   unless conf.name.empty? || already_indexed.include?(conf.name.first)
-#     #     conf.to_solr(solr_doc)
-#     #     already_indexed << conf.name.first
-#     #   end
-#     # end
-#
-#     # Index each conferenceActivity individually
-#     #self.conferenceActivity.each do |c|
-#     #  c.to_solr(solr_doc)
-#     #end
-#
-#     # Index each publicationActivity individually
-#     self.publication.each do |c|
-#       c.to_solr(solr_doc)
-#     end
-#     solr_doc
-#   end
-#
-# end
+class Conference
+  include ActiveFedora::RdfObject
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+  attr_accessor :conferenceName, :conferenceAbbreviation, :conferenceHomepage, :conferenceStartDate,:conferenceEndDate, :season, :spatial , :wasAssociatedWith, :conferenceAssociation
+
+  rdf_subject { |ds|
+    if ds.pid.nil?
+      RDF::URI.new
+    else
+      RDF::URI.new("info:fedora/" + ds.pid + "#conference")
+    end
+  }
+
+  rdf_type rdf_type RDF::BIBO.Conference
+
+  map_predicates do |map|
+    map.type(:in => RDF::DC)
+    map.conferenceName(:to => "n", :in => RDF::VCARD)
+    map.conferenceAbbreviation(:to => "nickname", :in => RDF::VCARD)
+    map.conferenceHomepage(:to => "homepage", :in => RDF::FOAF)
+    map.conferenceStartDate(:to => "conferenceStartDate", :in => RDF::ORA)
+    map.conferenceEndDate(:to => "conferenceEndDate", :in => RDF::ORA)
+    map.season(:in => RDF::DBPEDIA)
+    map.spatial(:in => RDF::DC, class_name:"Location")
+    map.wasAssociatedWith( :in => RDF::PROV, class_name:"ConferenceOrganization")
+    map.conferenceAssociation(:to => "qualifiedAssociation", :in => RDF::PROV, class_name:"ConferenceAssociation")
+  end
+  accepts_nested_attributes_for :wasAssociatedWith
+  accepts_nested_attributes_for :conferenceAssociation
+  accepts_nested_attributes_for :creation
+  accepts_nested_attributes_for :spatial
+
+
+  def persisted?
+    rdf_subject.kind_of? RDF::URI
+  end
+
+
+  def to_solr(solr_doc={})
+    solr_doc[Solrizer.solr_name("desc_metadata__season", :symbol)] = self.season.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceStartDate", :displayable)] = self.conferenceStartDate.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceEndDate", :displayable)] = self.conferenceEndDate.first
+    if !self.spatial.nil? && !self.spatial.first.nil?
+      solr_doc[Solrizer.solr_name("desc_metadata__spatial", :stored_searchable)] = self.spatial.first.value
+    end
+    #solr_doc[Solrizer.solr_name("desc_metadata__wasAssociatedWith", :displayable)] = self.wasAssociatedWith.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceAssociation", :displayable)] = self.conferenceAssociation.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceName", :displayable)] = self.conferenceName.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceAbbreviation", :displayable)] = self.conferenceAbbreviation.first
+    solr_doc[Solrizer.solr_name("desc_metadata__conferenceHomepage", :displayable)] = self.conferenceHomepage.first
+    # Index each conferenceOrganization individually:
+
+
+
+    self.wasAssociatedWith.each do |corg|
+      already_indexed = []
+      unless corg.name.empty? || already_indexed      #WorkflowPublisher.new(@conference).perform_action(current_user)
+        corg.to_solr(solr_doc)
+        already_indexed << corg.name.first
+      end
+    end
+
+    # Index each conferenceAssociation individually
+    self.conferenceAssociation.each do |c|
+      c.to_solr(solr_doc)
+    end
+    solr_doc
+  end
+end
+
+
+class ConferenceOrganization
+  include ActiveFedora::RdfObject
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+  attr_accessor  :name
+
+  rdf_subject { |ds|
+    if ds.pid.nil?
+
+      RDF::URI.new
+    else
+      RDF::URI.new("info:fedora/" + ds.pid + "#conferenceOrganization")
+    end
+  }
+  rdf_type rdf_type RDF::FOAF.Organization
+  map_predicates do |map|
+    map.name(:to => "n", :in => RDF::VCARD)
+  end
+
+  def persisted?
+    rdf_subject.kind_of? RDF::URI
+  end
+
+  def id
+    rdf_subject if rdf_subject.kind_of? RDF::URI
+  end
+
+  def to_solr(solr_doc={})
+    solr_doc[Solrizer.solr_name("desc_metadata__name", :stored_searchable)] = self.name.first
+    solr_doc
+  end
+end
+
+
+class ConferenceAssociation
+  include ActiveFedora::RdfObject
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+  attr_accessor :conferenceOrganization, :isOrganizedBy
+
+  rdf_subject { |ds|
+    if ds.pid.nil?
+      RDF::URI.new
+    else
+      RDF::URI.new("info:fedora/" + ds.pid + "#conferenceAssociation")
+    end
+  }
+  rdf_type rdf_type RDF::PROV.Association
+  map_predicates do |map|
+    map.conferenceOrganization(:to => "agent", :in => RDF::PROV, class_name:"ConferenceOrganization")
+    map.isOrganizedBy(:to => "hadRole",:in => RDF::PROV, class_name:RDF::BIBO.Organizer)
+  end
+
+  accepts_nested_attributes_for :conferenceOrganization
+
+  def persisted?
+    rdf_subject.kind_of? RDF::URI
+  end
+
+  def id
+    rdf_subject if rdf_subject.kind_of? RDF::URI
+  end
+
+  def to_solr(solr_doc={})
+    # Index each ConferenceOrganization individually
+    self.conferenceOrganization.each do |c|
+      c.to_solr(solr_doc)
+    end
+    solr_doc
+  end
+
+end

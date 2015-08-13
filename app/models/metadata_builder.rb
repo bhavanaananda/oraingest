@@ -73,32 +73,10 @@ class MetadataBuilder
       end
     end
 
-    #remove_blank_assertions for conference activity and build
-    if params.has_key?(:conferenceActivity)
-      buildConferenceActivity(params[:conferenceActivity])
-      params.except!(:conferenceActivity)
-    end
-
-
-    #remove_blank_assertions for conference activity and build
-    if params.has_key?(:conference)
-      if !(params[:conference]).instance_of? String
-        buildConference(params[:conference])
-      end
-      params.except!(:conference)
-    end
-
-    if params.has_key?(:wasAssociatedWith)
-      buildConferenceOrganization(params[:wasAssociatedWith][:conferenceOrganization])
-      buildConferenceAssociation(params[:wasAssociatedWith][:conferenceOrganization])
-      params.except!(:wasAssociatedWith)
-    end
-
-    if params.has_key?(:conferenceProceeding)
-      buildConferenceProceeding(params[:conferenceProceeding])
-      params.except!(:conferenceProceeding)
-      params.except!(:conferenceProceedingAttributor)
-
+    #remove_blank_assertions for conference  and build
+    if params.has_key?(:presentedAt)
+      buildConference(params[:presentedAt])
+      params.except!(:presentedAt)
     end
 
     # Remove blank assertions for dataset access rights and build
@@ -605,86 +583,45 @@ class MetadataBuilder
     end #if titular attributes
   end
 
-  def buildConferenceOrganization(params)
-     model.wasAssociatedWith = nil
-    # params.each do |k, v|
-    #   params[k] = nil if v.empty?
-    # end
-
-
-    id0 = "info:fedora/%s#conferenceOrganization" % model.id
-    params['id'] = id0
-    params[:type] = RDF::FOAF.Organization
-    model.wasAssociatedWith.build(params)
-  end
-
-
-  def buildConferenceAssociation(params)
-    model.conferenceAssociation = nil
-    id0 = "info:fedora/%s#conferenceAssociation" % model.id
-    params['id'] = id0
-    params[:type] = RDF::PROV.Association
-    params[:hadRole] = RDF::BIBO.Organizer
-    model.conferenceAssociation.build(params)
-    model.conferenceAssociation.first.conferenceOrganization = model.wasAssociatedWith
-  end
-
-
-  def buildConferenceProceeding(params)
-    model.conferenceProceeding = nil
-    params.each do |k, v|
-      params[k] = nil if v.empty?
-    end
-    id0 = "info:fedora/%s#conferenceProceeding" % model.id
-    params['id'] = id0
-    params[:type] = RDF::BIBO.Proceedings
-    model.conferenceProceeding.build(params)
-    buildConferenceProceedingAttributor(params[:conferenceProceedingAttributor])
-    buildConferenceProceedingAttribution(params[:conferenceProceedingAttributor])
-  end
-
-  def buildConferenceProceedingAttribution(params)
-    model.conferenceProceeding.first.conferenceProceedingAttribution = nil
-    # params.each do |k, v|
-    #  params[k] = nil if v.empty?
-    # end
-    id0 = "info:fedora/%s#conferenceProceedingAttribution" % model.id
-    params['id'] = id0
-    params[:type] = RDF::PROV.Attribution
-    params[:hadRole] = RDF::PROV.hadRole
-    model.conferenceProceeding.first.conferenceProceedingAttribution.build(params)
-    model.conferenceProceeding.first.conferenceProceedingAttribution.first.conferenceProceedingAttributor =  model.conferenceProceeding.first.conferenceProceedingAttributor
-  end
-
-  def buildConferenceProceedingAttributor(params)
-    model.conferenceProceeding.first.conferenceProceedingAttributor = nil
-    id0 = "info:fedora/%s#conferenceProceedingAttributor" % model.id
-    params['id'] = id0
-    params[:type] = RDF::FOAF.Person
-    model.conferenceProceeding.first.conferenceProceedingAttributor.build(params)
-  end
-
   def buildConference(params)
-    model.conference = nil
+    model.presentedAt = nil
     params.each do |k, v|
       params[k] = nil if v.empty?
     end
     id0 = "info:fedora/%s#conference" % model.id
     params['id'] = id0
     params[:type] = RDF::BIBO.Conference
-    model.conference.build(params)
+    model.presentedAt.build(params)
+    model.presentedAt.first.spatial = nil
+    if !params[:spatial].empty? and !params[:spatial][:value].empty?
+      spatial_params = {}
+      spatial_params['id'] = "info:fedora/#{model.id}#spatial"
+      #spatial_params[:type] = RDF::DC.spatial
+      spatial_params[:value] = params[:spatial][:value]
+      model.presentedAt.first.spatial.build(spatial_params)
+    end
+
+    model.presentedAt.first.wasAssociatedWith = nil
+    organization_params = {}
+    if !params[:wasAssociatedWith].empty? and !params[:wasAssociatedWith][:name].empty?
+      organization_params['id'] = "info:fedora/#{model.id}#conferenceOrganization"
+      organization_params[:type] = RDF::FOAF.Organization
+      organization_params[:name] = params[:wasAssociatedWith][:name]
+      model.presentedAt.first.wasAssociatedWith.build(organization_params)
+    end
+
+    model.presentedAt.first.conferenceAssociation = nil
+    if !params[:wasAssociatedWith].empty? and !params[:wasAssociatedWith][:name].empty?
+      association_params ={}
+      association_params['id'] = "info:fedora/#{model.id}#conferenceAssociation"
+      association_params[:type] = RDF::PROV.Association
+      association_params[:hadRole] = RDF::BIBO.Organizer
+      model.presentedAt.first.conferenceAssociation.build(association_params)
+      model.presentedAt.first.conferenceAssociation.first.conferenceOrganization = model.presentedAt.first.wasAssociatedWith
+    end
   end
 
-  def buildConferenceActivity(params)
-    model.conferenceActivity = nil
-    params.each do |k, v|
-      params[k] = nil if v.empty?
-    end
-    id0 = "info:fedora/%s#conferenceActivity" % model.id
-    params['id'] = id0
-    params[:type] = RDF::PROV.Activity
-    model.conferenceActivity.build(params)
-  end
+
 
   def buildPublicationActivity(params)
     model.publication = nil

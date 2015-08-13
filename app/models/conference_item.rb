@@ -2,7 +2,6 @@ require "datastreams/workflow_rdf_datastream"
 require "datastreams/conference_item_rdf_datastream"
 require "datastreams/relations_rdf_datastream"
 require "datastreams/conference_item_admin_rdf_datastream"
-require "conference"
 require "rdf"
 
 class ConferenceItem < ActiveFedora::Base
@@ -31,8 +30,6 @@ class ConferenceItem < ActiveFedora::Base
   has_attributes *ConferenceItemRdfDatastream.fields, datastream: :descMetadata, multiple: true
   has_attributes *RelationsRdfDatastream.fields, datastream: :relationsMetadata, multiple: true
   has_attributes *ConferenceItemAdminRdfDatastream.fields, datastream: :adminMetadata, multiple: true
-
-  belongs_to :conference, :property=>:presented_at, :class_name=>"Conference"
 
   def to_solr(solr_doc={}, opts={})
     super(solr_doc, opts)

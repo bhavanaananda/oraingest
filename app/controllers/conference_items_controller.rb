@@ -85,8 +85,6 @@ class ConferenceItemsController < ApplicationController
     @pid = Sufia::Noid.namespaceize(@pid)
     @conferenceItem = ConferenceItem.new
     @files = []
-    @conference = Conference.new
-    @conferenceItem.conference = @conference
     @model = 'conferenceItem'
   end
 
@@ -271,76 +269,23 @@ class ConferenceItemsController < ApplicationController
 
   def add_metadata(conference_item_params, redirect_field)
     #find or create the conference, if included in the params
-    if conference_item_params.has_key?(:presented_at) or conference_item_params.has_key?(:conference)
-      @@conference, created = add_conference(conference_item_params)
-    end
-    conference_item_params[:conference] = nil
-    #conference_item_params[:presented_at] = nil
-    if @conference
-      conference_item_params[:conference] = @conference.id
-    end
-        # Update params
+    # logger.info "PARAMS at add_metadata #{conference_item_params}\n"
+    # if conference_item_params.has_key?(:presentedAt)
+    #   logger.info "PARAMS PRESENTED AT #{conference_item_params[:presentedAt]}\n"
+    # end
+
     MetadataBuilder.new(@conferenceItem).build(conference_item_params, contents, current_user.user_key)
-    if @conference
-      @conferenceItem.conference = @conference
-    end
-    WorkflowPublisher.new(@conferenceItem).perform_action(current_user)
+     WorkflowPublisher.new(@conferenceItem).perform_action(current_user)
     respond_to do |format|
       if @conferenceItem.save
           format.html { redirect_to edit_conference_item_path(@conferenceItem), notice: 'Conference item was successfully updated.' , flash:{ redirect_field: redirect_field }}
           format.json { head :no_content }
       else
-        # If a conference was created newly, roll back changes
-        if @conference and created
-          @conference.destroy
-        end
         format.html { render action: 'edit' }
         format.json { render json: @conferenceItem.errors, status: :unprocessable_entity }
       end
     end
   end
-
-  def add_conference(conference_item_params)
-    @conference = nil
-    created = false
-    conf_pid = nil
-    # Get the parameter and sanitize it
-    if conference_item_params.has_key?(:presented_at) and !conference_item_params[:presented_at].empty?
-      conf_pid = conference_item_params[:presented_at]
-      if conf_pid == "new" || conf_pid.empty? || conf_pid == ""
-        conf_pid = nil
-      end
-    end
-    # Try to extract the conference
-    if !conf_pid.nil?
-      begin
-        @conference = Conference.find(conf_pid)
-      rescue ActiveFedora::ObjectNotFoundError
-        conf_pid = nil
-      end
-    end
-    # Mint a pid if one does not exist
-    if conf_pid.nil?
-      conf_pid = Sufia::Noid.noidify(SecureRandom.uuid)
-      conf_pid = Sufia::Noid.namespaceize(conf_pid)
-      created = true
-    end
-
-    if @conference.nil?  and conference_item_params.has_key?(:conference)
-      conference_params = {}
-      conference_params = conference_item_params[:conference]
-      if @conference.nil?
-        @conference = Conference.find_or_create(conf_pid)
-        @conference.apply_permissions(current_user)
-      end
-      MetadataBuilder.new(@conference).build(conference_params, contents, current_user.user_key)
-      if !@conference.save
-        @conference = nil
-      end
-    end
-    return @conference, created
-  end
-
 
   def contents
     choicesUsed = @conferenceItem.datastreams.keys.select { |key| key.match(/^content\d+/) and @conferenceItem.datastreams[key].content != nil }

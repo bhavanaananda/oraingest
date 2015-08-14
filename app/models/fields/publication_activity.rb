@@ -142,9 +142,12 @@ class PublicationJournal
     map.title(:in => RDF::DC)
     map.issn(:in => RDF::BIBO)
     map.eissn(:in => RDF::BIBO)
+    map.isbn(:in => RDF::BIBO)
+    map.eisbn(:in => RDF::BIBO)
     map.volume(:in => RDF::BIBO)
     map.issue(:in => RDF::BIBO)
     map.pages(:in => RDF::BIBO)
+    map.proceedingsEditor(:to => "n",:in => RDF::VCARD)
   end
 
   def persisted?

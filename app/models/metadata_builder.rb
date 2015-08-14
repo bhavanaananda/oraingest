@@ -81,8 +81,7 @@ class MetadataBuilder
 
     # Remove blank assertions for dataset access rights and build
     if params.has_key?(:accessRights)
-     go
-     buildAccessRights(params[:accessRights], datePublished)
+      buildAccessRights(params[:accessRights], datePublished)
       params.except!(:accessRights)
     end
 
@@ -426,9 +425,11 @@ class MetadataBuilder
     awardCount = 0
     # Funder has to have name of funder and whom the funder funds
     funders = []
-    params[:funder_attributes].values.each do |funder|
-      if !funder.nil? && !funder.empty? & funder.has_key?(:agent_attributes) && !funder[:agent_attributes]["0"][:name].empty? && !funder[:funds].empty?
-        funders << funder
+    if params.has_key?(:funder_attributes)
+      params[:funder_attributes].values.each do |funder|
+        if !funder.nil? && !funder.empty? & funder.has_key?(:agent_attributes) && !funder[:agent_attributes]["0"][:name].empty? && !funder[:funds].empty?
+          funders << funder
+        end
       end
     end
     # Funding award has to be either yes or no
@@ -527,7 +528,7 @@ class MetadataBuilder
         end
         model.creation[0].creator.build(c1)
         model.creation[0].creator[c1_index].agent = nil
-        model.creation[0].creator[c1_index].agent.buiConferenceAssociationld(agent)
+        model.creation[0].creator[c1_index].agent.build(agent)
         model.creation[0].creator[c1_index].agent[0].affiliation = nil
         if c1[:affiliation] && c1[:affiliation].has_key?(:name) and !c1[:affiliation][:name].empty?
           c1[:affiliation]['id'] = "info:fedora/%s#affiliation%d" % [model.id, affiliationCount]

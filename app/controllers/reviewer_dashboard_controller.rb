@@ -35,7 +35,7 @@ class ReviewerDashboardController < ApplicationController
     solr_parameters[:fq] ||= []
     # Only include GenericFile and Collection objects
     #solr_parameters[:fq] << "active_fedora_model_ssi:GenericFile OR active_fedora_model_ssi:Collection"
-    solr_parameters[:fq] << "active_fedora_model_ssi:Article OR active_fedora_model_ssi:Dataset"
+    solr_parameters[:fq] << "active_fedora_model_ssi:Article OR active_fedora_model_ssi:Dataset OR active_fedora_model_ssi:Thesis OR active_fedora_model_ssi:ConferenceItem"
   end
   
   # Limits search results to exclude items whose Workflow status is not in Sufia.config.review_dashboard_status

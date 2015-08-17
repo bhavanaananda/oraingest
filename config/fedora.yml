@@ -1,15 +1,15 @@
+### N.B: the passwords here must be the database passwords
 development:
-  user: fedoraAdmin
-  password: fedoraAdmin
-  url: http://127.0.0.1:8080/fedora
-test: &TEST  
-  user: fedoraAdmin
-  password: fedoraAdmin
-  url:  <%= "http://127.0.0.1:8080}/fedora" %>
-  #url: <%= "http://127.0.0.1:#{ENV['TEST_JETTY_PORT']}/fedora-test" %>
+user: fedoraAdmin
+password: fedoraAdmin
+url: http://127.0.0.1:8983/fedora
+test: &TEST
+user: fedoraAdmin
+password: fedoraAdmin
+url: <%= "http://127.0.0.1:#{ENV['JETTY_PORT']}/fedora" %>
 production:
-  user: fedoraAdmin
-  password: fedoraAdmin
-  url: http://127.0.0.1:8080/fedora
+user: fedoraAdmin
+password: <%= ENV['FEDORA_PWD'] %>
+url: <%= "http://127.0.0.1:#{ENV['JETTY_PORT']}/fedora" %>
 cucumber:
-  <<: *TEST
+<<: *TEST

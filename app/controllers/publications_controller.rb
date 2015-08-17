@@ -22,7 +22,7 @@ class PublicationsController < ApplicationController
     solr_parameters[:fq] ||= []
     # Only include GenericFile and Collection objects
     #solr_parameters[:fq] << "active_fedora_model_ssi:GenericFile OR active_fedora_model_ssi:Collection"
-    solr_parameters[:fq] << "active_fedora_model_ssi:Article OR active_fedora_model_ssi:Thes OR active_fedora_model_ssi:ConferenceItem"
+    solr_parameters[:fq] << "active_fedora_model_ssi:Article OR active_fedora_model_ssi:Thesis OR active_fedora_model_ssi:ConferenceItem"
   end
   
 end

@@ -28,7 +28,6 @@ module RDF
     property :Periodical  
     property :annotates  
     property :owner
-    property :Proceedings
     property :presentedAt
     property :Organizer
     property :Conference

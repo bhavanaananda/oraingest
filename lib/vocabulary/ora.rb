@@ -37,11 +37,9 @@ module RDF
     property :TitularAgent
     property :hadCreationActivity
     property :hadPublicationActivity
-    property :hadConferenceActivity
     property :hadTitularActivity
     property :hasAgreement
     property :hasDataset
-    property :hasConferenceItem
     property :hasDataManagementPlan
     property :hasInvoice
     property :isPartOfSeries
@@ -73,7 +71,6 @@ module RDF
     property :translator
     # funding
     property :hasFundingAward
-    property :hasConferenceDuration
     #thesis
     property :degreeName
     property :degreeType

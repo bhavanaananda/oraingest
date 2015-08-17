@@ -57,7 +57,6 @@
     :has_funder: hasFunder
     :has_copyright_holder: hasCopyrightHolder
     :has_agreement: hasAgreement
-    :has_conference_item: hasConferenceItem
     :has_dataset: hasDataset
   http://purl.org/dc/terms/:
     :has_contributor: contributor

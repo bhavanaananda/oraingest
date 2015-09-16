@@ -1,0 +1,23 @@
+<div class="fieldset">
+	<label panel="dataset-dispensation-period">
+		<fieldset class="small-text">
+			<label>
+				<%= f.radio_button :dispensationSelect, 'end_date' %>
+				<span></span>Dispensation end date
+				<div id="has_dispensation_end_date" class="hidden-form">
+				 <%= render partial: 'dispensation_end_date', locals: { f: f} %>
+				</div>
+			</label>
+			<label>
+				<%= f.radio_button :dispensationSelect, 'period' %>
+				<span></span>Dispensation for period
+				<div id="has_dispensation_period" class="hidden-form">
+				 <%= render partial: 'dispensation_period', locals: { f: f} %>				</div>
+			</label>
+			<label>
+				<%= f.radio_button :dispensationSelect, 'permanent' %>
+				<span></span>Permanent Dispensation 
+			</label>			
+		</fieldset>
+	</label>
+</div>

@@ -1,11 +1,11 @@
 require 'uri'
 
 module Qa::Authorities
-  class Cud < WebServiceBase
+  class Cud
 
-    # Initialze the Loc class with a query and get the http response from LOC's server.
-    # This is set to a JSON object
-    def initialize
+    def get_json(url)
+      r = RestClient.get url, {accept: :json}
+      JSON.parse(r)
     end
 
     def search(q, sub_authority=nil)
@@ -42,9 +42,9 @@ module Qa::Authorities
     end
 
     def self.all_fields
-      @fields ||= 
-        begin
-          [
+      @fields ||=
+      begin
+        [
           'cud:cas:cudid',
           'cud:fk:university_card_sysis',
           'cud:fk:oss_student_number',
@@ -81,14 +81,14 @@ module Qa::Authorities
           'cud:consolidated:external_email',
           'cud:consolidated:pas',
           'cud:consolidated:photo'
-          ]
-        end
+        ]
+      end
     end
 
     def self.fields
-      @fields ||= 
-        begin
-          {
+      @fields ||=
+      begin
+        {
           'cud:cas:cudid' => 'id',
           'cud:fk:hris_staff_number' => 'hris_staff_number',
           'cud:cas:title' => 'title',
@@ -117,14 +117,14 @@ module Qa::Authorities
           'cud:cas:external_tel' => 'external_tel',
           'cud:consolidated:external_email' => 'external_email',
           'cud:consolidated:photo' => 'photo'
-          }
-        end
+        }
+      end
     end
 
     def self.sub_authority_table
       @sub_authority_table ||=
-        begin
-          {
+      begin
+        {
           'fullname' => 'cud\:cas\:fullname_text',
           'lastname' => 'cud\:cas\:lastname_text',
           'firstname' => 'cud\:cas\:firstname_text',
@@ -132,8 +132,8 @@ module Qa::Authorities
           'sso_username' => 'cud\:cas\:sso_username_text',
           'sso_username_exact' => 'cud\:cas\:sso_username',
           'current_affiliation' => 'cud\:cas\:current_affiliation'
-          }
-        end
+        }
+      end
     end
 
     def self.authority_valid?(authority)
@@ -174,11 +174,11 @@ module Qa::Authorities
         val = result_parts[2]
 
         case key
-          when 'title', 'id', 'name', 'updated', 'created'
-            result[key] = val
-          when 'link'
-            result["links"] ||= []
-            result["links"] << [info["type"], info["href"]]
+        when 'title', 'id', 'name', 'updated', 'created'
+          result[key] = val
+        when 'link'
+          result["links"] ||= []
+          result["links"] << [info["type"], info["href"]]
         end
       end
 
@@ -263,4 +263,3 @@ module Qa::Authorities
 
   end
 end
-

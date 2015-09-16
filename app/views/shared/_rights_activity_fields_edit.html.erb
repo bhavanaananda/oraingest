@@ -4,11 +4,13 @@
 <div class="fieldset">
   <% if @model == "thesis" %>
     <p class="small">Year printed on thesis (Copyright date)</p>
+    <% subject = 'thesis' %>
   <% else %>
     <p class="small reqlabel">Copyright date</p>
+    <% subject = 'article' %>
   <% end %>
   <%= f.text_field :dateCopyrighted, :required => true, :value => article.dateCopyrighted.first || Time.now.year, data: {"progress" => "documentation" } %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Copyright date" , :tipDescription => "Enter the copyright year of the article" } %>
+  <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Copyright date" , :tipDescription => "Enter the copyright year of the #{subject}" } %>
 </div>
 
 <div class="fieldset">

@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
     devise :remote_user_authenticatable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   else
-    devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   end
 
@@ -44,24 +44,14 @@ class User < ActiveRecord::Base
   def display_name(user_info=nil)
     # Passing in user_info as a parameter rather than calling self.user_info to minimie calls to CUD.
     # NOTE: consequence of this is that sufia user model will display user key as name
-    if user_info
-      if user_info.fetch('firstname', nil) and user_info.fetch('lastname', nil)
-        return "#{user_info['firstname']} #{user_info['lastname']}"
-      elsif user_info.fetch('lastname', nil)
-        return "#{user_info['lastname']}"
-      elsif user_info.fetch('firstname', nil)
-        return "#{user_info['firstname']}"
-      end
-    end
-    return nil
+    return unless user_info
+    [user_info['firstname'], user_info['lastname']].compact.join(' ')
   end
 
   def oxford_email(user_info=nil)
     # Passing in user_info as a parameter rather than calling self.user_info to minimie calls to CUD.
-    if user_info and user_info.fetch('oxford_email', nil)
-      return user_info['oxford_email']
-    end
-    return nil
+    return unless user_info.kind_of? Hash
+    user_info['oxford_email']
   end
  
   # Returns true if user has permission to act as a reviewer

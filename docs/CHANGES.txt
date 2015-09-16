@@ -1,7 +1,44 @@
 Changelog
 =========
 
-1.4
+1.5.1 - 2015/09/14
+------------------
+
+- bugfix for edit form
+
+1.5.0 - 2015/09/11
+------------------
+
+- Update a help text
+
+1.5.0.rc4 - 2015/09/08
+----------------------
+
+- Fix thesis form crashing for non reviewers
+
+1.5.0.rc3 - 2015/09/07
+----------------------
+
+- Fix copyright year in footer to be current and dynamic
+- Use correct DOI shoulder in production
+- Various thesis form fixes
+- Tidy up roles in development
+- Add count for number of claimed tickets
+
+1.5.0.rc2 - 2015/08/26
+----------------------
+
+- fix production port numbers
+- disable validation for dispensation
+
+1.5.0.rc1 - 2015/08/25
+----------------------
+
+- Thesis form improvements
+- Rationalise onto one branch
+- Integrate code climate
+
+1.4.0 - 2015/07/13
 ------------------
 - Added support for new object type - thesis 
 - Enable multi-valued creator roles
@@ -11,11 +48,11 @@ Changelog
 - Fixed error with downloading files from Databank
 - Moved all names for workflow states into config file
 
-1.3.1
+1.3.1 - Unreleased
 ------------------
 - Modified user model methods to minimize queries to CUD
 
-1.3
+1.3.0 - 2015/06/09
 ------------------
 - changed list_datasets endpoint to /datasets
 - Updated Kaminari and fixed pagination in dashboards
@@ -50,7 +87,7 @@ Changelog
 - Logic for edits allowed based on next workflow status being defined
 - List of roles for data steward expanded further and a default value is selected
 
-1.2
+1.2.0 - 2015/04/30
 ------------------
 - Improve workflow and limits for file upload in forms and add help text
 - Modify inheritance of javascript files
@@ -65,7 +102,7 @@ Changelog
 - Removed the form fill tracker
 - Disambiguate user and admin file sizes
 
-1.1
+1.1.0 - 2015/01/29
 ------------------
 
 - Embargo options are displayed in archving section in form
@@ -84,13 +121,13 @@ Changelog
 - Removed unused views 
 - Form user experience improved
 
-1.0.1
+1.0.1 - 2014/12/16
 ------------------
 
 - Replaced CUD IP with domain name
 - Added sso ids to rolemap
 
-1.0.0 - Unreleased
+1.0.0 - 2014/11/30
 ------------------
 
 - Initial release

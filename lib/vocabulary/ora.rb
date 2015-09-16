@@ -78,8 +78,17 @@ module RDF
     property :dateOfAward
     property :dispensationFromConsultation
     property :hasThirdPartyCopyrightMaterial
+
     # conference
     property :conferenceStartDate
     property :conferenceEndDate
+
+    property :dispensationEndDate
+    property :dispensationSelect
+    property :dispensationPeriodStartFromDate
+    property :dispensationPeriodMonths
+    property :dispensationPeriodYears
+    property :dispensationPeriodPermanent
+
   end
 end

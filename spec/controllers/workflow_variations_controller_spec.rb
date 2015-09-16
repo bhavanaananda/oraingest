@@ -5,7 +5,7 @@ describe 'Workflow Variations' do
     @routes = Sufia::Engine.routes
   end
   before(:all) do
-    @user = FactoryGirl.find_or_create(:user)
+    @user = FactoryGirl.find_or_create(:work_flow_user)
     @archivist = FactoryGirl.find_or_create(:archivist)
 
     @draft = GenericFile.new(title: 'Draft Submission', workflows_attributes:

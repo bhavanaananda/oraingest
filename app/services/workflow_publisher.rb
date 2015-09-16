@@ -12,8 +12,8 @@ class WorkflowPublisher
     wf_id = 'MediatedSubmission'
     # Mint a doi or check a DOI if doi_requested? and in review status
     mint_and_check_doi
-    # send email
-    send_email(wf_id, current_user)
+
+    send_email(wf_id, current_user) if Rails.env.production?
     # publish record
     publish_record(wf_id, current_user)
   end
@@ -51,7 +51,7 @@ class WorkflowPublisher
   end
 
   def send_email(wf_id, current_user)
-    models = { 'Article' => 'articles', 'DatasetAgreement' => 'dataset_agreements', 'Dataset' => 'datasets','ConferenceItem' => 'conference_items'  }
+    models = { 'Article' => 'articles', 'DatasetAgreement' => 'dataset_agreements', 'Dataset' => 'datasets', 'Thesis' => 'theses','ConferenceItem' => 'conference_items'  }
     record_url = Rails.application.routes.url_helpers.url_for(:controller => models[@parent_model.model_klass], :action=>'show', :id => @parent_model.id)
     data = {'record_id' => @parent_model.id, 'record_url' => record_url, 'doi_requested'=>@parent_model.doi_requested?}
     if @parent_model.doi_requested? && !@parent_model.doi_registered?

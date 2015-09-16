@@ -1,7 +1,7 @@
 <% if @model == "dataset_agreement" %>
   <% label = "dataset agreement" %>
   <% plural = "dataset agreements" %>
-<% elsif @model == 'article' || @model == 'thesis' %>
+<% elsif @model == 'article' %>
   <% label = @model %>
   <% plural = "publications" %>
 <% else %>
@@ -11,6 +11,10 @@
 <div class="actions" style="padding: 0px 10px 20px;">
   <a href="<%= path[:show] %>" class="button button-small light-blue">View <%=label%></a>
   <a href="<%= path[:show] %>" class="button button-small light-blue"data-method="delete" data-confirm="Are you sure?">Delete <%=label%></a>
-  <a href="<%= path[:list] %>" class="button button-small light-blue">My <%=plural%></a>
+  <% if @model == "thesis" %>
+	  <a href="/theses" class="button button-small light-blue">My <%=plural%></a>
+  <% else %>
+	  <a href="<%= path[:list] %>" class="button button-small light-blue">My <%=plural%></a>
+  <% end %>
 </div>
 

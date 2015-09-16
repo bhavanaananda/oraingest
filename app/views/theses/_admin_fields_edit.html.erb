@@ -1,29 +1,70 @@
 <div class="fieldset">
   <fieldset class="small-text">
-    <%= f.label :dispensationFromConsultation, "Have you applied for dispensation from consultation?", :class=>"control-label reqlabel" %>
+    <%= f.label :dispensationFromConsultation,
+      "Have you applied for or been granted dispensation from consultation?",
+      :class=>"control-label reqlabel" %>
     <label panel="dataset-dispensation">
-      <%= f.radio_button :dispensationFromConsultation, "yes", checked: thesis.dispensationFromConsultation.first == "yes", class: "required" %>
+      <%= f.radio_button :dispensationFromConsultation, "yes",
+        checked: thesis.dispensationFromConsultation.first == "yes",
+        class: "required" %>
       <span></span>Yes
+      <div id="has_dispensation" class="hidden-form">
+        <%= render partial: 'dispensation_yes', locals: { f: f} %>
+      </div>
     </label>
     <label>
-      <%= f.radio_button :dispensationFromConsultation, "no", checked: thesis.dispensationFromConsultation.first == "no", class: "required" %>
+      <%= f.radio_button :dispensationFromConsultation, "no",
+        checked: thesis.dispensationFromConsultation.first == "no",
+        class: "required" %>
       <span></span>No
     </label>
   </fieldset>
-  <%= render partial: '/shared/tooltip', locals: {:tipType => "documentation" , :tipTitle => "Dispensation from consultation" , :tipDescription => "TODO" } %>
+  <%= render partial: '/shared/tooltip',
+             locals: {:tipType => "documentation",
+                      :tipTitle => "Dispensation from consultation",
+                      :tipDescription => "If you have applied or been granted
+                        dispensation from consultation please include details
+                        of the dispensation here. Further information regarding
+                        dispensation from consultation can be found in the
+                        Digital theses and
+                        <a href='http://ox.libguides.com/dispensation'>
+                          ORA LibGuide
+                        </a>" } %>
 </div>
 
 <div class="fieldset">
   <fieldset class="small-text">
-    <%= f.label :hasThirdPartyCopyrightMaterial, "Does your thesis contain 3rd party copyright material?", :class=>"control-label reqlabel" %>
+    <%= f.label :hasThirdPartyCopyrightMaterial, 
+      "Does your thesis contain 3rd party copyright material?",
+      :class=>"control-label reqlabel" %>
     <label panel="dataset-third-party">
-      <%= f.radio_button :hasThirdPartyCopyrightMaterial, "yes", checked: thesis.hasThirdPartyCopyrightMaterial.first == "yes", class: "required" %>
+      <%= f.radio_button :hasThirdPartyCopyrightMaterial, "yes",
+        checked: thesis.hasThirdPartyCopyrightMaterial.first == "yes", 
+      class: "required" %>
       <span></span>Yes
+      <div id="has_copyright_material" class="hidden-form small">
+        <%= render partial: 'copyright_material_yes' %>
+      </div>
     </label>
     <label>
-      <%= f.radio_button :hasThirdPartyCopyrightMaterial, "no", checked: thesis.hasThirdPartyCopyrightMaterial.first == "no", class: "required" %>
+      <%= f.radio_button :hasThirdPartyCopyrightMaterial, "no",
+        checked: thesis.hasThirdPartyCopyrightMaterial.first == "no",
+        class: "required" %>
       <span></span>No
+      <div id="hasnt_copyright_material" class="hidden-form small">
+        <%= render partial: 'copyright_material_no' %>
+      </div>      
     </label>
   </fieldset>
-  <%= render partial: '/shared/tooltip', locals: {:tipType => "documentation" , :tipTitle => "Third party copyright material" , :tipDescription => "TODO" } %>
+  <% desc = "Third party copyright refers to copyright works created by someone
+    other than yourself. This commonly includes images or graphs. 
+    You will need to provide proof of copyright holder’s permission to make
+    third party copyright material freely available via ORA. This 
+      might be an email from the copyright holder granting permission.
+      Please see the
+      <a href='https://ox.libguides.com/content.php?pid=435474&sid=3564761'>
+        Digital theses and ORA LibGuide</a> for more info." %>
+  <%= render partial: '/shared/tooltip', locals: {tipType: "documentation",
+    tipTitle: "Third party copyright material" , tipDescription: desc } %>
 </div>
+

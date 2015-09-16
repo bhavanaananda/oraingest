@@ -48,4 +48,14 @@ class ReviewerDashboardController < ApplicationController
     end
   end
   
+  def current_user_claimed_tickets_count
+    return 0 unless current_user
+    facet = @response.facets.find {|f| f.name == 'MediatedSubmission_current_reviewer_id_ssim'}
+    return 0 unless facet
+    user_item = facet.items.find {|i| i.value == current_user.email}
+    return 0 unless user_item
+    user_item.hits
+  end
+  helper_method :current_user_claimed_tickets_count
+  
 end

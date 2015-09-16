@@ -64,7 +64,7 @@
       <% elsif @model == "thesis" %>
         <% desc = "The catalogue record for your thesis will normally be made publicly visible and openly accessible, even if your thesis is embargoed.
               In a small number of exceptional cases, it may be necessary to embargo and hide from public view the record as well as the files.
-              Please let us know which you would prefer." %>
+               If you require the record page or abstract to be embargoed in addition to your thesis file please complete a request for dispensation from consultation." %>
       <% else %>
         <% desc = "The catalogue record for your publication will normally be made publicly visible and openly accessible, even if the publication is embargoed.
               In a small number of exceptional cases, it may be necessary to embargo and hide from public view the record as well as the files.
@@ -72,9 +72,13 @@
       <% end %>
       <% tipTitle = "Catalogue visibility" %>
     <% else %>
-      <% desc = "Select whether the file should be made openly available in ORA, or set an embargo if its
-        not to be made available either for a set period or in perpetuity. You should set this information
-        for each file you upload." %>
+      <% desc = "Select whether the file should be made openly available in
+        ORA, or set an embargo if its not to be made available either for a set
+        period or in perpetuity. You should set this information for each file
+        you upload. For more information regarding open access and default
+        embargoes that are applied to theses files please see the Digital
+        theses and
+        <a href='http://ox.libguides.com/after_deposit'>ORA LibGuide</a>." %>
       <% tipTitle = "File availability" %>
     <% end %>
     <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => tipTitle , :tipDescription => desc } %>

@@ -213,7 +213,7 @@ module DoiMethods
 
   def remote_uri_for(identifier)
     resolver_url = Sufia.config.doi_credentials.fetch(:resolver_url)
-    URI.parse(File.join(resolver_url, normalize_doi(identifier, with_prefix=false)))
+    URI.join(resolver_url, normalize_doi(identifier, with_prefix=false))
   end
 
 end

@@ -29,7 +29,7 @@ module ORA
       resolver_url: 'http://dx.doi.org/'
     }
 
-    attr_accessor :msg, :status
+    attr_accessor :msg, :status, :resolver_url
 
     def initialize(options = {})
       configuration = options.with_indifferent_access
@@ -60,22 +60,13 @@ module ORA
     end
 
     def call(payload)
-      response = add_metadata(to_xml(payload))
-      if response_good?(response['code'])
-        self.status = true
-      else
-        self.status = false
-        self.msg << response['description']
-        return
-      end
-      response = request(data_for_create(payload.with_indifferent_access))
-      if response_good?(response['code'])
-        self.status = true
-        self.msg << "Doi with metadata registered"
-      else
-        self.status = false
-        self.msg << response['description']
-      end
+      add_metadata(to_xml(payload))
+      request(data_for_create(payload.with_indifferent_access))
+      self.status = true
+      self.msg << "Doi with metadata registered"
+    rescue  RestClient::Exception => exception
+      self.status = false
+      self.msg << [exception.message, exception.response].join(': ')
     end
 
     def validate_required(payload)
@@ -114,10 +105,6 @@ module ORA
     def add_metadata(data)
       response = @resource['metadata'].post(data, content_type: 'application/xml;charset=UTF-8')
       return create_response(response)
-    end
-
-    def response_good?(code)
-      return code >= 200 && code < 300
     end
 
     def create_response(response)

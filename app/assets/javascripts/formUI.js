@@ -102,12 +102,6 @@ function displayDoi() {
     $("#dataset_doi").show();
     $("#dataset_doi").removeAttr("readonly");
     $("#doiNote").hide();
-    if (doi.startsWith(doiShoulder)) {
-      if (confirm('Are you sure you want to delete the minted doi?')) {
-       $("#dataset_doi").val('') ;
-       $("#dataset_doi").attr("value", '');
-      }
-    }
     $('#catalog_accessRights').show();
     $('#dataset_accessRights_embargoStatus_open_access').trigger('click');
     $('#dataset_accessRights_embargoStatus_open_access').prop('checked', false);

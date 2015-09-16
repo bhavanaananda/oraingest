@@ -150,6 +150,12 @@ $(function() {
     $("section.form-step:eq("+current_form+")").hide();
     new_form.show();
 
+    if (index == 5) {
+
+      var fred = $('#thesis_dispensationFromConsultation').val();
+       $('#thesis_dispensationSelect_period').removeClass("hidden-form");
+    };
+
     navigation.find("li.current").removeClass("current");
     navigation.find("li:eq("+index+")").addClass("current");
 

@@ -51,6 +51,9 @@ RSpec.configure do |config|
 
 end
 
+require 'webmock/rspec'
+WebMock.disable_net_connect!(allow_localhost: true, allow: 'coveralls.io')
+
 module FactoryGirl
   # Add find_or_create method to FactoryGirl so we can find_or_create users
   def self.find_or_create(handle, by=:email)
@@ -58,4 +61,3 @@ module FactoryGirl
     tmpl.class.send("find_by_#{by}".to_sym, tmpl.send(by)) || FactoryGirl.create(handle)
   end
 end
-

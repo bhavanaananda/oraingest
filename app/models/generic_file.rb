@@ -1,7 +1,7 @@
-require "datastreams/workflow_rdf_datastream"
-require "datastreams/generic_file_rdf_datastream"
-require "person"
-require "rdf"
+require 'datastreams/workflow_rdf_datastream'
+require 'datastreams/generic_file_rdf_datastream'
+require 'person'
+require 'rdf'
 
 class GenericFile < ActiveFedora::Base
   include Sufia::GenericFile
@@ -12,15 +12,15 @@ class GenericFile < ActiveFedora::Base
   
   before_create :initialize_submission_workflow
 
-  has_metadata :name => "descMetadata", :type => GenericFileRdfDatastream
-  has_metadata :name => "workflowMetadata", :type => WorkflowRdfDatastream
+  has_metadata name: 'descMetadata',     type: GenericFileRdfDatastream
+  has_metadata name: 'workflowMetadata', type: WorkflowRdfDatastream
 
-  delegate_to "workflowMetadata",  [:workflows, :workflows_attributes], multiple: true
-  delegate_to "descMetadata", GenericFileRdfDatastream.fields, multiple: true
-
-  has_and_belongs_to_many :authors, :property=> :has_author, :class_name=>"Person"
-  has_and_belongs_to_many :contributors, :property=> :has_contributor, :class_name=>"Person"
-  has_and_belongs_to_many :copyright_holders, :property=> :has_copyright_holder, :class_name=>"Person"
+  has_attributes :workflows, :workflows_attributes,  datastream: 'workflowMetadata', multiple: true
+  has_attributes *GenericFileRdfDatastream.fields,   datastream: 'descMetadata',     multiple: true
+  
+  has_and_belongs_to_many :authors,           property: :has_author,           class_name: 'Person'
+  has_and_belongs_to_many :contributors,      property: :has_contributor,      class_name: 'Person'
+  has_and_belongs_to_many :copyright_holders, property: :has_copyright_holder, class_name: 'Person'
 
   #def to_solr(solr_doc={}, opts={})
   #  super(solr_doc, opts)
@@ -33,7 +33,7 @@ class GenericFile < ActiveFedora::Base
   
   def initialize_submission_workflow
     if self.workflows.empty?  
-      wf = self.workflows.build(identifier:"MediatedSubmission")
+      wf = self.workflows.build(identifier: "MediatedSubmission")
       wf.entries.build(status: Sufia.config.draft_status, date: Time.now.to_s)
     end
   end

@@ -2,10 +2,48 @@ require 'rails_helper'
 
 describe MetadataBuilder do
   let(:user) { FactoryGirl.build(:user) }
+  
+  let(:dummy_model) do 
+    Struct.new 'DummyModel', :id do
+      def storageAgreement=(x)
+        @storageAgreement = x
+      end
+
+      def storageAgreement
+        @storageAgreement ||= dummy_sub_object.new
+      end
+
+      def valid=(x)
+        @valid = x
+      end
+
+      def valid
+        @valid ||= dummy_sub_object.new
+      end
+      
+      def invoice=(x)
+        @invoice = x
+      end
+
+      def invoice
+        @invoice ||= dummy_sub_object.new
+      end
+
+      def dummy_sub_object
+        Struct.new 'DummySubObject', :id do
+          def build(params)
+            self.id = params['id']
+          end
+        end
+      end
+
+    end
+  end
 
   context 'common' do
     let(:model) { Article.new }
     let(:builder) { MetadataBuilder.new(model) }
+    let(:depositor) {'Foo Bar'}
 
     describe '#buildMetadata' do
       context ' with parameters' do
@@ -88,7 +126,7 @@ describe MetadataBuilder do
     describe '#normalizeParams' do
       context 'when argument is a Hash' do
         it 'returns an array' do
-          params = {key2: 'value1', key2: 'value2'}
+          params = {key1: 'value1', key2: 'value2'}
           result = builder.send(:normalizeParams, params)
           expect(result).to be_an(Array)
           expect(result).to eq(params.values)
@@ -144,11 +182,106 @@ describe MetadataBuilder do
     end
 
     describe '#validatePermissionsToRevoke' do
-      pending 'implement this'
+      
+      let(:output) {builder.validatePermissionsToRevoke(params, depositor)}
+      
+      context 'when params lack required keys' do
+        
+        let(:params) { {} }
+        
+        it 'permissions_attributes should be empty' do
+          expect(output['permissions_attributes']).to eq([])
+        end
+      end
+      
+      context 'when params have required data' do
+        
+        let(:params) {
+          {
+            'type' => "anything except 'group'",
+            'name' => "anything except '#{depositor}'",
+            'access' => 'anything'           
+          }
+        }
+        
+        it 'permissions_attributes should return modified params' do
+          expected = params.merge('type' => 'user', '_destroy' => true)        
+          expect(output['permissions_attributes']).to eq([expected])
+        end     
+        
+      end
+      
     end
 
     describe '#validateWorkflow' do
-      pending 'implement this'
+      # Only paths where the model does not have a workflow tested 
+      # as I am unable to work out how to add a workflow to an existing model
+      let(:output) { builder.validateWorkflow([params], depositor) }
+      
+      context 'with empty params' do
+        
+        let(:params) { {} }
+        
+        it 'should return params' do
+          expect(output).to eq([params])
+        end
+        
+      end
+      
+      context 'when params include empty entries_attributes' do
+        let(:params) { { entries_attributes: [{}]} }
+        
+        it 'should remove entries_attributes' do
+          expect(output).to eq([{}])
+        end
+      end
+      
+      context 'when params include entries_attributes with empty status' do
+        let(:params) { { entries_attributes: [{status: ''}]} }
+        
+        it 'should remove entries_attributes' do
+          expect(output).to eq([{}])
+        end
+      end
+      
+      context 'whe params include entries_attributes with unknown status' do
+        let(:params) { { entries_attributes: [{status: 'something unknown'}]} }
+        
+        it 'should remove entries_attributes' do
+          expect(output).to eq([{}])
+        end
+      end
+      
+      context 'when params include :emailThread_attributes' do
+        let(:email_thread_attributes) { {foo: 'bar'} }
+        let(:params) { { emailThreads_attributes: email_thread_attributes } }
+        
+        it 'should convert the hash into an array of values' do
+          expected = [{emailThreads_attributes: email_thread_attributes.values}]
+          expect(output).to eq(expected)
+        end
+      end
+      
+      context 'when params include :comments_attributes' do
+        
+        let(:params) { {comments_attributes: [{description: 'something'}]} }
+        
+        it 'should append creator' do
+          expect(output.first[:comments_attributes].first[:creator]).to eq([depositor])
+        end
+        
+        it 'should append date' do
+          expect(output.first[:comments_attributes].first[:date].present?).to eq(true)
+        end
+        
+        context 'but they have no description' do
+          let(:params) { {comments_attributes: [{foo: 'bar'}]} }
+          it 'should remove the comments_attributes' do
+            expect(output).to eq([{}])
+          end
+        end
+        
+      end
     end
 
     describe '#buildLanguage' do
@@ -466,15 +599,98 @@ describe MetadataBuilder do
     end
 
     describe '#buildStorageAgreementData' do
-      pending 'implement this'
+
+      # Article doesn't seem to have a storageAgreement method
+      # So building a dummy model to test methods called.
+      let(:model) {dummy_model.new(3)}
+      
+      context 'when passed empty params' do
+        let(:params) { {title: '', identifier: ''} }
+        before do
+          builder.buildStorageAgreementData(params)
+        end
+        
+        it 'should not build a storageAgreement' do
+          expect(model.storageAgreement.id).to eq(nil)
+        end
+      end
+      
+      context 'when params includes a title' do
+        let(:params) { {title: 'foo'} }
+        before do
+          builder.buildStorageAgreementData(params)
+        end
+        
+        it 'should generate an id for the storageAgreement' do
+          expected = "info:fedora/#{model.id}#storageAgreement"
+          expect(model.storageAgreement.id).to eq(expected)
+        end
+        
+      end
     end
 
     describe '#buildValidityDate' do
-      pending 'implement this'
+      # Article doesn't seem to have a valid method
+      # So building a dummy model to test methods called.
+      let(:model) {dummy_model.new(3)}
+       
+      before do
+        builder.buildValidityDate(params)
+      end
+      
+      context 'when passed empty params' do
+        let(:params) { {start: '', :end => ''} }
+        
+        it 'should not build something' do
+          expect(model.valid.id).to eq(nil)
+        end      
+      end
+      
+      context 'when passed params with a start' do
+        let(:params) { {start: 'start'} }
+        
+        it 'should create something' do
+          expected = "info:fedora/#{model.id}#valid"
+          expect(model.valid.id).to eq(expected)
+        end
+        
+      end
+      
     end
 
     describe '#buildInvoiceData' do
-      pending 'implement this'
+      # Article doesn't seem to have an invoice method
+      # So building a dummy model to test methods called.
+      let(:model) {dummy_model.new(3)}
+      
+      before do
+        builder.buildInvoiceData(params)
+      end
+      
+      context 'when passed empty params' do
+        let(:params) { HashWithIndifferentAccess.new }
+        
+        it 'should not build something' do
+          expect(model.invoice.id).to eq(nil)
+        end
+      end
+      
+      context 'when passed params with a description, identifier and source' do
+        let(:params) do 
+          HashWithIndifferentAccess.new(
+            description: 'x', 
+            identifier: 'y', 
+            source: 'z'
+          )  
+        end
+        
+        it 'should create something' do
+          expected = "info:fedora/#{model.id}#invoice"
+          expect(model.invoice.id).to eq(expected)
+        end
+        
+      end
+      
     end
 
   end

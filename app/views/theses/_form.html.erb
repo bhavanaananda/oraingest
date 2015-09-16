@@ -1,4 +1,10 @@
 <section class="form-step">
+   <div class="alert-box notice">
+      <% lib_guide = "Digital theses and ORA" %>
+		<p>Help and guidance regarding thesis deposit to ORA can be found at the  Oxford LibGuide:  <%= link_to lib_guide, 
+	    "http://ox.libguides.com/digitaltheses", 
+	    :target => "_blank" %></p>
+    </div> 
   <div class="content-box padding-0">
     <div class="content-box-header">
       1. Upload files
@@ -13,15 +19,9 @@
       </div>
     </div>
   </div>
-  <nav class="form-nav">
-    <div class="form-nav-prev"></div>
-    <div class="form-nav-next">
-      <div class="float-left">
-        <strong>Continue to Step 2</strong> - About your award
-      </div>
-      <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-    </div>
-  </nav>
+
+   <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 2', sub_text: 'About your award' } %>
+
 </section>
 
 <%= form_for @thesis, :html => {:id => "new_record_fields", :class => "ora-validate-form"} do |f| %>
@@ -79,17 +79,7 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <div class="form-nav-next">
-          <div class="float-left">
-            <strong>Continue to Step 3</strong> - About you
-          </div>
-          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-        </div>
-      </nav>
+      <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 3', sub_text: 'About you' } %>
 
     </section>
 
@@ -104,17 +94,7 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <div class="form-nav-next">
-          <div class="float-left">
-            <strong>Continue to Step 4</strong> - Related publications
-          </div>
-          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-        </div>
-      </nav>
+      <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 4', sub_text: 'Related publications' } %>
 
     </section>
 
@@ -129,54 +109,17 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <div class="form-nav-next">
-          <div class="float-left">
-            <strong>Continue to Step 5</strong> - Making your thesis available
-          </div>
-          <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-        </div>
-      </nav>
+     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 5', sub_text: 'Funders, rights and licences' } %>
 
     </section>
+
+
 
 
     <section class="form-step">
       <div class="content-box padding-0">
         <div class="content-box-header">
-          5. Making your thesis available
-        </div>
-        <div class="padding-25 no-pad-top no-pad-bottom">
-          <%= render partial: "admin_fields_edit", :locals => { :f => f, :thesis => @thesis } %>
-        </div>
-        <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @thesis } %>
-        <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
-      </div>
-
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <% if can? :review, :all %>
-            <div class="form-nav-next">
-              <div class="float-left">
-                <strong>Continue to Step 6</strong> - Funders, rights and licences
-              </div>
-              <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-            </div>
-        <% end %>
-      </nav>
-
-    </section>
-
-
-    <section class="form-step">
-      <div class="content-box padding-0">
-        <div class="content-box-header">
-          6. Funders, rights and licences
+          5. Funders, rights and licences
         </div>
         <div class="padding-25 no-pad-top no-pad-bottom">
           <%= render partial: 'shared/funding_activity_fields_edit', :locals => { :f => f, :funding => @thesis.funding, :required => false } %>
@@ -197,21 +140,29 @@
         </div>
       </div>
 
-      <nav class="form-nav">
-        <div class="form-nav-prev">
-          <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>
-        </div>
-        <% if can? :review, :all %>
-          <div class="form-nav-next">
-            <div class="float-left">
-              <strong>Continue to Step 7</strong> - Review workflow
-            </div>
-            <a href="#" class="button button-arrow light-blue float-right" data-action="next_step">Next step</a>
-          </div>
-        <% end %>
-      </nav>
 
+     <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 6', sub_text: 'Making your thesis available' } %>
     </section>
+
+
+
+    <section class="form-step">
+      <div class="content-box padding-0">
+        <div class="content-box-header">
+          6. Making your thesis available
+        </div>
+        <div class="padding-25 no-pad-top no-pad-bottom">
+          <%= render partial: "admin_fields_edit", :locals => { :f => f, :thesis => @thesis } %>
+        </div>
+        <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @thesis } %>
+        <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
+      </div>
+
+        <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
+    </section>
+
+
+
 
 
     <% if can? :review, :all %>

@@ -21,6 +21,13 @@ limitations under the License.
     <h2 class="heading1">Review dashboard</h2>
   </div>
 
+  <p>
+    You have 
+    <%= pluralize current_user_claimed_tickets_count, 'ticket' %>
+    claimed in the current search context.
+  </p>
+
+
   <% extra_head_content << render_opensearch_response_metadata.html_safe %>
   <% if params.has_key?("q") %>
     <div class="alert alert-info"><i class="icon-search icon-large"></i> You searched for: <strong><%= params[:q] %></strong></div>
@@ -32,6 +39,7 @@ limitations under the License.
 
   <div class="colfull" style="text-align: right; margin-bottom: 15px">
     <hr />
+    
     <%= render 'sort_and_per_page' %>
     <%= render 'dashboard/results_pagination' %>
   </div>
@@ -48,5 +56,6 @@ limitations under the License.
     <%= render :partial=>'reviewer_dashboard/document_list', :locals => {:docs => @response.docs.map { |x| SolrDocument.new(x) } } %>  
 
     <%= render 'dashboard/results_pagination' %>
+      
+    <%= link_to('Clear Search', reviewer_dashboard_index_path, class: 'button') if params[:q]  %>
   </div>
-

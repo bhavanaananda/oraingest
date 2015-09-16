@@ -39,6 +39,13 @@ class ThesisRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.degreeType(:in => RDF::ORA)
     map.awardingBody(:in => RDF::ORA)
     map.dateOfAward(:in => RDF::ORA)
+    map.dispensationEndDate(:in => RDF::ORA)
+    map.dispensationPeriodYears(:in => RDF::ORA)
+    map.dispensationPeriodMonths(:in => RDF::ORA)
+    map.dispensationSelect(:in => RDF::ORA)
+    map.dispensationPeriodStartFromDate(:in => RDF::ORA)
+    map.dispensationPeriodPermanent(:in => RDF::ORA)
+    
   end
 
   accepts_nested_attributes_for :language

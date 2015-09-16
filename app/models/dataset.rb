@@ -7,6 +7,7 @@ require "dataset_agreement"
 require "rdf"
 require 'uri'
 require "fileutils"
+require 'ora/databank'
 
 class Dataset < ActiveFedora::Base
   include Hydra::AccessControls::Permissions
@@ -130,7 +131,7 @@ class Dataset < ActiveFedora::Base
     #TODO: Delete file in Databank and ORA, if location is url
     if self.is_on_disk?(location)
       delete_file(location)
-      self.datastreams[dsid].delete
+      self.datastreams.delete(dsid)
       parts = self.hasPart
       self.hasPart = nil
       self.hasPart = parts.select { |key| not key.id.to_s.include? dsid }
@@ -158,11 +159,9 @@ class Dataset < ActiveFedora::Base
   end
 
   def delete_dir(force=false)
-    unless force
-      FileUtils.rmdir(data_dir) if Dir.exist?(data_dir) && Dir["#{data_dir}/*"].empty?
-    else
-      FileUtils.rm_rf(data_dir) if Dir.exist?(data_dir)
-    end
+    return false unless Dir.exist?(data_dir)
+    return false unless force or Dir["#{data_dir}/*"].empty?
+    FileUtils.rm_rf(data_dir) ? true : false
   end
 
   def create_external_datastream(dsid, url, file_name, file_size)

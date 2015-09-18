@@ -47,7 +47,11 @@ Sufia.config do |config|
     },
     'thesis' => {
         'Thesis' => 'Thesis'
+    },
+    'conferenceItem' => {
+        'ConferenceItem' => 'ConferenceItem'
     }
+
   }
 
   config.type_authorities = {
@@ -229,6 +233,12 @@ Sufia.config do |config|
       'Editor' => RDF::BIBO.editor,
       'Contributor' => RDF::DC.contributor,
       'Copyright holder' => RDF::ORA.copyrightHolder,
+    },
+    'conferenceItem' => {
+        'Author' => RDF::ORA.author,
+        'Editor' => RDF::BIBO.editor,
+        'Contributor' => RDF::DC.contributor,
+        'Copyright holder' => RDF::ORA.copyrightHolder,
     },
     'thesis' => {
       'Author' => RDF::ORA.author,

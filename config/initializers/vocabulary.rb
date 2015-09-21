@@ -76,7 +76,10 @@ Sufia.config do |config|
     },
     'thesis' => {
         'Thesis' => RDF::CAMELOT::thesis
-    }
+    },
+    'conferenceitem' => {
+        'ConferenceItem' => RDF::CAMELOT::conferenceItem
+     }
   }
 
   config.publication_status = {

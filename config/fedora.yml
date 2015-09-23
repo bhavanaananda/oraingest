@@ -1,15 +1,16 @@
 ### N.B: the passwords here must be the database passwords
+
 development:
   user: fedoraAdmin
-  password:
+  password: fedoraAdmin
   url: http://127.0.0.1:8080/fedora
-test: &TEST
+test: &TEST  
   user: fedoraAdmin
   password: fedoraAdmin
-  url: http://127.0.0.1:8080fedora
+  url: http://127.0.0.1:8983/fedora
 production:
   user: fedoraAdmin
-  password: fedoraAdmin
+  password: XmhELPyelqj1m0TK
   url: http://127.0.0.1:8080/fedora
 cucumber:
   <<: *TEST

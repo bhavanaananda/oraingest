@@ -98,7 +98,7 @@ describe ConferenceItem do
     end
 
     it 'sets the url' do
-      expect(@jq_upload['url']).to eq('/conference_items/uuid:nn999n999/file/dsid')
+      expect(@jq_upload['url']).to eq('/conferenceitems/uuid:nn999n999/file/dsid')
     end
 
     it 'sets the thumbnail url' do
@@ -106,7 +106,7 @@ describe ConferenceItem do
     end
 
     it 'sets the delete url' do
-      expect(@jq_upload['delete_url']).to eq('/conference_items/uuid:nn999n999/file/dsid')
+      expect(@jq_upload['delete_url']).to eq('/conferenceitems/uuid:nn999n999/file/dsid')
     end
 
     it 'sets the delete type' do

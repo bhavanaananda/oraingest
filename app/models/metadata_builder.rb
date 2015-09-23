@@ -480,11 +480,13 @@ class MetadataBuilder
         # Important - Do not build before setting the correct Ids for agent and award. 
         #             It may overwrite previous funders if ids are not incremented in form repeater
         model.funding[0].funder.build(funder)
-        model.funding[0].funder[n].agent = nil
-        model.funding[0].funder[n].awards = nil
-        model.funding[0].funder[n].agent.build(funder[:agent_attributes]["0"])
-        awards.each_with_index do |award, n2|
-          model.funding[0].funder[n].awards.build(award)
+        if model.funding[0].funder[n] != nil
+            model.funding[0].funder[n].agent = nil
+            model.funding[0].funder[n].awards = nil
+            model.funding[0].funder[n].agent.build(funder[:agent_attributes]["0"])
+            awards.each_with_index do |award, n2|
+            model.funding[0].funder[n].awards.build(award)
+        end
         end
       end
     elsif !vals[:hasFundingAward].nil?

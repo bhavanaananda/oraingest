@@ -1,11 +1,11 @@
 require 'uri'
 
 module Qa::Authorities
-  class Cud < WebServiceBase
+  class Cud
 
-    # Initialze the Loc class with a query and get the http response from LOC's server.
-    # This is set to a JSON object
-    def initialize
+    def get_json(url)
+      r = RestClient.get url, {accept: :json}
+      JSON.parse(r)
     end
 
     def search(q, sub_authority=nil)
@@ -33,14 +33,18 @@ module Qa::Authorities
       return_fields="cud:cas:fullname,cud:cas:lastname,cud:cas:firstname,cud:cas:oxford_email,cud:cas:sso_username,cud:cas:current_affiliation"
       rows = 10 #This is not working
       query_url = "#{Sufia.config.cud_base_url}/cgi-bin/querycud.py?q=#{query}&fields=#{return_fields}&format=json"
-      @raw_response = get_json(query_url)
+      begin
+        timeout(3) { @raw_response = get_json(query_url) }
+      rescue
+        @raw_response = {}
+      end
       @response = parse_authority_response(@raw_response)
     end
 
     def self.all_fields
-      @fields ||= 
-        begin
-          [
+      @fields ||=
+      begin
+        [
           'cud:cas:cudid',
           'cud:fk:university_card_sysis',
           'cud:fk:oss_student_number',
@@ -77,14 +81,14 @@ module Qa::Authorities
           'cud:consolidated:external_email',
           'cud:consolidated:pas',
           'cud:consolidated:photo'
-          ]
-        end
+        ]
+      end
     end
 
     def self.fields
-      @fields ||= 
-        begin
-          {
+      @fields ||=
+      begin
+        {
           'cud:cas:cudid' => 'id',
           'cud:fk:hris_staff_number' => 'hris_staff_number',
           'cud:cas:title' => 'title',
@@ -113,14 +117,14 @@ module Qa::Authorities
           'cud:cas:external_tel' => 'external_tel',
           'cud:consolidated:external_email' => 'external_email',
           'cud:consolidated:photo' => 'photo'
-          }
-        end
+        }
+      end
     end
 
     def self.sub_authority_table
       @sub_authority_table ||=
-        begin
-          {
+      begin
+        {
           'fullname' => 'cud\:cas\:fullname_text',
           'lastname' => 'cud\:cas\:lastname_text',
           'firstname' => 'cud\:cas\:firstname_text',
@@ -128,8 +132,8 @@ module Qa::Authorities
           'sso_username' => 'cud\:cas\:sso_username_text',
           'sso_username_exact' => 'cud\:cas\:sso_username',
           'current_affiliation' => 'cud\:cas\:current_affiliation'
-          }
-        end
+        }
+      end
     end
 
     def self.authority_valid?(authority)
@@ -142,6 +146,9 @@ module Qa::Authorities
 
     def parse_authority_response(raw_response)
       ans = []
+      if !raw_response.keys.include?('cudSubjects')
+        return ans
+      end
       raw_response['cudSubjects'].each do |doc|
         ans.push(cud_response_to_qa(doc))
         if ans.length == 10 then
@@ -167,11 +174,11 @@ module Qa::Authorities
         val = result_parts[2]
 
         case key
-          when 'title', 'id', 'name', 'updated', 'created'
-            result[key] = val
-          when 'link'
-            result["links"] ||= []
-            result["links"] << [info["type"], info["href"]]
+        when 'title', 'id', 'name', 'updated', 'created'
+          result[key] = val
+        when 'link'
+          result["links"] ||= []
+          result["links"] << [info["type"], info["href"]]
         end
       end
 
@@ -188,14 +195,16 @@ module Qa::Authorities
       end
       # Data['attributes'] no longer has affiliation information. They are passed seperately
       aff = []
-      data['affiliations'].each do |field|
-        # field has the following keys - source, affiliation, status, startDate, endDate, lastUpdated, dateAdded
-        # The affiliations have endDate. If endDate < today - 1 year, we should not use that affiliation
-        endDate = Time.parse(field['endDate']["$date"]) rescue nil
-        if field['source'] != "UAS_DARS" && endDate && endDate > Time.now.ago(1.year)
-          aff.push(field["affiliation"])
+      if data.fetch('affiliations', nil) && data['affiliations'].any?
+        data['affiliations'].each do |field|
+          # field has the following keys - source, affiliation, status, startDate, endDate, lastUpdated, dateAdded
+          # The affiliations have endDate. If endDate < today - 1 year, we should not use that affiliation
+          endDate = Time.parse(field['endDate']["$date"]) rescue nil
+          if field['source'] != "UAS_DARS" && endDate && endDate > Time.now.ago(1.year)
+            aff.push(field["affiliation"])
+          end
         end
-      end  
+      end
       if !aff.empty?
         val = aff.max_by(&:length)
         resp["current_affiliation"] = val
@@ -254,4 +263,3 @@ module Qa::Authorities
 
   end
 end
-

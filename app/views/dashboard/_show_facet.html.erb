@@ -1,0 +1,11 @@
+<li><span><%= facet.to_s.gsub('_', ' ').capitalize %></span>
+	<ul>
+		<% constraints.each do |name, count| %>
+		<li>
+			<a class="facet_select" href="?search=<%= facet.to_s %>:<%= name %>">
+				<%= name %></a>
+			<span class="count"><%= count %></span>
+		</li>
+		<% end %>
+	</ul>
+</li>

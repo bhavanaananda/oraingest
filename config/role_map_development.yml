@@ -1,18 +1,7 @@
 uva-only:
-  - uva-only
-archivist:
-  - archivist1@example.com
 reviewer:
-  - bodl1087
+  - reviewer@bodleian.ox.ac.uk
   - reviewer1@example.com
-  - reviewer2@example.com
 financier:
-  - financier1@example.com
-donor:
-  - donor1@example.com
-researcher:
-  - researcher1@example.com
-patron:
-  - patron1@example.com
-admin_policy_object_editor:
-  - archivist1@example.com
+public:
+

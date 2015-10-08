@@ -7,10 +7,6 @@
 # ignore jetty
 jetty
 
-# Ignore bundler config
-/.bundle
-/vendor/bundle
-
 # Ignore the default SQLite database.
 /db/*.sqlite3
 
@@ -20,11 +16,13 @@ rails_server.log
 /tmp
 
 #Ignore all of the cookies files
+.rtclientrc
 /rt_cookies/*
 
 #Ignore config files
 .rtclientrc
 config/doi_credentials.yml
+config/databank_credentials.yml
 
 #Committing Gemfile.lock before upgrading to sufia 3.7.2
 #Gemfile.lock
@@ -40,4 +38,78 @@ config/doi_credentials.yml
 
 # other temp files
 *~
+
+# Rubymine
+.idea
+
+### SublimeText ###
+# cache files for sublime text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# workspace files are user-specific
+*.sublime-workspace
+
+# project files should be checked into the repository, unless a significant
+# proportion of contributors will probably not be using SublimeText
+# *.sublime-project
+
+# sftp configuration file
+sftp-config.json
+
+
+# Simplecov
+coverage
+
+### Ruby ###
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+
+## Documentation cache and generated files:
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
+## Environment normalisation:
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# for a library or gem, you might want to ignore these files since the code is
+# intended to run in multiple environments; otherwise, check them in:
+# Gemfile.lock
+.ruby-version
+.ruby-gemset
+
+### Rails ###
+capybara-*.html
+.rspec
+/log
+/tmp
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/public/system
+/coverage/
+/spec/tmp
+**.orig
+rerun.txt
+pickle-email-*.html
+
+# dataset file storage location
+/data
+
+# TODO Comment out these rules if you are OK with secrets being uploaded to the repo
+config/initializers/secret_token.rb
+config/secrets.yml
+
 

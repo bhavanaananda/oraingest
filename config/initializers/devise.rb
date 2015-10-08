@@ -1,12 +1,14 @@
 require 'devise_remote_user'
 
-DeviseRemoteUser.configure do |config|
-  #config.env_key = lambda { |env| "#{env['REMOTE_USER']}@stanford.edu" }
-  config.env_key = 'REMOTE_USER'
-  config.auto_create = true
-  config.auto_update = true
-  #config.attribute_map = {webauth_groups: 'WEBAUTH_LDAPPRIVGROUP'}
-  config.attribute_map = {email: 'mail'}
+if Rails.env.production?
+  DeviseRemoteUser.configure do |config|
+    #config.env_key = lambda { |env| "#{env['REMOTE_USER']}@stanford.edu" }
+    config.env_key = 'REMOTE_USER'
+    config.auto_create = true
+    config.auto_update = true
+    #config.attribute_map = {webauth_groups: 'WEBAUTH_LDAPPRIVGROUP'}
+    config.attribute_map = {email: 'mail'}
+  end
 end
 
 # Use this hook to configure devise mailer, warden hooks and so forth.

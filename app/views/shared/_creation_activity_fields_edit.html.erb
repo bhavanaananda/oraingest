@@ -22,6 +22,7 @@
               <% end %>
               <li>
                 <label>
+                 <div class="fieldset">
                 <% if required %>
                   <span class="small reqlabel">Name</span>
                   <%= f_c.text_field :name, :required => true, :value => c.agent[0].name.first, id: "creatorName%d"%c_index, :class=>"creatorName", data: {"progress" => "citation"} %>
@@ -29,13 +30,33 @@
                   <span class="small">Name</span>
                   <%= f_c.text_field :name, :value => c.agent[0].name.first, id: "creatorName%d"%c_index, :class=>"creatorName", data: {"progress" => "citation"} %>
                 <% end %>
+
+                  <% if @model == "dataset" %>
+    <% desc = "Please enter the name of a person involved in creating this dataset and select a role (e.g. ‘Principal Investigator’) from the list.
+        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
+        (their email address and departmental affiliation should also auto-complete)." %>
+  <% elsif @model == "thesis" %>
+    <% desc = "Please enter the name of the author of this thesis and the thesis supervisors, selecting the relevant roles from the list provided. If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed (their email address and departmental affiliation should also auto-complete)." %>
+  <% else %>
+    <% desc = "Please enter the name of a person involved in this publication and select a role from the list.
+        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
+        (their email address and departmental affiliation should also auto-complete)." %>
+  <% end %>
+  <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Creator information" , :tipDescription => desc } %>
+
+
                 <a href="#" class="remove-field small">Remove<span class="icon icon-remove"></span></a>
+                </div>
                 </label>
 
                 <label>
+                <div class="fieldset">
                   <p><span class="small">Email</span>
                     <%= f_c.text_field :email, :value => c.agent[0].email.first, id: "creatorEmail%d"%c_index, :class=>"creatorEmail", data: {"progress" => "documentation"} %>
+                     <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Creator information", :tipDescription =>"Please provide a sustainable email address for the thesis author, overwriting the auto-complete information as necessary, so that ORA staff have a valid contact once any University of Oxford credentials expire" } %>
+
                   </p>
+                  </div>
                 </label>
 
                 <% if can? :review, :all %>
@@ -50,7 +71,10 @@
 
                 <label>
                   <p><span class="small">Role</span>
-                  <%= f_c.select :role, options_for_select(Sufia.config.role_types[@model], :selected=>c.role.first), { :include_blank => 'Select a role' }, id: "creatorRole%d"%c_index, data: {"progress" => "discoverability"} %>
+                    <span class="small">(hold down the <strong>shift</strong> key to select multiple roles)</span><br/>
+                    <%= f_c.select(:role, options_for_select(Sufia.config.role_types[@model], :selected => c.role), {}, :multiple => true,
+                      :size => Sufia.config.role_types[@model].length, id: "creatorRole%d"%c_index,
+                      data: {"progress" => "discoverability"}, :class => "creatorRole" ) %>
                   </p>
                 </label>
 
@@ -61,7 +85,6 @@
                         <%= f_c2.text_field :name, :value => c2.name.first, id: "creatorAffiliation%dName%d"% [c_index, c2_index], :class=>"creatorAffiliation", data: {"progress" => "discoverability"} %>
                       </p>
                     </label>
-
                     <% if can? :review, :all %>
                       <label>
                         <p><span class="small">Link to affiliation object</span>
@@ -71,9 +94,9 @@
                     <% else %>
                       <%= f_c2.hidden_field :sameAs, :value => c2.sameAs.first, id: "creatorAffiliation%dSameAs%d"% [c_index, c2_index] %>
                     <% end %>
-
                   <% end %>
                 <% end %>
+
               </li>
             <% end %>
           <% end %>
@@ -82,20 +105,7 @@
     </ol>
     <a href="#" class="add-field">Add another creator</a>
   </div>
-  <% if @model == "dataset" %>
-    <% desc = "Please enter the name of a person involved in creating this dataset and select a role (e.g. ‘Principal Investigator’) from the list.
-        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
-        (their email address and departmental affiliation should also auto-complete)." %>
-  <% elsif @model == "thesis" %>
-    <% desc = "Please enter the name of a person who wrote this thesis and select a role from the list.
-        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
-        (their email address and departmental affiliation should also auto-complete)." %>
-  <% else %>
-    <% desc = "Please enter the name of a person involved in this publication and select a role from the list.
-        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
-        (their email address and departmental affiliation should also auto-complete)." %>
-  <% end %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Creator information" , :tipDescription => desc } %>
+
 
 </div>
 

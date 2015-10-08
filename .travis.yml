@@ -1,0 +1,24 @@
+
+language: ruby
+cache: bundler
+sudo: false
+rvm:
+  - 2.1.5
+
+before_script:
+  - cp ./.travis.database.yml ./config/database.yml
+  - cp config/doi_credentials_example.yml config/doi_credentials.yml
+  - cp config/databank_credentials_example.yml config/databank_credentials.yml
+  - bundle exec rake db:setup
+  - bundle exec rails g hydra:jetty
+
+gemfile:
+  - Gemfile
+
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+    - JETTY_PORT=8181
+
+script: 
+  - bundle exec rake ora:travis:build

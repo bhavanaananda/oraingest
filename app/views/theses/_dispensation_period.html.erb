@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col col1of3"><label>Years</label></div>
+  <div class="col col1of3"><label>Months</label></div>
+  <div class="col col1of3"><label>Starting from</label></div>
+</div>
+<div class="row">
+  <div class="col col1of3">
+    <%= f.number_field :dispensationPeriodYears,
+    value: @thesis.dispensationPeriodYears.first,
+    in: 0..20, step: 1 %>
+  </div>
+  <div class="col col1of3">
+    <%= f.number_field :dispensationPeriodMonths,
+    value: @thesis.dispensationPeriodMonths.first,
+    in: 0..11, step: 1 %>
+  </div>
+  <div class="col col1of3">
+    <% start_from_date = Time.now.strftime('%d-%m-%Y') %>
+    <% if @thesis.dispensationPeriodStartFromDate.first && %>
+    <% !@thesis.dispensationPeriodStartFromDate.first.empty? %>
+    <% start_from_date = @thesis.dispensationPeriodStartFromDate.first %>
+    <% end %>
+    <%= f.date_field :dispensationPeriodStartFromDate,
+    value: start_from_date,
+    min: Time.now.strftime('%d-%m-%Y') %>
+    
+  </div>
+</div>

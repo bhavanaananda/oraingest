@@ -1,0 +1,14 @@
+<div class="fieldset">
+  <p class="small">Type of degree</p>
+  <%= f.select( :degreeName, options_for_select(Sufia.config.thesis_degree_types, selected: @thesis.degreeName.first), { include_blank: 'Select a degree type' }, data: {"progress" => "discoverability"}   ) %>
+  <div class="hidden-form"> 
+	  <p class="small">Level of degree</p>
+		<%= f.text_field :degreeType, value: @thesis.degreeType.first, readonly: true, style: 'width: 20%' %>
+  </div>
+</div>
+
+
+<div class="fieldset">
+  <p class="small">Year leave to supplicate granted</p>
+  <%= f.date_field :dateOfAward, value: @thesis.dateOfAward.first, style: 'width: 20%', data: {"progress" => "discoverability"} %>
+</div>

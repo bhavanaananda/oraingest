@@ -1,0 +1,19 @@
+<div class="content">
+	<% status = item.status %>
+	<% type = item.type %>
+	<span class="tag <%= get_status_tag(status) %>"><%= status %></span>
+	<span class="tag <%= get_type_tag(type) %>"><%= type %></span>
+	<div><strong>
+		<%= link_to item.title, articles_path(item.id) %>
+	</strong></div>
+	<div class="small">
+		<strong>Creator: </strong>
+		<%=item.creator %>
+	</div>
+	<div class="small">
+		<strong>Abstract: </strong>
+		<%= item.abstract %>
+	</div>
+	<%= render partial: 'article_aside', locals: {item: item}  %>
+	
+</div>

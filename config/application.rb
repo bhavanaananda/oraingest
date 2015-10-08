@@ -9,6 +9,9 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+# Load application ENV vars and merge with existing ENV vars. Loaded here, we can use values in initializers.
+ENV.update YAML.load_file('config/solr.yml')[Rails.env]
+
 module OraHydra
   class Application < Rails::Application
     
@@ -43,6 +46,7 @@ module OraHydra
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    config.i18n.enforce_available_locales = false
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

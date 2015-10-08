@@ -1,0 +1,12 @@
+<li><span><%= facet.to_s.gsub('_', ' ').capitalize %></span>
+	<ul>
+		<% constraints.each do |name, count| %>
+		<li>
+			<% query_string = add_facets_to_query_string(facet, constraints) %>
+			<a class="facet_select" href="?<%= query_string %>">
+				<%= name %></a>
+			<span class="count"><%= count %></span>
+		</li>
+		<% end %>
+	</ul>
+</li>

@@ -1,0 +1,15 @@
+<div class="buttons">
+	<a href="/datasets/<%= id %>" class="button button-small light-blue">Read
+		<i alt="Read" class="fa fa-eye fa-fw pull-right"></i>
+	</a>
+	<a href="/datasets/<%= id %>/edit" class="button button-small light-blue">Edit
+		<i alt="Edit" class="fa fa-edit fa-fw pull-right"></i>
+	</a>
+	<a href="#" class="button button-small light-blue">Delete
+		<i alt="Delete" class="fa fa-remove fa-fw pull-right"></i>
+	</a>
+	<%  if add_claim_button %>
+	<a href="#" class="button button-small light-blue">Claim
+		<i alt="Claim" class="fa fa-hand-grab-o fa-fw pull-right"></i></a>
+	<% end %>
+</div>

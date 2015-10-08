@@ -1,0 +1,59 @@
+<% @page_title = application_name + " Review Submissions" %>
+<h2 class="heading2">Review dashboard</h2>
+
+
+<div class="row">
+	<% unless @result_list %>
+		<h3 class="heading3">No Items retrieved
+		<strong>Back to <%= link_to 'dashboard' %></strong>
+		</h3>
+	<% end %>
+</div>
+
+<% if @result_list %>
+	<div class="row">
+		<%= paginate @result_list, theme: 'blacklight' %>
+
+		<div class="col col1of6">
+			<aside class="filters">
+				<ul id="facets">
+				<% @facets.each do |k, v| %>
+					<%= render partial: 'show_facet', locals: {facet: SolrFacets.reverse_lookup(k), constraints: v} %>
+				<% end %>
+
+				</ul>
+				<h4 class="heading4">Filters</h4>
+				<% session[:solr_query_params].each do |field, value| %>
+					<span class="label label-primary">
+						<%= field.to_s.capitalize %>
+						<a href="?search_remove=<%= field.to_s %>:<%= value %>">
+					  <i class="fa fa-remove fa-sm"></i>
+					  </a>
+				    </span> 
+				    </br>
+				    </br>
+				  <% end %>
+
+			</aside>
+		</div>
+
+		<div class="col col5of6">
+			<h3 class="heading3"><%= @number_items_found %> Items retrieved</h3>
+			<table>
+				<% @result_list.each do |solr_doc| %>
+				<% item = DashboardItem.new(solr_doc) %>
+				<tr>
+					<article class="review-article">
+						<div class="content">
+							<%= render partial: 'article_content', locals: {item: item} %>
+						</div>
+						<%= render partial: 'dashboard_item_buttons', locals: 
+							{id: item.id, add_claim_button: !item.is_it_claimed?} %>
+					</article>
+				</tr>
+				<% end %>
+			</table>
+
+		</div>
+	</div>
+<% end %>

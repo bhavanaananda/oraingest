@@ -1,0 +1,15 @@
+<% if publication.empty? %>
+  <% publication.build %>
+<% end %>
+<% publication.each do |p| %>
+  <%= f.fields_for :publication, p do |f_p| %>
+    <% if p.hasDocument.empty? %>
+      <% p.hasDocument.build %>
+    <% end %>
+    <% p.hasDocument.each do |p2| %>
+      <% if p2.journal.empty? %>
+        <% p2.journal.build %>
+      <% end %>
+    <% end #each document %>
+  <% end #fields for each publication %>
+<% end #each publication %>

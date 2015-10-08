@@ -4,7 +4,6 @@ module RDF
     property :annotation
     # copyright
     property :copyrightNote
-    property :rightsHolderGroup
     # payment
     property :apcPaid
     property :monetaryValue
@@ -46,12 +45,12 @@ module RDF
     property :isPartOfSeries
     # workflow
     property :reviewStatus
-    # Thesis
-    property :thesisDegreeLevel
     # roles
     property :adapter
     property :author
     property :copyrightHolder
+    property :designatedDataSteward
+    property :thesisSupervisor
     property :departmentalAdministrator
     property :depositor
     property :editor
@@ -60,7 +59,7 @@ module RDF
     property :headOfDepartment
     property :headOfFaculty
     property :headOfResearchGroup
-    property :informationOrDataManager
+    property :dataManager
     property :laboratoryManager
     property :performer
     property :principalInvestigator
@@ -72,5 +71,19 @@ module RDF
     property :translator
     # funding
     property :hasFundingAward
+    #thesis
+    property :degreeName
+    property :degreeType
+    property :awardingBody
+    property :dateOfAward
+    property :dispensationFromConsultation
+    property :hasThirdPartyCopyrightMaterial
+    property :dispensationEndDate
+    property :dispensationSelect
+    property :dispensationPeriodStartFromDate
+    property :dispensationPeriodMonths
+    property :dispensationPeriodYears
+    property :dispensationPeriodPermanent
+    
   end
 end

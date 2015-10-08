@@ -121,7 +121,7 @@ $(function() {
   });
 
   // Show licence form thingy
-  $("select#dataset_license_licenseLabel").on("change",function(){
+  $("select.licenseLabel").on("change",function(){
     var val = $(this).val();
     if(val == "Bespoke licence") $("#license-statement").show();
     else $("#license-statement").hide();
@@ -139,6 +139,12 @@ $(function() {
 
     $("section.form-step:eq("+current_form+")").hide();
     new_form.show();
+
+    if (index == 5) {
+
+      var fred = $('#thesis_dispensationFromConsultation').val();
+       $('#thesis_dispensationSelect_period').removeClass("hidden-form");
+    };
 
     navigation.find("li.current").removeClass("current");
     navigation.find("li:eq("+index+")").addClass("current");
@@ -326,6 +332,17 @@ $(function() {
     }
   });
 
+  // Limit multi-valued roles to 3
+  $(".creatorRole").change(function(event) {
+    if ($(this).val().length > 3) {
+     alert('You can only choose 3!');
+     $("option:selected",this).each(function (index) {
+       if (index > 2) {
+         $(this).prop("selected", false);
+       }
+      });
+    }
+  });
 
   /* -------------------------------------------------------------
    * Tracker Follow
@@ -405,7 +422,24 @@ $(function() {
     }
   }
 
+  function assignReviewer() {
+  // Show text box for reviewer to assign to
+  $("#workflows_entries_status input[type='radio']").on("change",function(){
+    var val = $(this).val();
+    if (val == "Assigned") {
+      $("#assign-reviewer").css("display","block");
+      $("#workflows_entries_reviewer_id").removeAttr('disabled');
+    }
+    else {
+      $("#assign-reviewer").css("display","none");
+      $("#workflows_entries_reviewer_id").prop("disabled", true);
+    }
+  });
+  }
+
   fixTracker();
   expandPanel();
   $(document).on("scroll",fixTracker);
+  displayDoi();
+  assignReviewer();
 });

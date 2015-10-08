@@ -48,8 +48,8 @@ class ArticleFilesController < ApplicationController
 
   def destroy
     authorize! :destroy, params[:id]
-    if @article.workflows.first.current_status != "Draft" && @article.workflows.first.current_status !=  "Referred"
-       authorize! :review, params[:id]
+    unless Sufia.config.user_edit_status.include?(@article.workflows.first.current_status)
+      authorize! :review, params[:id]
     end
     if @article.datastreams.keys.include?(params[:dsid])
       # To delete a datastream 
@@ -65,8 +65,13 @@ class ArticleFilesController < ApplicationController
       @article.save
     end
     respond_to do |format|
-      format.html { redirect_to article_url }
-      format.json { head :no_content }
+      if can? :review, @article
+        format.html { redirect_to edit_detailed_articles_path(@article), notice: 'File was successfully deleted.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to edit_article_path(@article), notice: 'File was successfully deleted.' }
+        format.json { head :no_content }
+      end
     end
   end
 

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-# Bundle edge Rails instead: 
-# gem 'rails', github: 'rails/rails'
+#ruby=2.1.5
+
 gem 'rails', '4.0.3'
 
 gem 'mysql2'
@@ -38,26 +38,19 @@ group :doc do
 end
 
 gem 'sufia', "~> 3.7.2"
-#gem 'sufia'
-# required to handle pagination properly in dashboard. See https://github.com/amatsuda/kaminari/pull/322
-gem 'kaminari', github: 'harai/kaminari', branch: 'route_prefix_prototype'  
-#gem 'jettywrapper', "~> 1.5.0"
-#gem 'jettywrapper'
-#gem 'hydra-collections'
+gem 'kaminari'
+gem 'jettywrapper', "~> 1.5.0"
 
-gem 'font-awesome-sass-rails'
+# gem 'font-awesome-sass-rails'
+# gem "font-awesome-rails"
+gem 'font-awesome-sass'
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
 # Use unicorn as the app server
 gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano', group: :development
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
 
 gem "bootstrap-sass"
 gem "devise"
@@ -72,11 +65,33 @@ gem 'paperclip', '>=3.1.0'
 gem 'rt-client'
 
 group :development, :test do
-  gem "rspec-rails"
-  #gem 'jettywrapper', "~> 1.5.0"
+  gem "rspec-rails", '~>3.2.0'
   gem 'chronic'
-  #gem "jettywrapper"
   gem "factory_girl_rails", "~> 4.2.1"
-  gem 'capybara', '~>2.1.0'
-  #gem "debugger"
+  gem 'capybara', '~>2.4.0'
+  gem 'timecop', '~> 0.7.3'
+  gem 'pry' #a powerful shell alternative to IRB
+  gem 'awesome_print' #stylish pretty print.
+  gem 'hirb' #tabular collection output
+  gem 'pry-rails' #pry in the Rails console
+  gem 'pry-doc' #to browse Ruby source
+  gem 'pry-byebug' #debugger
+  gem 'pry-stack_explorer' #navigate the call stack and frames
 end
+
+group :development do
+  gem 'meta_request' #needed for RailsPanel Chrome plugin
+  gem 'better_errors' #better error pages for Rails
+  gem 'binding_of_caller' #Retrieve the binding of a method's caller
+  gem 'travis' #for Travis-CI cli integration
+  gem 'htmlbeautifier' #allows beautifying ERB files
+end
+
+group :test do
+  gem 'webmock'     # Used in tests so external file location does not need to be present
+  gem 'mock_redis'  # Used so redis does not need to be present during tests
+  gem 'simplecov', :require => false
+  gem 'coveralls', :require => false
+end
+
+gem 'god'

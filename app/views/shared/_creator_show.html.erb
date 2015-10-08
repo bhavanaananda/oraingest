@@ -9,11 +9,11 @@
         <% else %>
            <strong><%= c['name'] %></strong><br/>
         <% end %>
-        <% if c.has_key?('role') && !c['role'].nil? && !c['role'].empty? %>
-          <% if Sufia.config.role_labels.include?(c['role']) %>
-            <%= Sufia.config.role_labels[c['role']] %><br/>
-          <% else %>
-            <%= c['role'] %>
+        <% if c.has_key?('role') and c['role'].any? %>
+          <% roles = c['role'].reject { |role| role.blank? } %>
+          <% roles = roles.map {|role| Sufia.config.role_labels[role] || role} %>
+          <% if roles.any? %>
+            <%= roles.join(", ") %>
           <% end %>
         <% end %>
         <% if c.has_key?('affiliationName') && !c['affiliationName'].nil? && !c['affiliationName'].empty? %>

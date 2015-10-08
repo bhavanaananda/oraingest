@@ -1,0 +1,23 @@
+<aside class="info">
+	<div class="small">
+		<strong>Depositor: </strong>
+		<%= item.depositor %>
+	</div>
+	<div class="small">
+		<strong>Date <%= item.date_type %>: </strong>
+		<%= item.date %>
+	</div>	
+	<div class="small">
+		<strong>Reviewer: </strong>
+		<%= item.reviewer %>
+	</div>
+	<div class="small">
+		<strong>RT Tickets: </strong>
+		  <% if item.tickets.size > 0  %>
+		    <% item.tickets.each do |ticket| %>
+		    <%= link_to( ticket, "https://support.bodleian.ox.ac.uk/Ticket/Display.html?id=#{ticket}" ) %>
+		    <% end %>
+		  <% end %>
+	</div>
+</aside>
+

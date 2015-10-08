@@ -98,7 +98,7 @@ funding_types = {
           <a href="#" class="add-field">Add another funder</a>
         </div>
       </div>
-      <% desc = "If your research was the result of a funding award, please select 'yes'. You can then enter your funder's name and sponsor number, and indicate what was sponsored, e.g. whether it was an individual researcher's post, or a whole (or part of a) research project." %>
+      <% desc = "If your research was the result of a funding award, please select 'yes'. You can then enter your funder's name and grant number, and indicate what was sponsored, e.g. whether it was an individual researcher's post, or a whole (or part of a) research project.\n If you are in receipt of funding from a member of the Research Councils UK please see the <a href='http://ox.libguides.com/funder_requirements'> Digital theses and ORA LibGuide</a> with regards to any specific funder requirements that may apply to your work." %>
       <%= render partial: '/shared/tooltip', :locals => {:tipType => "funder" , :tipTitle => "Funding award" , :tipDescription => desc } %>
     </div>
   <% end %>

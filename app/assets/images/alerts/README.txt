@@ -1,0 +1,1 @@
+All icons in this folder have been used courtesy of http://iconmonstr.com/ and their very permissive license (http://iconmonstr.com/license/).

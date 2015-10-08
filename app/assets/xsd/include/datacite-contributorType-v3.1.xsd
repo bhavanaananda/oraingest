@@ -8,15 +8,32 @@
 			<xs:documentation>The type of contributor of the resource.</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="Adapter"/>
+			<xs:enumeration value="Author"/>
 			<xs:enumeration value="ContactPerson"/>
+			<xs:enumeration value="Contributor"/>
+			<xs:enumeration value="Copyright holder"/>
+			<xs:enumeration value="Creator"/>
 			<xs:enumeration value="DataCollector"/>
 			<xs:enumeration value="DataCurator"/>
 			<xs:enumeration value="DataManager"/>
+			<xs:enumeration value="Data steward"/>
+			<xs:enumeration value="Departmental Administrator"/>
+			<xs:enumeration value="Depositor"/>
+			<xs:enumeration value="Designated Data Steward"/>
 			<xs:enumeration value="Distributor"/>
 			<xs:enumeration value="Editor"/>
+			<xs:enumeration value="Examiner"/>
 			<xs:enumeration value="Funder"/>
+			<xs:enumeration value="Head of Department"/>
+			<xs:enumeration value="Head of Faculty"/>
+			<xs:enumeration value="Head of Research Group"/>
 			<xs:enumeration value="HostingInstitution"/>
+			<xs:enumeration value="Information/Data Manager"/>
+			<xs:enumeration value="Laboratory Manager"/>
 			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Performer"/>
+			<xs:enumeration value="Principal Investigator"/>
 			<xs:enumeration value="Producer"/>
 			<xs:enumeration value="ProjectLeader"/>
 			<xs:enumeration value="ProjectManager"/>
@@ -25,10 +42,14 @@
 			<xs:enumeration value="RegistrationAuthority"/>
 			<xs:enumeration value="RelatedPerson"/>
 			<xs:enumeration value="ResearchGroup"/>
+			<xs:enumeration value="Reviewer"/>
 			<xs:enumeration value="RightsHolder"/>
 			<xs:enumeration value="Researcher"/>
 			<xs:enumeration value="Sponsor"/>
+			<xs:enumeration value="Subject Librarian"/>
 			<xs:enumeration value="Supervisor"/>
+			<xs:enumeration value="Thesis Supervisor"/>
+			<xs:enumeration value="Translator"/>
 			<xs:enumeration value="WorkPackageLeader"/>
 		</xs:restriction>
 	</xs:simpleType>

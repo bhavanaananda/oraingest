@@ -38,6 +38,7 @@ class DashboardItem
     elsif self.date_published.empty? && !self.date_accepted.empty?
       dt = "accepted"
     end
+    dt
   end
 
   def tickets

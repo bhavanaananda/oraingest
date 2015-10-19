@@ -3,9 +3,8 @@ archivist:
   - archivist2@example.com
   - leland_himself@example.com
 reviewer:
-  - archivist1@example.com
-  - archivist2@example.com
-  - leland_himself@example.com
+  - reviewer1@example.com
+  - reviewer2@example.com
 admin_policy_object_editor:
   - archivist1@example.com
 donor:

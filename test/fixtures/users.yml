@@ -1,6 +1,11 @@
 reviewer:
+  id: 1	
   email: reviewer1@example.com
   encrypted_password: $2a$10$eVS0hvpXEOmxpx//Max7fOYdXqlrsXvBkBXf7hm5eTKVqr.Z8OYga
+  sign_in_count: 10
+
 archivist:
+  id: 2
   email: archivist1@example.com
-  encrypted_password: $2a$10$eVS0hvpXEOmxpx//Max7fOYdXqlrsXvBkBXf7hm5eTKVqr.Z8OYga  
+  encrypted_password: $2a$10$eVS0hvpXEOmxpx//Max7fOYdXqlrsXvBkBXf7hm5eTKVqr.Z8OYga
+  sign_in_count: 10  

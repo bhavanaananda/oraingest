@@ -13,7 +13,8 @@ class FredDashboardController < ApplicationController
 
   def index
 
-    @@solr_connection ||= RSolr.connect url: ENV['url']
+    @@solr_connection ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
+
     @@solr_docs ||= [] #list if SolrDoc documents
 
     total = @@solr_connection.select({:rows => 0})["response"]["numFound"]

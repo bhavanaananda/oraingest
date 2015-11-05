@@ -96,3 +96,6 @@ end
 
 gem 'god'
 gem 'query_string_search'
+gem 'datacite_mds'
+gem 'hashids'
+gem 'figaro'

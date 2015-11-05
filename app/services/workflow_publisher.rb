@@ -3,11 +3,11 @@ require 'ora/data_doi'
 class WorkflowPublisher
 
   attr_accessor :parent_model
-  
+
   def initialize(model)
     @parent_model = model
   end
-  
+
   def perform_action(current_user)
     wf_id = 'MediatedSubmission'
     # Mint a doi or check a DOI if doi_requested? and in review status
@@ -28,21 +28,9 @@ class WorkflowPublisher
     unless Sufia.config.user_edit_status.include?(wf.current_status)
       # Mint a doi or check a DOI, if doi_requested?
       if @parent_model.model_klass == 'Dataset' && @parent_model.doi_requested? && !@parent_model.doi_registered?
-        doi = @parent_model.doi(mint=false)
-        if doi.blank?
-          doi = @parent_model.request_doi
-          if doi
-            msg << "DOI '#{doi}' has been minted to register"
-          else
-            msg = 'Error minting a doi'
-            status = false
-          end
-        elsif doi.start_with?(Sufia.config.doi_credentials['shoulder'])
-          msg << "Using given doi '#{doi}' to register DOI"
-        else
-          msg << "Error: The DOI '#{doi}' is not a Bodleian DOI. It will not be registered!"
-          status = false
-        end
+
+        @parent_model.set_dataset_doi
+
       end
     end
     unless status

@@ -8,9 +8,8 @@ module DoiMethods
     if self.model_klass != "Dataset"
       return doi
     end
-    if (self.publication.first && 
-        self.publication.first.hasDocument.first &&
-        !self.publication.first.hasDocument.first.doi.first.blank?)
+
+    if !self.publication.try(:first).try(:hasDocument).try(:first).try(:doi)
       doi = self.publication.first.hasDocument.first.doi.first
     elsif mint
       doi = Sufia::Noid.noidify(Sufia::IdService.mint_doi)
@@ -90,7 +89,7 @@ module DoiMethods
       "Supervisor",
       "WorkPackageLeader",
     ]
-    
+
     doi_data = {
       target: "http://ora.ox.ac.uk/objects/#{self.id.to_s}",
       creator: [],
@@ -129,7 +128,7 @@ module DoiMethods
         if cr.agent.first && !cr.agent.first.name.first.blank?
           c = { name: cr.agent.first.name.first }
           if (cr.agent.first.affiliation.first &&
-             !cr.agent.first.affiliation.first.name.first.blank?)
+              !cr.agent.first.affiliation.first.name.first.blank?)
             c[:affiliation] = cr.agent.first.affiliation.first.name.first
           end
           if cr.role.include?(RDF::DC.creator)
@@ -217,4 +216,3 @@ module DoiMethods
   end
 
 end
-

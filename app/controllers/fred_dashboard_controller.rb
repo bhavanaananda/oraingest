@@ -12,7 +12,9 @@ class FredDashboardController < ApplicationController
   before_filter :restrict_access_to_reviewers
 
   def index
-    @@solr_connection ||= RSolr.connect url: ENV['url']
+
+    @@solr_connection ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
+
     @@solr_docs ||= [] #list if SolrDoc documents
 
     total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
@@ -71,12 +73,17 @@ class FredDashboardController < ApplicationController
     @result_list = []
     kam_rows = 10
     kam_pages = (@total_found.to_f / kam_rows.to_f).ceil
+
     if results && results.size > 0
-    @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
+	    @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
 	end
 
-
     @disable_search_form = true #stop ora search form appearing
+
+    respond_to do |format|
+      format.html
+      format.json {render :json => results.to_json}
+    end
 
   end
 

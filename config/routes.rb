@@ -25,6 +25,12 @@ OraHydra::Application.routes.draw do
     devise_for :users
   end
 
+
+  OraHydra::Application.routes.draw do
+    mount Resque::Server.new, at: "/resque"
+  end
+
+
   if defined?(Sufia::ResqueAdmin)
     namespace :admin do
       constraints Sufia::ResqueAdmin do

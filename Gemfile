@@ -11,10 +11,10 @@ gem 'sqlite3'
 # in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 4.0.0'
-  
+
   # Use Uglifier as compressor for JavaScript assets
   gem 'uglifier', '>= 1.3.0'
-  
+
   # Use CoffeeScript for .js.coffee assets and views
   gem 'coffee-rails', '~> 4.0.0'
 
@@ -41,8 +41,6 @@ gem 'sufia', "~> 3.7.2"
 gem 'kaminari'
 gem 'jettywrapper', "~> 1.5.0"
 
-# gem 'font-awesome-sass-rails'
-# gem "font-awesome-rails"
 gem 'font-awesome-sass'
 
 
@@ -88,11 +86,16 @@ group :development do
 end
 
 group :test do
-  gem 'webmock'     # Used in tests so external file location does not need to be present
+  # gem 'webmock'     # Used in tests so external file location does not need to be present
   gem 'mock_redis'  # Used so redis does not need to be present during tests
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
+  gem 'minitest-rails-capybara'
+  gem 'minitest-reporters'
 end
 
 gem 'god'
 gem 'query_string_search'
+gem 'datacite_mds'
+gem 'hashids'
+gem 'figaro'

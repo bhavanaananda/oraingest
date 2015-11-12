@@ -10,17 +10,16 @@ module DoiGenerator
   MDS = Datacite::Mds.new
 
 
-  def self.generate(uuid)
+  def self.generate(uuid=nil)
+    uuid = SecureRandom.uuid unless uuid
     hashids = Hashids.new(SALT)
     # remove any redundant parts from uuid
     raw_string = uuid.gsub("uuid:", "").gsub("-", "").slice(0, SLICE_DIGITS)
     doi = DOI_SHOULDER + ":" + hashids.encode_hex(raw_string)
     # make sure DOI not already on Datacite
-    MDS.resolve(doi).instance_of?(Net::HTTPNotFound) ? doi 
-    						: generate(SecureRandom.uuid)
+    generate unless MDS.resolve(doi).instance_of? Net::HTTPNotFound
+    doi
   end
 
 
 end
-
-

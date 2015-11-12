@@ -17,9 +17,9 @@ class RegisterDoiJob
     # Register doi
     mds = Datacite::Mds.new
     res = mds.upload_metadata( build_metadata(payload.with_indifferent_access))
-    if res.instance_of? Net::HTTPCreated 201
+    if res.instance_of? Net::HTTPCreated
       res = mds.mint payload[:identifier], payload[:target]
-      if res.instance_of? Net::HTTPCreated 201
+      if res.instance_of? Net::HTTPCreated
         obj.workflowMetadata.update_status(Sufia.config.doi_status,
                                            "Doi with metadata registered")
       else

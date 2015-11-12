@@ -169,8 +169,7 @@ class ThesesController < ApplicationController
   end
 
   def process_file(file)
-    #Sufia::GenericFile::Actions.create_content(@thesis, file, file.original_filename, datastream_id, current_user)
-    datastream_id = @thesis.mint_datastream_id()
+    datastream_id = @thesis.mint_datastream_id
     @thesis.add_file(file, datastream_id, file.original_filename)
     save_tries = 0
     begin

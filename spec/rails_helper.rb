@@ -51,9 +51,11 @@ RSpec.configure do |config|
 
 end
 
-# require 'webmock/rspec'
+require 'webmock/rspec'
 # NOTE: enabling net connections for now, don't know if it's god in long term
-# WebMock.disable_net_connect!(allow_localhost: true, allow: 'coveralls.io')
+WebMock.disable_net_connect!( allow_localhost: true, 
+                          allow: 'coveralls.io',
+                          allow: 'mds.datacite.org')
 
 module FactoryGirl
   # Add find_or_create method to FactoryGirl so we can find_or_create users

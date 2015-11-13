@@ -1,7 +1,7 @@
 require 'uri'
 
 module Qa::Authorities
-  class Loc < WebServiceBase
+  class Loc < Qa::Authorities::WebService
 
     # Initialze the Loc class with a query and get the http response from LOC's server.
     # This is set to a JSON object

@@ -61,7 +61,6 @@ module ORA
     end
 
     def call(payload)
-      binding.pry
       add_metadata(to_xml(payload))
       request(data_for_create(payload.with_indifferent_access))
       self.status = true

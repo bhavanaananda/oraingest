@@ -51,7 +51,7 @@ describe User do
     end
     
     it 'with groupsarray of reviewer' do
-      RoleMapper.stub(:roles) { ['reviewer'] }
+      allow(RoleMapper).to receive(:roles).and_return(['reviewer'])
 
       expect(user.reviewer?).to eq(true)
     end

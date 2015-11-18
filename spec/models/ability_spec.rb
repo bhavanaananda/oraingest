@@ -16,7 +16,7 @@ describe User do
     context 'when user is a reviewer' do 
       
       before do
-        user.stub(:reviewer?) {true}
+        allow(user).to receive(:reviewer?).and_return(true)
       end
       
       it 'user.can? :review' do

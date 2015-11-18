@@ -24,13 +24,12 @@ class ReviewingController < ApplicationController
 
     rows  = 100 # rows to retrieve at a time
 
-
     pages = (total.to_f / rows.to_f).ceil # round up
     (1..pages).each do |page|
       start = (page-1) * rows
       query_string = "/select?q=*%3A*&rows=#{rows}&start=#{start}&wt=ruby"
       # need to remove # from url, or it won't work
-      sanitised_url = ENV['url'].gsub(%r{/#}, '')
+      sanitised_url = Rails.application.config.solr[Rails.env]['url'].gsub(%r{/#}, '')
       response = http_request(sanitised_url + query_string)
       if response.is_a? Net::HTTPSuccess 
         #body is a Hash wrapped in a String, so eval will give us the Hash

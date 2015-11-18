@@ -2,7 +2,7 @@
 <% query_string_to_hash(@query_string).each do |k, v| %>
 <span class="label label-primary">
 	<% new_query = remove_from_query(k) %>
-	<%= link_to '',  { controller: "fred_dashboard", q: new_query }, class: "fa fa-remove fa-sm" %>
+	<%= link_to '',  { controller: "reviewing", q: new_query }, class: "fa fa-remove fa-sm" %>
 	<% k = k.gsub(%r{[\[\]]}, '') if k.is_a? String %>
 	<strong> <%= k.to_s.chomp('!').capitalize %></strong>:
 	<%= 'NOT' if k[-1] == '!' %>

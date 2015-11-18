@@ -1,13 +1,16 @@
-require 'ora/data_doi'
+# require 'ora/data_doi'
+require 'active_support/core_ext/hash/indifferent_access'
+require 'builder'
+require 'nokogiri'
 
 class WorkflowPublisher
 
   attr_accessor :parent_model
-  
+
   def initialize(model)
     @parent_model = model
   end
-  
+
   def perform_action(current_user)
     wf_id = 'MediatedSubmission'
     # Mint a doi or check a DOI if doi_requested? and in review status
@@ -28,21 +31,9 @@ class WorkflowPublisher
     unless Sufia.config.user_edit_status.include?(wf.current_status)
       # Mint a doi or check a DOI, if doi_requested?
       if @parent_model.model_klass == 'Dataset' && @parent_model.doi_requested? && !@parent_model.doi_registered?
-        doi = @parent_model.doi(mint=false)
-        if doi.blank?
-          doi = @parent_model.request_doi
-          if doi
-            msg << "DOI '#{doi}' has been minted to register"
-          else
-            msg = 'Error minting a doi'
-            status = false
-          end
-        elsif doi.start_with?(Sufia.config.doi_credentials['shoulder'])
-          msg << "Using given doi '#{doi}' to register DOI"
-        else
-          msg << "Error: The DOI '#{doi}' is not a Bodleian DOI. It will not be registered!"
-          status = false
-        end
+
+        @parent_model.set_dataset_doi
+
       end
     end
     unless status
@@ -64,17 +55,15 @@ class WorkflowPublisher
     # Send pid and list of open datastreams to queue
     # If datastreams are empty, that means record is all dark
     #1 Check if ready to publish
-    unless ready_to_publish?(wf_id=wf_id)
-      return
-    end
+    return unless ready_to_publish?(wf_id=wf_id)
     msg = []
     status = nil
+
     #2 check minimum metadata
     ans, msg2 = check_minimum_metadata
     msg = msg + msg2
-    unless ans
-      status = Sufia.config.failure_status
-    end
+    status = Sufia.config.failure_status unless ans
+
     #3 Add record to publish workflow
     unless status == Sufia.config.failure_status
       ans, msg2 = add_to_queue
@@ -114,28 +103,37 @@ class WorkflowPublisher
       status = false
       msg << 'Not all files or the catalogue record has embargo details'
     end
-    # The metadata for regsitering DOI should exist
+
+    # The metadata for registering DOI should exist
     if @parent_model.model_klass == 'Dataset' && @parent_model.doi_requested?
       unless @parent_model.doi_registered?
         payload = @parent_model.doi_data
-        dd = ORA::DataDoi.new(Sufia.config.doi_credentials)
-        # validate required fields
-        begin
-          dd.validate_required(payload)
-        rescue ORA::DataValidationError => e
+
+        error = validate_required_fields(payload).blank?
+        unless error.blank?
           status = false
-          msg << e.message
-        end
-        # validate xml to schema
-        begin
-          dd.validate_xml(payload)
-        rescue ORA::DataValidationError => e
-          status = false
-          msg << e.message
+          msg << error
         end
       end
     end
+
     return status, msg
+  end
+
+
+  def validate_required_fields(payload)
+    errors, error_msg = [], ""
+    REQUIRED_ATTRIBUTES.each do |attr|
+      errors << "#{attr}" if payload.with_indifferent_access[attr].try(:blank?)
+    end
+
+    if errors.any?
+      error_msg = "The following attributes are missing: " + errors.join(", ")
+      obj.workflowMetadata.update_status(Sufia.config.failure_status, error_msg)
+      obj.save!
+
+    end
+    error_msg
   end
 
   def add_to_queue

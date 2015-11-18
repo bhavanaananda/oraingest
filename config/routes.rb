@@ -4,7 +4,7 @@ OraHydra::Application.routes.draw do
 
 
   # route for new dashboard
-  get '/dash', to: 'fred_dashboard#index'
+  get '/dash', to: 'reviewing#index'
 
 
   mount Qa::Engine => '/qa'
@@ -24,6 +24,12 @@ OraHydra::Application.routes.draw do
   else
     devise_for :users
   end
+
+
+  OraHydra::Application.routes.draw do
+    mount Resque::Server.new, at: "/resque"
+  end
+
 
   if defined?(Sufia::ResqueAdmin)
     namespace :admin do

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Article do
 
-  it_behaves_like 'doi_methods'
+  # it_behaves_like 'doi_methods'
 
   describe 'attributes' do
 

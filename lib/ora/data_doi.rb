@@ -9,6 +9,7 @@ require 'active_support/core_ext/hash/indifferent_access'
 require 'builder'
 require 'nokogiri'
 
+
 module ORA
   class DataValidationError < RuntimeError
     def initialize(errors)
@@ -60,6 +61,7 @@ module ORA
     end
 
     def call(payload)
+      binding.pry
       add_metadata(to_xml(payload))
       request(data_for_create(payload.with_indifferent_access))
       self.status = true
@@ -116,6 +118,7 @@ module ORA
       data << "doi=#{payload[:identifier]}"
       data << "url=#{payload[:target]}"
       data.join("\n")
+      # "doi=#{payload[:identifier]}" "url=#{payload[:target]}"
     end
 
     def data_for_metadata(payload)

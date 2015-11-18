@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FredDashboardController do
+describe ReviewingController do
 
   # describe "Search" do
   #   it "creates full search query" do

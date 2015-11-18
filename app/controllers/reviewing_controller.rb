@@ -7,7 +7,7 @@ end
 
 
 
-class FredDashboardController < ApplicationController
+class ReviewingController < ApplicationController
 
   before_filter :restrict_access_to_reviewers
 

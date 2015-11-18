@@ -16,7 +16,7 @@ FactoryGirl.define do
   end
 
   factory :reviewer, class: User do |u|
-    email 'reviewer1@example.com'
+    email 'archivist1@example.com'
     password 'password'
   end
   

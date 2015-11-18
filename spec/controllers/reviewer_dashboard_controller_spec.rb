@@ -5,9 +5,9 @@ describe ReviewerDashboardController do
     allow_any_instance_of(User).to receive(:groups).and_return([])
   end
   
-  describe 'logged in reviewer' do
+  describe 'logged in archivist' do
     before (:each) do
-      @user = FactoryGirl.find_or_create(:reviewer)
+      @user = FactoryGirl.find_or_create(:archivist)
       sign_in @user
       allow_any_instance_of(User).to receive(:groups).and_return([])
     end

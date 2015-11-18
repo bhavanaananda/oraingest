@@ -1,11 +1,26 @@
 Changelog
 =========
 
-1.6.0.rc3 - 2015/10/16
+1.6.0.rc5 - 2015/11/18
+----------------------
+
+- Remove facility to prevent past dates for embargoes
+- Integrate new DOI minting package for datacite
+- Display embargo details when sub form is collapsed
+- Fix tooltip overflow overlapping
+- Email now mandatory for thesis creator
+- Thesis access conditions now defaults to yes
+- Thesis upload help text now only appears for thesis
+
+1.6.0.rc4 - 2015/10/20
 ----------------------
 
 - new reviewer dashboard
 
+1.6.0.rc3 - 2015/10/16
+----------------------
+
+- new reviewer dashboard
 
 1.6.0.rc2 - 2015/10/14
 ----------------------

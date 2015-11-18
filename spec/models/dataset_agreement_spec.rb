@@ -79,7 +79,7 @@ describe DatasetAgreement do
       expect(permission.type).to eq('group')
       expect(permission.access).to eq('edit')
       permission = @agreement.permissions[2]
-      expect(permission.name).to eq('archivist1@example.com')
+      expect(permission.name).to eq('reviewer1@example.com')
       expect(permission.type).to eq('user')
       expect(permission.access).to eq('edit')
     end

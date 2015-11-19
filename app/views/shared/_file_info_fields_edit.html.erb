@@ -52,16 +52,6 @@
                         <% embargo_start = hp.accessRights[0].embargoDate[0].start[0].date[0] %>
                         &nbsp;&nbsp;&nbsp;&nbsp;Start: <%= embargo_start %>
                       <% end %>
-                      <% if not hp.accessRights[0].embargoDate[0].duration.empty? %>
-                        &nbsp;&nbsp;&nbsp;&nbsp;Duration[
-                        <% if not embargo_duration = hp.accessRights[0].embargoDate[0].duration[0].years.empty?%>
-                           Years:<%= embargo_duration %>
-                        <% end %>
-                        <% if not embargo_duration = hp.accessRights[0].embargoDate[0].duration[0].months.empty?%>
-                           Months:<%= embargo_duration %>
-                           ]
-                        <% end %>
-                      <% end %>
                       <% if not hp.accessRights[0].embargoDate[0].end.empty? %>
                         &nbsp;&nbsp;&nbsp;&nbsp;End:
                         <% embargo_end = hp.accessRights[0].embargoDate[0].end[0].date[0]%> <%= embargo_end %>

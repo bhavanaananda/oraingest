@@ -34,6 +34,7 @@
           <%= render partial: "admin_fields_show", :locals => { :thesis => @thesis } %>
           <%= render partial: "shared/embargo/catalogue_fields_show", :locals => { :article => @thesis } %>
           <%= render partial: "shared/workflow_show", :locals => { :article => @thesis } %>
+          <%= render partial: "shared/comments_show", :locals => { :@model => @thesis } %>
           <% if can? :review, :all %>
               <%= render partial: "shared/permissions_show", :locals => { :article => @thesis } %>
           <% end %>

@@ -22,7 +22,7 @@ require 'fields/location'
 class DatasetRdfDatastream < ActiveFedora::NtriplesRDFDatastream
   #include ModelHelper
 
-  attr_accessor :title, :subtitle, :abstract, :subject, :keyword, :worktype, :language, :license, :dateCopyrighted, :rightsHolder, :rights, :rightsActivity, :creation, :funding, :publication
+  attr_accessor :title, :subtitle, :abstract, :subject, :keyword, :worktype, :language, :license, :dateCopyrighted, :rightsHolder, :rights, :rightsActivity, :creation, :funding, :publication, :comments
 
   rdf_type rdf_type RDF::PROV.Entity
   map_predicates do |map|
@@ -74,6 +74,7 @@ class DatasetRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.publication(:to => "hadPublicationActivity", :in => RDF::ORA, class_name:"PublicationActivity")
     #-- source --
     # TODO: Nested attributes of name, homepage and uri - one to many
+    map.comments(:to => "description", :in => RDF::DC)
 
   end
   accepts_nested_attributes_for :subject

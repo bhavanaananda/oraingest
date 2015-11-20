@@ -12,6 +12,11 @@
         <%= render partial: 'dispensation_yes', locals: { f: f} %>
       </div>
     </label>
+    <div id="has_dispensation_comments" class="hidden-form">
+        <%= f.label :dispensationComment,
+                    "Comment" %>
+        <%= f.text_area :dispensationComment, :value => "", :id => "dispensationComment", data: {"progress" => "documentation"} %>
+    </div>
     <label>
       <%= f.radio_button :dispensationFromConsultation, "no",
         checked: thesis.dispensationFromConsultation.first == "no",
@@ -46,6 +51,11 @@
         <%= render partial: 'copyright_material_yes' %>
       </div>
     </label>
+    <div id="has_copyright_material_comment" class="hidden-form">
+        <%= f.label :copyrightMaterialComment,
+                    "Comment" %>
+        <%= f.text_area :copyrightMaterialComment, :value => "", :id => "copyrightMaterialComment", data: {"progress" => "documentation"} %>
+    </div>
     <label>
       <%= f.radio_button :hasThirdPartyCopyrightMaterial, "no",
         checked: thesis.hasThirdPartyCopyrightMaterial.first == "no",

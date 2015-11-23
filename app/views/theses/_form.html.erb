@@ -162,7 +162,9 @@
           <%= render partial: 'shared/comments', :locals => { :f => f, :@model => @thesis } %>
         </div>
       </div>
+      <% if can? :review, :all %>
           <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
+      <% end %>
     </section>
 
 

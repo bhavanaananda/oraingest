@@ -1,11 +1,16 @@
 <li><span><%= facet.to_s.gsub('_', ' ').capitalize %></span>
 <ul>
-	<% constraints.each do |name, count| %>
-	<li>
-		<% mod_query_string = add_to_query({facet.to_sym => name}) %>
-		<%= link_to name,  { controller: "reviewing", q: mod_query_string }, class: "facet_select" %>
-		<span class="count"><%= count %></span>
-	</li>
+	<%  facet_names, facet_counts = [], [] %>
+	<% constraints.each_with_index do |x, idx| %>
+		<% facet_names.push(x) if idx.even? %>
+		<% facet_counts.push(x) if idx.odd? %>
 	<% end %>
+	<li>
+		<% facet_names.size.times do |n| %>
+			<%= link_to "#{facet_names[n]} (#{facet_counts[n]})",  { controller: "reviewing" }, class: "facet_select" %>
+			</br>
+		<% end %>
+
+	</li>
 </ul>
 </li>

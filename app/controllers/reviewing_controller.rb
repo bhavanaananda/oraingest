@@ -17,7 +17,25 @@ class ReviewingController < ApplicationController
 
     @@solr_docs ||= [] #list if SolrDoc documents
 
-    total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
+
+    default_query = "#{SolrFacets.lookup(:STATUS)}:Claimed AND #{SolrFacets.lookup(:STATUS)}=#{current_user.email}"
+    backup_query = "!#{SolrFacets.lookup(:STATUS)}:Claimed"
+
+
+    response = solr_search(backup_query,  params[:page] ? params[:page].to_i : 1)
+    @docs_found = response['response']['numFound']
+    if @docs_found < 1
+      #TODO: no Solr records, render error page
+    else
+      @facets = response['facet_counts']['facet_fields']
+      @docs_list = response['response']['docs']
+    end
+
+    render 'fred'
+
+
+=begin
+total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
     if total < 1
       #TODO: no Solr records, render error page
     end
@@ -48,18 +66,18 @@ class ReviewingController < ApplicationController
 
 
 
-	if params[:search]
-		# just prevent the query string from being set
+  if params[:search]
+    # just prevent the query string from being set
     elsif params[:q] && !params[:q].empty?
       @query_string = params[:q]
     elsif params[:q] && params[:q].empty?  
-    	@query_string = 'all'
+      @query_string = 'all'
     elsif !params[:q]
       redirect_to action: 'index', q: default_query and return
     end
 
-	results = params[:search] ? do_global_search(params[:search]) : 
-			QueryStringSearch.new(@@solr_docs, @query_string).results
+  results = params[:search] ? do_global_search(params[:search]) : 
+      QueryStringSearch.new(@@solr_docs, @query_string).results
 
     @total_found = results.size
 
@@ -74,23 +92,22 @@ class ReviewingController < ApplicationController
     kam_pages = (@total_found.to_f / kam_rows.to_f).ceil
 
     if results && results.size > 0
-	    @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
-	end
+      @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
+  end
+=end
 
-    @disable_search_form = true #stop ora search form appearing
+    # @disable_search_form = true #stop ora search form appearing
 
-    respond_to do |format|
-      format.html
-      format.json {render :json => results.to_json}
-    end
+    # respond_to do |format|
+    #   format.html
+    #   format.json {render :json => results.to_json}
+    # end
 
   end
 
 
-  def do_search(query)
+  def solr_search(query, page = 1)
     logger.info "Solr search query: #{query}"
-    page = 1 unless params[:page]
-
 
     @@solr_connection.paginate page, 10, "select", params: {
       q: query,
@@ -104,13 +121,13 @@ class ReviewingController < ApplicationController
 
 
   def do_global_search( search_term )
-  	joined_results = []
+    joined_results = []
     Solrium.each do |nice_name, solr_name|
       qs= "#{nice_name.to_s.downcase}=#{search_term}"
-	  rs = QueryStringSearch.new(@@solr_docs, qs).results
-	  joined_results.concat( rs ) if rs.size > 0
-	end
-  	joined_results
+      rs = QueryStringSearch.new(@@solr_docs, qs).results
+      joined_results.concat( rs ) if rs.size > 0
+    end
+    joined_results
   end
 
   def http_request(url, limit = 10)
@@ -123,13 +140,13 @@ class ReviewingController < ApplicationController
 
     response = http.request(request)
 
-    if response.is_a? Net::HTTPSuccess 
+    if response.is_a? Net::HTTPSuccess
       response
-    elsif response.is_a? Net::HTTPRedirection 
+    elsif response.is_a? Net::HTTPRedirection
       http_request(response['location'], limit - 1)
     else
       response.error!
-    end    
+    end
   end
 
 

@@ -14,7 +14,7 @@ class ReviewingController < ApplicationController
   def index
 
 
-    
+
     backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
     default_filter_1 = Filter.new(:STATUS, :Claimed)
     default_filter_2 = Filter.new(:CURRENT_REVIEWER, current_user.email)
@@ -107,14 +107,24 @@ class ReviewingController < ApplicationController
 
   def build_query(filter_list)
     query = ""
-    filter_list.each do |filter|
-        query = "#{SolrFacets.lookup(filter.facet)}:#{filter.value}" 
-        if %w[NOT not Not].include? filter.predicate.to_s
-          query = query.prepend('!')
-        end
+    # filter_list.each do |filter|
+    #   query = "#{SolrFacets.lookup(filter.facet)}:#{filter.value}"
+    #   if %w[NOT not Not].include? filter.predicate.to_s
+    #     query = query.prepend('!')
+    #   end
+    # end
+
+    (0...filter_list.length).step(1).each do |index|
+      filter = filter_list[index]
+      query = "#{SolrFacets.lookup(filter.facet)}:#{filter.value}"
+      if %w[NOT not Not].include? filter.predicate.to_s
+        query = query.prepend('!')
+      end
+      query << " AND " unless index == filter_list.length - 1
     end
+
     query
-        
+
   end
 
 

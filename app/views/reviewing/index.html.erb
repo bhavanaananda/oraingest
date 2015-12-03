@@ -9,9 +9,10 @@
 			<aside class="filters">
 				<ul id="facets">
 					<% @facets.each do |k, v| %>
-					<%= render partial: 'show_facet', locals: {facet: SolrFacets.reverse_lookup(k), constraints: v} %>
+					<%= render partial: 'show_facet', locals: {facet: SolrFacets.reverse_lookup(k), constraints: v} if v.size > 0 %>
 					<% end %>
 				</ul>
+				<%= render 'show_filters' %>
 			</aside>
 		</div>		
 		<div class="col col5of6">

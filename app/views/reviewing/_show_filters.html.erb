@@ -1,13 +1,10 @@
 <h4 class="heading4">Filters</h4>
-<% query_string_to_hash(@query_string).each do |k, v| %>
 <span class="label label-primary">
-	<% new_query = remove_from_query(k) %>
-	<%= link_to '',  { controller: "reviewing", q: new_query }, class: "fa fa-remove fa-sm" %>
-	<% k = k.gsub(%r{[\[\]]}, '') if k.is_a? String %>
-	<strong> <%= k.to_s.chomp('!').capitalize %></strong>:
-	<%= 'NOT' if k[-1] == '!' %>
-	<%= v %>
+	<% @filters.each do |filter| %>
+		<%= link_to "  #{filter}" ,  { controller: "reviewing", remove_filter: filter }, class: "fa fa-remove fa-sm" %>
+		</br>
+		</br>
+	<% end %>
 </span>
 </br>
 </br>
-<% end %>

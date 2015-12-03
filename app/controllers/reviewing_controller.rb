@@ -1,4 +1,3 @@
-require "net/http"
 
 # FIXME: ugly hack to get Solr working with Kaminari
 class RSolr::Response::PaginatedDocSet
@@ -9,20 +8,35 @@ end
 
 class ReviewingController < ApplicationController
 
+  Filter = Struct.new(:facet, :value, :predicate)
   before_filter :restrict_access_to_reviewers
 
   def index
 
+
+    
+    backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
+    default_filter_1 = Filter.new(:STATUS, :Claimed)
+    default_filter_2 = Filter.new(:CURRENT_REVIEWER, current_user.email)
+
+    # @filters is an Array of Hashes that
+    # keeps track of all the facets we filter on
+    @filters = []
+
     @@solr_connection ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
 
-    @@solr_docs ||= [] #list if SolrDoc documents
+    @@solr_docs ||= []
 
+    filters <<
+      default_query = "#{SolrFacets.lookup(:STATUS)}:Claimed AND #{SolrFacets.lookup(:CURRENT_REVIEWER)}=#{current_user.email}"
+      backup_query = "!#{SolrFacets.lookup(:STATUS)}:Claimed"
 
-    default_query = "#{SolrFacets.lookup(:STATUS)}:Claimed AND #{SolrFacets.lookup(:STATUS)}=#{current_user.email}"
-    backup_query = "!#{SolrFacets.lookup(:STATUS)}:Claimed"
+    if params[:facet] && params[:facet_name]
+    end
 
 
     response = solr_search(backup_query,  params[:page] ? params[:page].to_i : 1)
+
     @docs_found = response['response']['numFound']
     if @docs_found < 1
       #TODO: no Solr records, render error page
@@ -31,50 +45,10 @@ class ReviewingController < ApplicationController
       @docs_list = response['response']['docs']
     end
 
-    render 'fred'
 
 
 =begin
-total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
-    if total < 1
-      #TODO: no Solr records, render error page
-    end
 
-    rows  = 100 # rows to retrieve at a time
-
-    pages = (total.to_f / rows.to_f).ceil # round up
-    (1..pages).each do |page|
-      start = (page-1) * rows
-      query_string = "/select?q=*%3A*&rows=#{rows}&start=#{start}&wt=ruby"
-      # need to remove # from url, or it won't work
-      sanitised_url = Rails.application.config.solr[Rails.env]['url'].gsub(%r{/#}, '')
-      response = http_request(sanitised_url + query_string)
-      if response.is_a? Net::HTTPSuccess 
-        #body is a Hash wrapped in a String, so eval will give us the Hash
-        solr_hash = eval(response.body) 
-        @facets = process_facets( solr_hash['facet_counts']['facet_fields'] )
-        solr_hash['response']['docs'].each do |solr_doc|
-          @@solr_docs << SolrDoc.new(solr_doc)
-        end
-      else
-        # TODO: deal with error in accessing Solr
-      end
-    end
-
-    default_query = "status=Claimed,creator=#{current_user.email}"
-    backup_query = "status!=Claimed"
-
-
-
-  if params[:search]
-    # just prevent the query string from being set
-    elsif params[:q] && !params[:q].empty?
-      @query_string = params[:q]
-    elsif params[:q] && params[:q].empty?  
-      @query_string = 'all'
-    elsif !params[:q]
-      redirect_to action: 'index', q: default_query and return
-    end
 
   results = params[:search] ? do_global_search(params[:search]) : 
       QueryStringSearch.new(@@solr_docs, @query_string).results
@@ -130,25 +104,18 @@ total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
     joined_results
   end
 
-  def http_request(url, limit = 10)
 
-    raise NoMemoryError, 'HTTP redirect too deep' if limit == 0
-
-    uri = URI.parse(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    request = Net::HTTP::Get.new(uri.request_uri)
-
-    response = http.request(request)
-
-    if response.is_a? Net::HTTPSuccess
-      response
-    elsif response.is_a? Net::HTTPRedirection
-      http_request(response['location'], limit - 1)
-    else
-      response.error!
+  def build_query(filter_list)
+    query = ""
+    filter_list.each do |filter|
+        query = "#{SolrFacets.lookup(filter.facet)}:#{filter.value}" 
+        if %w[NOT not Not].include? filter.predicate.to_s
+          query = query.prepend('!')
+        end
     end
+    query
+        
   end
-
 
 
   # Creates a Hash where the key is the facet and the value is a Hash

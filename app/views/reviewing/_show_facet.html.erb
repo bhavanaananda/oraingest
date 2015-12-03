@@ -7,7 +7,7 @@
 	<% end %>
 	<li>
 		<% facet_names.size.times do |n| %>
-			<%= link_to "#{facet_names[n]} (#{facet_counts[n]})",  { controller: "reviewing" }, class: "facet_select" %>
+			<%= link_to "#{facet_names[n]} (#{facet_counts[n]})",  { controller: "reviewing", facet: facet, facet_name: facet_names[n] }, class: "facet_select" %>
 			</br>
 		<% end %>
 

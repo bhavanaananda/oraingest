@@ -120,7 +120,7 @@ class WorkflowPublisher
     return status, msg
   end
 
-
+  REQUIRED_ATTRIBUTES = ['identifier', 'creator', 'title', 'publisher', 'publicationYear' ].freeze
   def validate_required_fields(payload)
     errors, error_msg = [], ""
     REQUIRED_ATTRIBUTES.each do |attr|

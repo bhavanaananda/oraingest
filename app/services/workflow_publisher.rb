@@ -129,9 +129,7 @@ class WorkflowPublisher
 
     if errors.any?
       error_msg = "The following attributes are missing: " + errors.join(", ")
-      obj.workflowMetadata.update_status(Sufia.config.failure_status, error_msg)
-      obj.save!
-
+      @parent_model.workflowMetadata.update_status(Sufia.config.failure_status, error_msg)
     end
     error_msg
   end

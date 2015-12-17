@@ -13,31 +13,58 @@ class ReviewingController < ApplicationController
 
   def index
 
-
-
     backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
     default_filter_1 = Filter.new(:STATUS, :Claimed)
     default_filter_2 = Filter.new(:CURRENT_REVIEWER, current_user.email)
 
-    # @filters is an Array of Hashes that
-    # keeps track of all the facets we filter on
-    @filters = []
 
     @@solr_connection ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
 
     @@solr_docs ||= []
 
-    filters <<
-      default_query = "#{SolrFacets.lookup(:STATUS)}:Claimed AND #{SolrFacets.lookup(:CURRENT_REVIEWER)}=#{current_user.email}"
-      backup_query = "!#{SolrFacets.lookup(:STATUS)}:Claimed"
-
-    if params[:facet] && params[:facet_name]
+    unless session[:review_dash_filters]
+      # this is the first time this action is ran,
+      # so assign default filters
+      session[:review_dash_filters] = []
+      # assign a session variable to track all the facets we filter on
+      session[:review_dash_filters] << default_filter_1 << default_filter_2
     end
 
 
-    response = solr_search(backup_query,  params[:page] ? params[:page].to_i : 1)
+
+    if params[:remove_filter]
+
+      if params[:remove_filter][:predicate]
+        params[:remove_filter][:predicate] = nil if params[:remove_filter][:predicate].empty?
+      end
+
+      session[:review_dash_filters].delete_if do |f|
+        f.facet == params[:remove_filter][:facet].to_sym &&
+          f.value.to_s == params[:remove_filter][:value].to_s &&
+          f.predicate == params[:remove_filter][:predicate]
+      end
+    end
+
+
+    if params[:apply_filter]
+      session[:review_dash_filters].clear
+
+      unless %w[All ALL all].include? params[:apply_filter].first
+        params[:apply_filter].each do |h|
+          session[:review_dash_filters] << Filter.new(h[:facet].to_sym,
+                                                      h[:value].to_s,
+                                                      h[:predicate])
+        end
+      end
+
+    end
+
+
+
+    response = solr_search(build_query(session[:review_dash_filters]),  params[:page] ? params[:page].to_i : 1)
 
     @docs_found = response['response']['numFound']
+
     if @docs_found < 1
       #TODO: no Solr records, render error page
     else
@@ -47,28 +74,6 @@ class ReviewingController < ApplicationController
 
 
 
-=begin
-
-
-  results = params[:search] ? do_global_search(params[:search]) : 
-      QueryStringSearch.new(@@solr_docs, @query_string).results
-
-    @total_found = results.size
-
-    # if default search query doesn't find anything, use backup query
-    if (params[:q] == default_query) && results.size == 0
-      redirect_to action: 'index', q: backup_query and return
-    end
-
-
-    @result_list = []
-    kam_rows = 10
-    kam_pages = (@total_found.to_f / kam_rows.to_f).ceil
-
-    if results && results.size > 0
-      @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
-  end
-=end
 
     # @disable_search_form = true #stop ora search form appearing
 
@@ -104,61 +109,27 @@ class ReviewingController < ApplicationController
     joined_results
   end
 
-
+  # Builds a Solr query string from a list of Filter objects
+  # Each filter is appended to the query string as a conjuncture (AND)
+  #
+  # @param filter_list [Array] the list of Filter objects
+  # @return [String] a Solr query string
   def build_query(filter_list)
-    query = ""
-    # filter_list.each do |filter|
-    #   query = "#{SolrFacets.lookup(filter.facet)}:#{filter.value}"
-    #   if %w[NOT not Not].include? filter.predicate.to_s
-    #     query = query.prepend('!')
-    #   end
-    # end
-
-    (0...filter_list.length).step(1).each do |index|
-      filter = filter_list[index]
-      query = "#{SolrFacets.lookup(filter.facet)}:#{filter.value}"
-      if %w[NOT not Not].include? filter.predicate.to_s
-        query = query.prepend('!')
+    query = "*:*" # if no filters, get everything
+    unless filter_list.empty?
+      query.clear
+      (0...filter_list.length).step(1).each do |index|
+        filter = filter_list[index]
+        filter_value = filter.value.to_s.gsub(%r{\s}, '+')
+        query << "#{SolrFacets.lookup(filter.facet)}:#{filter_value}"
+        if %w[NOT not Not].include? filter.predicate.to_s
+          query = query.prepend('NOT ')
+        end
+        query << " AND " unless index == filter_list.length - 1
       end
-      query << " AND " unless index == filter_list.length - 1
     end
-
     query
 
-  end
-
-
-  # Creates a Hash where the key is the facet and the value is a Hash
-  # containing the facet's constraints
-  #
-  # @param facet_hash [Hash] the Solr-style facet Hash in the {facet [Hash]:
-  # constraints [Array]} style
-  # @return [Hash] a Hash in the {facet [Hash]: constraints [Hash]} style
-  def process_facets(facet_hash)
-    facets = {}
-    facet_hash.each do |facet, facet_constraints|
-      # Solrium.reverse_lookup(facet)
-      if facet_constraints.size > 0
-        facets[facet] = convert_constraints_array(facet_constraints)
-      end
-    end
-    facets
-  end
-
-
-  # Converts a Solr-style facet costraints array into a more
-  # meaningful Hash
-  #
-  # @param constraints_arr [Array] a Solr-style facet costraints array
-  # @return [Hash] a Hash in the {constraint_name: count} style
-  def convert_constraints_array(constraints_arr)
-    constraints_hash = {}
-    constraints_arr.each_with_index do |x, idx|
-      if idx.even?
-        constraints_hash[x] = constraints_arr[idx+1]
-      end
-    end
-    constraints_hash
   end
 
 

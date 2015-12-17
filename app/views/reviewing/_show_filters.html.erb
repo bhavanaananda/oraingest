@@ -1,10 +1,26 @@
-<h4 class="heading4">Filters</h4>
+<h5>Filters</h5>
+
+
+
 <span class="label label-primary">
-	<% @filters.each do |filter| %>
-		<%= link_to "  #{filter}" ,  { controller: "reviewing", remove_filter: filter }, class: "fa fa-remove fa-sm" %>
-		</br>
+	<% session[:review_dash_filters].each do |filter| %>
+
+		<% h = Hash["facet", filter.facet, "value", filter.value, "predicate", filter.predicate] %>
+		<div class="em">
+			<%= link_to " " ,  { controller: "reviewing", remove_filter: h}, class: "fa fa-remove fa-sm" %>
+			 <%= filter.facet.to_s.capitalize %> 
+		 </div>
+		 <div class="small">	
+			<%= filter.predicate.to_s.capitalize  %>		
+			<%= filter.value.to_s %> 
+		</div>
+
 		</br>
 	<% end %>
+	</br>
+
+
+	<%= render 'show_filter_bookmarks' %>
+
 </span>
-</br>
-</br>
+

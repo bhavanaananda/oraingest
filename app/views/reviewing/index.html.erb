@@ -12,7 +12,8 @@
 					<%= render partial: 'show_facet', locals: {facet: SolrFacets.reverse_lookup(k), constraints: v} if v.size > 0 %>
 					<% end %>
 				</ul>
-				<%= render 'show_filters' %>
+				<%= render 'show_filters' unless @full_search%>
+				<%= render 'show_filter_bookmarks' %>
 			</aside>
 		</div>		
 		<div class="col col5of6">

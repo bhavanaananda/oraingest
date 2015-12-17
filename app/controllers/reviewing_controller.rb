@@ -13,6 +13,7 @@ class ReviewingController < ApplicationController
 
   def index
 
+    @full_search = false
     backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
     default_filter_1 = Filter.new(:STATUS, :Claimed)
     default_filter_2 = Filter.new(:CURRENT_REVIEWER, current_user.email)
@@ -30,6 +31,7 @@ class ReviewingController < ApplicationController
       session[:review_dash_filters] << default_filter_1 << default_filter_2
     end
 
+    @disable_search_form = true #stop ora search form appearing
 
 
     if params[:remove_filter]
@@ -56,12 +58,25 @@ class ReviewingController < ApplicationController
                                                       h[:predicate])
         end
       end
-
     end
 
 
+    if params[:search]
+      @full_search = true
+      session[:review_dash_filters].clear
+      query = params[:search].to_s.gsub(%r{\s}, '+')
+      Solrium.attributes.each do |facet|
+        session[:review_dash_filters] << Filter.new(facet, query)
+      end
 
-    response = solr_search(build_query(session[:review_dash_filters]),  params[:page] ? params[:page].to_i : 1)
+    end
+
+    full_query = params[:search] ?
+      build_query(session[:review_dash_filters], " OR ")  :
+      build_query(session[:review_dash_filters])
+
+    # binding.pry if params[:search]
+    response = solr_search(full_query,  params[:page] ? params[:page].to_i : 1)
 
     @docs_found = response['response']['numFound']
 
@@ -72,15 +87,6 @@ class ReviewingController < ApplicationController
       @docs_list = response['response']['docs']
     end
 
-
-
-
-    # @disable_search_form = true #stop ora search form appearing
-
-    # respond_to do |format|
-    #   format.html
-    #   format.json {render :json => results.to_json}
-    # end
 
   end
 
@@ -99,7 +105,8 @@ class ReviewingController < ApplicationController
   end
 
 
-  def do_global_search( search_term )
+  def full_text_search( search_term )
+    binding.pry
     joined_results = []
     Solrium.each do |nice_name, solr_name|
       qs= "#{nice_name.to_s.downcase}=#{search_term}"
@@ -111,21 +118,23 @@ class ReviewingController < ApplicationController
 
   # Builds a Solr query string from a list of Filter objects
   # Each filter is appended to the query string as a conjuncture (AND)
+  # unless a different operator is passed as an argument
   #
   # @param filter_list [Array] the list of Filter objects
+  # @param operator [String] the operator between clauses
   # @return [String] a Solr query string
-  def build_query(filter_list)
+  def build_query(filter_list, operator = " AND ")
     query = "*:*" # if no filters, get everything
     unless filter_list.empty?
       query.clear
       (0...filter_list.length).step(1).each do |index|
         filter = filter_list[index]
         filter_value = filter.value.to_s.gsub(%r{\s}, '+')
-        query << "#{SolrFacets.lookup(filter.facet)}:#{filter_value}"
+        query << "#{Solrium.lookup(filter.facet)}:#{filter_value}"
         if %w[NOT not Not].include? filter.predicate.to_s
           query = query.prepend('NOT ')
         end
-        query << " AND " unless index == filter_list.length - 1
+        query << operator unless index == filter_list.length - 1
       end
     end
     query

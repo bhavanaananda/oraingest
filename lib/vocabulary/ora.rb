@@ -84,6 +84,7 @@ module RDF
     property :dispensationPeriodMonths
     property :dispensationPeriodYears
     property :dispensationPeriodPermanent
-    
+    property :dispensationComment
+    property :copyrightMaterialComment
   end
 end

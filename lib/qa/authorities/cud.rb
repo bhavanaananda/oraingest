@@ -1,12 +1,7 @@
 require 'uri'
 
 module Qa::Authorities
-  class Cud
-
-    def get_json(url)
-      r = RestClient.get url, {accept: :json}
-      JSON.parse(r)
-    end
+  class Cud <  Qa::Authorities::WebService
 
     def search(q, sub_authority=nil)
       if ! (sub_authority.nil?  || Cud.sub_authorities.include?(sub_authority))

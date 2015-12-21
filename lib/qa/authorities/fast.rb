@@ -1,9 +1,9 @@
 require 'uri'
 
 module Qa::Authorities
-  class Fast < WebServiceBase
+  class Fast < Qa::Authorities::WebService
 
-    # Initialze the Loc class with a query and get the http response from LOC's server.
+  # Initialze the Loc class with a query and get the http response from LOC's server.
     # This is set to a JSON object
     def initialize
     end

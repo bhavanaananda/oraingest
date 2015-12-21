@@ -1,23 +1,31 @@
+
+<% if @thesis.dispensationSelect.first and !@thesis.dispensationSelect.first.empty? %>
+	<% set_default=@thesis.dispensationSelect.first %>
+<% else %>
+	<% set_default='permanent' %>
+<% end %>
+
 <div class="fieldset">
 	<label panel="dataset-dispensation-period">
 		<fieldset class="small-text">
 			<label>
-				<%= f.radio_button :dispensationSelect, 'end_date' %>
+				<%= f.radio_button :dispensationSelect, 'end_date', :checked => (set_default == "end_date") %>
 				<span></span>Dispensation end date
 				<div id="has_dispensation_end_date" class="hidden-form">
 				 <%= render partial: 'dispensation_end_date', locals: { f: f} %>
 				</div>
 			</label>
 			<label>
-				<%= f.radio_button :dispensationSelect, 'period' %>
+				<%= f.radio_button :dispensationSelect, 'period',:checked => (set_default == "period") %>
 				<span></span>Dispensation for period
 				<div id="has_dispensation_period" class="hidden-form">
-				 <%= render partial: 'dispensation_period', locals: { f: f} %>				</div>
+				 <%= render partial: 'dispensation_period', locals: { f: f} %>
+				</div>
 			</label>
 			<label>
-				<%= f.radio_button :dispensationSelect, 'permanent' %>
+				<%= f.radio_button :dispensationSelect, 'permanent' ,  :checked => (set_default == "permanent") %>
 				<span></span>Permanent Dispensation 
-			</label>			
+			</label>
 		</fieldset>
 	</label>
 </div>

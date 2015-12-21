@@ -23,40 +23,33 @@
               <li>
                 <label>
                  <div class="fieldset">
-                <% if required %>
-                  <span class="small reqlabel">Name</span>
-                  <%= f_c.text_field :name, :required => true, :value => c.agent[0].name.first, id: "creatorName%d"%c_index, :class=>"creatorName", data: {"progress" => "citation"} %>
-                <% else %>
-                  <span class="small">Name</span>
-                  <%= f_c.text_field :name, :value => c.agent[0].name.first, id: "creatorName%d"%c_index, :class=>"creatorName", data: {"progress" => "citation"} %>
-                <% end %>
-
-                  <% if @model == "dataset" %>
-    <% desc = "Please enter the name of a person involved in creating this dataset and select a role (e.g. ‘Principal Investigator’) from the list.
-        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
-        (their email address and departmental affiliation should also auto-complete)." %>
-  <% elsif @model == "thesis" %>
-    <% desc = "Please enter the name of the author of this thesis and the thesis supervisors, selecting the relevant roles from the list provided. If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed (their email address and departmental affiliation should also auto-complete)." %>
-  <% else %>
-    <% desc = "Please enter the name of a person involved in this publication and select a role from the list.
-        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
-        (their email address and departmental affiliation should also auto-complete)." %>
-  <% end %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Creator information" , :tipDescription => desc } %>
-
-
-                <a href="#" class="remove-field small">Remove<span class="icon icon-remove"></span></a>
-                </div>
+                    <% if required %>
+                      <span class="small reqlabel">Name</span>
+                      <%= f_c.text_field :name, :required => true, :value => c.agent[0].name.first, id: "creatorName%d"%c_index, :class=>"creatorName", data: {"progress" => "citation"} %>
+                    <% else %>
+                      <span class="small">Name</span>
+                      <%= f_c.text_field :name, :value => c.agent[0].name.first, id: "creatorName%d"%c_index, :class=>"creatorName", data: {"progress" => "citation"} %>
+                    <% end %>
+                    <a href="#" class="remove-field small">Remove<span class="icon icon-remove"></span></a>
+                    </div>
                 </label>
 
-                <label>
-                <div class="fieldset">
-                  <p><span class="small">Email</span>
-                    <%= f_c.text_field :email, :value => c.agent[0].email.first, id: "creatorEmail%d"%c_index, :class=>"creatorEmail", data: {"progress" => "documentation"} %>
-                     <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Creator information", :tipDescription =>"Please provide a sustainable email address for the thesis author, overwriting the auto-complete information as necessary, so that ORA staff have a valid contact once any University of Oxford credentials expire" } %>
+                <% if @model == "thesis" %>
+                  <% email_required = true %>
+                <% else %>
+                  <% email_required = false %>
+                <% end %>
 
-                  </p>
-                  </div>
+                <label>
+                      <p>
+                      <% if email_required  %>
+                         <span class="small reqlabel">Email</span>
+                      <% else %>
+                        <span class="small">Email</span>
+                      <% end %>
+
+                      <%= f_c.text_field :email, :required => email_required, :value => c.agent[0].email.first, id: "creatorEmail%d"%c_index, :class=>"creatorEmail", data: {"progress" => "documentation"} %>
+                      </p>
                 </label>
 
                 <% if can? :review, :all %>
@@ -105,7 +98,24 @@
     </ol>
     <a href="#" class="add-field">Add another creator</a>
   </div>
-
+  <% if @model == "dataset" %>
+      <% desc = "Please enter the name of a person involved in creating this dataset and select a role (e.g. ‘Principal Investigator’) from the list.
+                        If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
+                          (their email address and departmental affiliation should also auto-complete)." %>
+  <% elsif @model == "thesis" %>
+      <% desc = " <p> Please enter the name of the author of this thesis and the thesis supervisors, selecting the relevant roles from the list provided.
+                                   If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
+                                      (their email and affiliation should also auto-complete). </p>
+                                  <p> Please provide a sustainable email address for the thesis author, overwriting the auto-complete information as necessary,
+                                      so that ORA staff have a valid contact once any University of Oxford credentials expire </p>"
+      %>
+  <% else %>
+      <% desc = "Please enter the name of a person involved in this publication and select a role from the list.
+                          If the person is based at Oxford, their name should auto-complete as you type so you can select the correct name from the list displayed
+                          (their email address and departmental affiliation should also auto-complete)."
+      %>
+  <% end %>
+  <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Creator information" , :tipDescription => desc } %>
 
 </div>
 

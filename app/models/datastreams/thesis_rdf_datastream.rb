@@ -12,7 +12,7 @@ require 'fields/publication_activity'
 
 class ThesisRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
-  attr_accessor :title, :subtitle, :abstract, :subject, :keyword, :worktype, :medium, :language, :dateCopyrighted, :rightsHolder, :rights, :rightsActivity, :license, :creation, :publication, :funding
+  attr_accessor :title, :subtitle, :abstract, :subject, :keyword, :worktype, :medium, :language, :dateCopyrighted, :rightsHolder, :rights, :rightsActivity, :license, :creation, :publication, :funding, :dispensationComment, :copyrightMaterialComment, :comments
 
   rdf_type rdf_type RDF::PROV.Entity
   map_predicates do |map|
@@ -45,7 +45,10 @@ class ThesisRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.dispensationSelect(:in => RDF::ORA)
     map.dispensationPeriodStartFromDate(:in => RDF::ORA)
     map.dispensationPeriodPermanent(:in => RDF::ORA)
-    
+    map.dispensationComment(:in => RDF::ORA)
+    map.copyrightMaterialComment(:in => RDF::ORA)
+    map.comments(:to => "description", :in => RDF::DC)
+
   end
 
   accepts_nested_attributes_for :language

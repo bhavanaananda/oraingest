@@ -66,7 +66,14 @@
         </div>
       </div>
 
-      <!-- Form save and submit -->
+
+      <div class="content-box padding-0">
+          <div class="padding-25 no-pad-top no-pad-bottom">
+              <%= render partial: 'shared/comments', :locals => { :f => f, :@model => @article } %>
+          </div>
+      </div>
+
+              <!-- Form save and submit -->
       <nav class="form-nav" style="margin-top: 20px;">
         <div class="form-nav-next" style="text-align: right">
           <%= f.submit "Save", class: "button light-blue", :onclick => "setStatus(\"workflow_submit_entries_status\", \"default\")", data: {"submit-without-validation" => true} %>

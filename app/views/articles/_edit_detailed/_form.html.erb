@@ -197,6 +197,13 @@
         </div>
       </div>
 
+
+      <div class="content-box padding-0">
+          <div class="padding-25 no-pad-top no-pad-bottom">
+              <%= render partial: 'shared/comments', :locals => { :f => f, :@model => @article } %>
+          </div>
+      </div>
+
       <nav class="form-nav">
         <div class="form-nav-prev">
           <a href="#" class="button button-back light-blue" data-action="prev_step">Back</a>

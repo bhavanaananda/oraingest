@@ -56,6 +56,7 @@ module Solrium
   self.add_attr :DEPOSITOR, 'depositor_tesim'
   self.add_attr :DATE_PUBLISHED, 'desc_metadata__datePublished_tesim'
   self.add_attr :DATE_ACCEPTED, 'desc_metadata__dateAccepted_tesim'
+  self.add_attr :CREATOR, 'desc_metadata__creatorName_tesim'
   self.add_attr :CURRENT_REVIEWER,
     'MediatedSubmission_current_reviewer_id_ssim'
   self.add_attr :RT_TICKETS, 'MediatedSubmission_all_email_threads_ssim'
@@ -63,7 +64,6 @@ module Solrium
   self.add_attr :MODEL, "active_fedora_model_ssi"
   self.add_attr :CONTRIBUTOR, "desc_metadata__contributor_tesim"
 
-  self.add_attr :CREATOR, "desc_metadata__creator_sim"
   self.add_attr :KEYWORD, "desc_metadata__keyword_sim"
   self.add_attr :PUBLISHER, "desc_metadata__publisher_sim"
   self.add_attr :FEDORA_MODEL, "active_fedora_model_ssi"  

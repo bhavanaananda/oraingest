@@ -1,4 +1,3 @@
-require "net/http"
 
 # FIXME: ugly hack to get Solr working with Kaminari
 class RSolr::Response::PaginatedDocSet
@@ -9,88 +8,91 @@ end
 
 class ReviewingController < ApplicationController
 
+  Filter = Struct.new(:facet, :value, :predicate)
   before_filter :restrict_access_to_reviewers
 
   def index
 
+    @full_search = false
+    backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
+    default_filter_1 = Filter.new(:STATUS, :Claimed)
+    default_filter_2 = Filter.new(:CURRENT_REVIEWER, current_user.email)
+
+
     @@solr_connection ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
 
-    @@solr_docs ||= [] #list if SolrDoc documents
+    @@solr_docs ||= []
 
-    total = @@solr_connection.select({:rows => 0})["response"]["numFound"]
-    if total < 1
-      #TODO: no Solr records, render error page
+    unless session[:review_dash_filters]
+      # this is the first time this action is ran,
+      # so assign default filters
+      session[:review_dash_filters] = []
+      # assign a session variable to track all the facets we filter on
+      session[:review_dash_filters] << default_filter_1 << default_filter_2
     end
-
-    rows  = 100 # rows to retrieve at a time
-
-    pages = (total.to_f / rows.to_f).ceil # round up
-    (1..pages).each do |page|
-      start = (page-1) * rows
-      query_string = "/select?q=*%3A*&rows=#{rows}&start=#{start}&wt=ruby"
-      # need to remove # from url, or it won't work
-      sanitised_url = Rails.application.config.solr[Rails.env]['url'].gsub(%r{/#}, '')
-      response = http_request(sanitised_url + query_string)
-      if response.is_a? Net::HTTPSuccess 
-        #body is a Hash wrapped in a String, so eval will give us the Hash
-        solr_hash = eval(response.body) 
-        @facets = process_facets( solr_hash['facet_counts']['facet_fields'] )
-        solr_hash['response']['docs'].each do |solr_doc|
-          @@solr_docs << SolrDoc.new(solr_doc)
-        end
-      else
-        # TODO: deal with error in accessing Solr
-      end
-    end
-
-    default_query = "status=Claimed,creator=#{current_user.email}"
-    backup_query = "status!=Claimed"
-
-
-
-	if params[:search]
-		# just prevent the query string from being set
-    elsif params[:q] && !params[:q].empty?
-      @query_string = params[:q]
-    elsif params[:q] && params[:q].empty?  
-    	@query_string = 'all'
-    elsif !params[:q]
-      redirect_to action: 'index', q: default_query and return
-    end
-
-	results = params[:search] ? do_global_search(params[:search]) : 
-			QueryStringSearch.new(@@solr_docs, @query_string).results
-
-    @total_found = results.size
-
-    # if default search query doesn't find anything, use backup query
-    if (params[:q] == default_query) && results.size == 0
-      redirect_to action: 'index', q: backup_query and return
-    end
-
-
-    @result_list = []
-    kam_rows = 10
-    kam_pages = (@total_found.to_f / kam_rows.to_f).ceil
-
-    if results && results.size > 0
-	    @result_list = Kaminari.paginate_array(results, total_count: @total_found).page(params[:page]).per(kam_rows) 
-	end
 
     @disable_search_form = true #stop ora search form appearing
 
-    respond_to do |format|
-      format.html
-      format.json {render :json => results.to_json}
+
+    if params[:remove_filter]
+
+      if params[:remove_filter][:predicate]
+        params[:remove_filter][:predicate] = nil if params[:remove_filter][:predicate].empty?
+      end
+
+      session[:review_dash_filters].delete_if do |f|
+        f.facet == params[:remove_filter][:facet].to_sym &&
+          f.value.to_s == params[:remove_filter][:value].to_s &&
+          f.predicate == params[:remove_filter][:predicate]
+      end
     end
+
+
+    if params[:apply_filter]
+      session[:review_dash_filters].clear
+
+      unless %w[All ALL all].include? params[:apply_filter].first
+        params[:apply_filter].each do |h|
+          session[:review_dash_filters] << Filter.new(h[:facet].to_sym,
+                                                      h[:value].to_s,
+                                                      h[:predicate])
+        end
+      end
+    end
+
+
+    if params[:search]
+      @full_search = true
+      session[:review_dash_filters].clear
+      query = params[:search].to_s.gsub(%r{\s}, '+')
+      Solrium.attributes.each do |facet|
+        session[:review_dash_filters] << Filter.new(facet, query)
+      end
+
+    end
+
+    full_query = params[:search] ?
+      build_query(session[:review_dash_filters], " OR ")  :
+      build_query(session[:review_dash_filters])
+
+    # binding.pry if params[:search]
+    response = solr_search(full_query,  params[:page] ? params[:page].to_i : 1)
+
+    @docs_found = response['response']['numFound']
+
+    if @docs_found < 1
+      #TODO: no Solr records, render error page
+    else
+      @facets = response['facet_counts']['facet_fields']
+      @docs_list = response['response']['docs']
+    end
+
 
   end
 
 
-  def do_search(query)
+  def solr_search(query, page = 1)
     logger.info "Solr search query: #{query}"
-    page = 1 unless params[:page]
-
 
     @@solr_connection.paginate page, 10, "select", params: {
       q: query,
@@ -103,68 +105,40 @@ class ReviewingController < ApplicationController
   end
 
 
-  def do_global_search( search_term )
-  	joined_results = []
+  def full_text_search( search_term )
+    binding.pry
+    joined_results = []
     Solrium.each do |nice_name, solr_name|
       qs= "#{nice_name.to_s.downcase}=#{search_term}"
-	  rs = QueryStringSearch.new(@@solr_docs, qs).results
-	  joined_results.concat( rs ) if rs.size > 0
-	end
-  	joined_results
+      rs = QueryStringSearch.new(@@solr_docs, qs).results
+      joined_results.concat( rs ) if rs.size > 0
+    end
+    joined_results
   end
 
-  def http_request(url, limit = 10)
-
-    raise NoMemoryError, 'HTTP redirect too deep' if limit == 0
-
-    uri = URI.parse(url)
-    http = Net::HTTP.new(uri.host, uri.port)
-    request = Net::HTTP::Get.new(uri.request_uri)
-
-    response = http.request(request)
-
-    if response.is_a? Net::HTTPSuccess 
-      response
-    elsif response.is_a? Net::HTTPRedirection 
-      http_request(response['location'], limit - 1)
-    else
-      response.error!
-    end    
-  end
-
-
-
-  # Creates a Hash where the key is the facet and the value is a Hash
-  # containing the facet's constraints
+  # Builds a Solr query string from a list of Filter objects
+  # Each filter is appended to the query string as a conjuncture (AND)
+  # unless a different operator is passed as an argument
   #
-  # @param facet_hash [Hash] the Solr-style facet Hash in the {facet [Hash]:
-  # constraints [Array]} style
-  # @return [Hash] a Hash in the {facet [Hash]: constraints [Hash]} style
-  def process_facets(facet_hash)
-    facets = {}
-    facet_hash.each do |facet, facet_constraints|
-      # Solrium.reverse_lookup(facet)
-      if facet_constraints.size > 0
-        facets[facet] = convert_constraints_array(facet_constraints)
+  # @param filter_list [Array] the list of Filter objects
+  # @param operator [String] the operator between clauses
+  # @return [String] a Solr query string
+  def build_query(filter_list, operator = " AND ")
+    query = "*:*" # if no filters, get everything
+    unless filter_list.empty?
+      query.clear
+      (0...filter_list.length).step(1).each do |index|
+        filter = filter_list[index]
+        filter_value = filter.value.to_s.gsub(%r{\s}, '+')
+        query << "#{Solrium.lookup(filter.facet)}:#{filter_value}"
+        if %w[NOT not Not].include? filter.predicate.to_s
+          query = query.prepend('NOT ')
+        end
+        query << operator unless index == filter_list.length - 1
       end
     end
-    facets
-  end
+    query
 
-
-  # Converts a Solr-style facet costraints array into a more
-  # meaningful Hash
-  #
-  # @param constraints_arr [Array] a Solr-style facet costraints array
-  # @return [Hash] a Hash in the {constraint_name: count} style
-  def convert_constraints_array(constraints_arr)
-    constraints_hash = {}
-    constraints_arr.each_with_index do |x, idx|
-      if idx.even?
-        constraints_hash[x] = constraints_arr[idx+1]
-      end
-    end
-    constraints_hash
   end
 
 

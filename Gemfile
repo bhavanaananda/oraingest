@@ -75,6 +75,7 @@ group :development, :test do
   gem 'pry-doc' #to browse Ruby source
   gem 'pry-byebug' #debugger
   gem 'pry-stack_explorer' #navigate the call stack and frames
+  gem 'pry-rescue' #catch unhandled exception in pry
 end
 
 group :development do
@@ -95,7 +96,6 @@ group :test do
 end
 
 gem 'god'
-gem 'query_string_search'
 gem 'datacite_mds'   # gem to interface with Datacite MDS
 gem 'hashids'     # generates hash ids based on a number
 gem 'figaro'

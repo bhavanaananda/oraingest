@@ -83,20 +83,4 @@ module DashboardHelper
   end
 
 
-  def add_facets_to_query_string(facet, constraint_name)
-    unless session[:solr_query_params][facet] == constraint_name
-      hsh = {}
-      hsh[facet] = constraint_name
-      session[:solr_query_params].merge!(hsh)
-    end
-    session[:solr_query_params].to_query
-  end
-
-  def remove_facets_to_query_string(facet, constraint_name)
-    if session[:solr_query_params][facet] == constraint_name
-      session[:solr_query_params].delete(facet)
-    end
-    session[:solr_query_params].to_query
-  end
-
 end

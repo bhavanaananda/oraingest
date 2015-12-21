@@ -20,6 +20,10 @@ module SolrFacets
     @facet_hash.values
   end
 
+  def self.attributes
+    @facet_hash.keys
+  end
+
   # Gets the Solr field name, given its equivalent readable name.
   #
   # @param field [Symbol] the human-readable attribute, e.g. :title

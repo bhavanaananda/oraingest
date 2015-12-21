@@ -2,7 +2,7 @@ class SolrDoc
 
 
   # any instance variables we want to expose to the world as-is, without
-  # any mainpulation
+  # any manipulation, go here
   attr_reader :id
 
 

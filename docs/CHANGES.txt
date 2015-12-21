@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.7.0 - rc1 - 2015/12/21
+------------------
+
+- Added default search filter for reviewers dash
+- Fixed global search bar functionality for reviewers dash
+- Added filter bookmarks for reviewers dash
+
 1.7.0 - Unreleased
 ------------------
 

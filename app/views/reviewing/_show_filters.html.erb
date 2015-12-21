@@ -1,13 +1,24 @@
-<h4 class="heading4">Filters</h4>
-<% query_string_to_hash(@query_string).each do |k, v| %>
+<h5>Filters</h5>
+
+
+
 <span class="label label-primary">
-	<% new_query = remove_from_query(k) %>
-	<%= link_to '',  { controller: "reviewing", q: new_query }, class: "fa fa-remove fa-sm" %>
-	<% k = k.gsub(%r{[\[\]]}, '') if k.is_a? String %>
-	<strong> <%= k.to_s.chomp('!').capitalize %></strong>:
-	<%= 'NOT' if k[-1] == '!' %>
-	<%= v %>
+	<% session[:review_dash_filters].each do |filter| %>
+
+		<% h = Hash["facet", filter.facet, "value", filter.value, "predicate", filter.predicate] %>
+		<div class="em">
+			<%= link_to " " ,  { controller: "reviewing", remove_filter: h}, class: "fa fa-remove fa-sm" %>
+			 <%= filter.facet.to_s.capitalize %> 
+		 </div>
+		 <div class="small">	
+			<%= filter.predicate.to_s.capitalize  %>		
+			<%= filter.value.to_s %> 
+		</div>
+
+		</br>
+	<% end %>
+	</br>
+
+
 </span>
-</br>
-</br>
-<% end %>
+

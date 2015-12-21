@@ -9,7 +9,7 @@ class ReviewingControllerTest < ActionController::TestCase
   end
 
   test "build query builds default search query" do
-    result = "!#{SolrFacets.lookup(:STATUS)}:Claimed"
+    result = "NOT #{SolrFacets.lookup(:STATUS)}:Claimed"
     @filter_list << Filter.new(:STATUS, :Claimed, :NOT)
     assert_equal result, @controller.send(:build_query, @filter_list)
   end

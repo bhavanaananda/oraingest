@@ -22,3 +22,4 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
+  - bundle exec rake test:unit

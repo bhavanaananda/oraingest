@@ -12,7 +12,7 @@
         <div class="container">
           <header class="content-header">
             <a href="/"><%= image_tag "ora/core/logo-myora.svg", alt: "MyOra", class: "float-left" %></a>
-            <%= render :partial=>'catalog/search_form' %>
+            <%= render :partial=>'catalog/search_form' unless @disable_search_form%>
           </header>
         </div>
 

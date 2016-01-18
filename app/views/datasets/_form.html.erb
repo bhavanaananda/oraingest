@@ -227,7 +227,6 @@
         <div class="padding-25 no-pad-top no-pad-bottom">
           <%= render partial: 'shared/funding_activity_fields_edit', :locals => { :f => f, :funding => @dataset.funding, :required => true } %>
         </div>
-
       </div>
 
       <h2 class="blue-text" style="margin-top: 30px;">Optional fields</h2>
@@ -241,6 +240,12 @@
           <%= render partial: "shared/license_activity_fields_edit", :locals => { :f => f, :article => @dataset } %>
           <%= render partial: "shared/rights_activity_fields_edit", :locals => { :f => f, :article => @dataset } %>
         </div>
+      </div>
+
+      <div class="content-box padding-0">
+          <div class="padding-25 no-pad-top no-pad-bottom">
+              <%= render partial: 'shared/comments', :locals => { :f => f, :@model => @dataset } %>
+          </div>
       </div>
 
       <nav class="form-nav">

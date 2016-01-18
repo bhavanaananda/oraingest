@@ -12,6 +12,7 @@
 
 <% if @result_list %>
 	<div class="row">
+
 		<%= paginate @result_list, theme: 'blacklight' %>
 
 		<div class="col col1of6">
@@ -23,7 +24,7 @@
 
 				</ul>
 				<h4 class="heading4">Filters</h4>
-				<% session[:solr_query_params].each do |field, value| %>
+<!-- 				<% session[:solr_query_params].each do |field, value| %>
 					<span class="label label-primary">
 						<%= field.to_s.capitalize %>
 						<a href="?search_remove=<%= field.to_s %>:<%= value %>">
@@ -32,7 +33,7 @@
 				    </span> 
 				    </br>
 				    </br>
-				  <% end %>
+				  <% end %> -->
 
 			</aside>
 		</div>

@@ -1,0 +1,7 @@
+<h4>Additional information</h4>
+<%# if !@model.comments.nil? && !@model.comments.empty? %>
+    <div class="fieldset">
+        <%= f.text_area :comments, :value => @model.comments.first, :id => "comments_description", data: {"progress" => "documentation"} %>
+        <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Comment" , :tipDescription => "Here you can record a generic comment or add notes for future reference." } %>
+    </div>
+<%# end %>

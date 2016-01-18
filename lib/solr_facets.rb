@@ -20,6 +20,10 @@ module SolrFacets
     @facet_hash.values
   end
 
+  def self.attributes
+    @facet_hash.keys
+  end
+
   # Gets the Solr field name, given its equivalent readable name.
   #
   # @param field [Symbol] the human-readable attribute, e.g. :title
@@ -47,5 +51,7 @@ module SolrFacets
   self.add_attrib :PUBLISHER, "desc_metadata__publisher_sim"
   self.add_attrib :CURRENT_REVIEWER,
     "MediatedSubmission_current_reviewer_id_ssim"
+  self.add_attrib :FEDORA_MODEL, "active_fedora_model_ssi"
+
 
 end

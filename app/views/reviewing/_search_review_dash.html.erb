@@ -1,0 +1,6 @@
+<div class="search">
+	<%= form_tag '/dash', :method => :get, :class => "well form-search" do %>
+		<%= text_field_tag :search, params[:search], :class => "q span50", :placeholder => "Search Reviewer Dashboard", :size => 30, :type => "search", :id => "dash_search" %>
+		<button type="submit" class="button" id="dash_submit">Search</button>
+	<% end %>
+</div>

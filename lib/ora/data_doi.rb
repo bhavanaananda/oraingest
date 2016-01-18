@@ -9,6 +9,7 @@ require 'active_support/core_ext/hash/indifferent_access'
 require 'builder'
 require 'nokogiri'
 
+
 module ORA
   class DataValidationError < RuntimeError
     def initialize(errors)
@@ -116,6 +117,7 @@ module ORA
       data << "doi=#{payload[:identifier]}"
       data << "url=#{payload[:target]}"
       data.join("\n")
+      # "doi=#{payload[:identifier]}" "url=#{payload[:target]}"
     end
 
     def data_for_metadata(payload)

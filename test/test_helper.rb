@@ -1,7 +1,22 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
+require 'simplecov'
+require 'coveralls'
+# require 'webmock/minitest'
+require 'minitest/rails/capybara'
+require "minitest/pride"
 
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+end
+
+require 'minitest/reporters'
+Minitest::Reporters.use!(
+  Minitest::Reporters::ProgressReporter.new,
+  ENV,
+  Minitest.backtrace_filter
+)
 
 
 class ActiveSupport::TestCase
@@ -12,4 +27,8 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+end
+
+class ActionDispatch::IntegrationTest
+  include Capybara::DSL
 end

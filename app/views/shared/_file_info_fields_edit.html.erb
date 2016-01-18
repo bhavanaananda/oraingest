@@ -43,6 +43,22 @@
                 <%= link_to 'Delete', file_attrib['delete_url'], method: :delete, data: { confirm: 'Are you sure?' } %>
               </div>
               <%= f.fields_for "hasPart][#{n}", hp do |f_hp| %>
+                <div style="clear:both;float:left">
+                  <% if not hp.accessRights.empty? %>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Status:
+                    <%= hp.accessRights[0].embargoStatus[0]  %>
+                    <% if not hp.accessRights[0].embargoDate.empty? %>
+                      <% if not hp.accessRights[0].embargoDate[0].start.empty? %>
+                        <% embargo_start = hp.accessRights[0].embargoDate[0].start[0].date[0] %>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Start: <%= embargo_start %>
+                      <% end %>
+                      <% if not hp.accessRights[0].embargoDate[0].end.empty? %>
+                        &nbsp;&nbsp;&nbsp;&nbsp;End:
+                        <% embargo_end = hp.accessRights[0].embargoDate[0].end[0].date[0]%> <%= embargo_end %>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                </div>
                 <div class="hidden-form">
                   <% if Sufia.config.attachment_types.has_key? (@model) %>
                     <h5 style="margin-top: 20px;">Type of file</h5>

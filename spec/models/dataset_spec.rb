@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Dataset do
-  it_behaves_like 'doi_methods'
+  # it_behaves_like 'doi_methods'
 
   describe 'attributes' do
 
@@ -131,18 +131,6 @@ describe Dataset do
 
   end
 
-  describe '.mint_datastream_id' do
-    before do
-      @dataset = Dataset.new
-      @dsid = @dataset.mint_datastream_id
-    end
-
-    it 'creates the datastream identifier' do
-      expect(@dsid).not_to be_empty
-      expect(@dsid).to be_a(String)
-    end
-
-  end
 
   describe '.model_klass' do
     before do

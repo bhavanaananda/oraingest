@@ -34,26 +34,38 @@
   <% end %>
   
     <fieldset class="small-text">
-      <% if embargo_type == "metadata" #Field required for catalogue record %>
+
+        <% if embargo_type == "metadata" #Field required for catalogue record %>
         <% req_class = "required" %>
       <% else %>
         <% req_class = "" %>
       <% end %>
+
+      <% if can? :review, :all %>
+         <% open_access_checked = (accessRights[0].embargoStatus[0] == "Open access") %>
+      <% else %>
+         <% open_access_checked = true %>
+      <% end %>
+
       <label>
-        <%= f_a.radio_button :embargoStatus, "Open access", :checked => (accessRights[0].embargoStatus[0] == "Open access"),
-          data: {"progress" => "documentation"}, :class => req_class  %>
+        <%= f_a.radio_button :embargoStatus, "Open access", :checked => open_access_checked ,
+                         data: {"progress" => "documentation"}, :class => req_class  %>
         <span></span>Yes
       </label>
-      <label panel='dataset-embargo-<%= panel_id %>'>
-        <%= f_a.radio_button :embargoStatus, "Embargoed", :checked => (accessRights[0].embargoStatus[0] == "Embargoed"),
-          data: {"progress" => "documentation"}, :class => "#{req_class} embargoed" %>
-        <span></span>After a certain period
-      </label>
-      <label>
-        <%= f_a.radio_button :embargoStatus, "Closed access", :checked => (accessRights[0].embargoStatus[0] == "Closed access"),
-          data: {"progress" => "documentation"}, :class => "#{req_class}" %>
-        <span></span>No
-      </label>
+
+      <% if can? :review, :all %>
+        <label panel='dataset-embargo-<%= panel_id %>'>
+          <%= f_a.radio_button :embargoStatus, "Embargoed", :checked => (accessRights[0].embargoStatus[0] == "Embargoed"),
+            data: {"progress" => "documentation"}, :class => "#{req_class} embargoed" %>
+          <span></span>After a certain period
+        </label>
+        <label>
+          <%= f_a.radio_button :embargoStatus, "Closed access", :checked => (accessRights[0].embargoStatus[0] == "Closed access"),
+            data: {"progress" => "documentation"}, :class => "#{req_class}" %>
+          <span></span>No
+        </label>
+      <% end %>
+
     </fieldset>
   
     <% if embargo_type == "metadata" %>
@@ -63,8 +75,9 @@
               Please let us know which you would prefer." %>
       <% elsif @model == "thesis" %>
         <% desc = "The catalogue record for your thesis will normally be made publicly visible and openly accessible, even if your thesis is embargoed.
-              In a small number of exceptional cases, it may be necessary to embargo and hide from public view the record as well as the files.
-               If you require the record page or abstract to be embargoed in addition to your thesis file please complete a request for dispensation from consultation." %>
+                   In a small number of exceptional cases, it may be necessary to embargo and hide from public view the record as well as the files.
+                   If you require the record page or abstract to be embargoed in addition to your thesis file please complete a request for dispensation
+                   from consultation and enter details in the section above." %>
       <% else %>
         <% desc = "The catalogue record for your publication will normally be made publicly visible and openly accessible, even if the publication is embargoed.
               In a small number of exceptional cases, it may be necessary to embargo and hide from public view the record as well as the files.

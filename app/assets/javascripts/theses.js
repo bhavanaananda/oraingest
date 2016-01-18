@@ -32,6 +32,7 @@ $(document).ready(function() {
     $('#thesis_hasThirdPartyCopyrightMaterial_yes').click(
         function() {
             $('#has_copyright_material').removeClass("hidden-form");
+            $('#has_copyright_material_comment').removeClass("hidden-form");
             $('#hasnt_copyright_material').addClass("hidden-form");
             // if (this.checked && this.value == 'Yes') {
             // note that, as per comments, the 'changed'
@@ -45,17 +46,20 @@ $(document).ready(function() {
         function() {
             $('#hasnt_copyright_material').removeClass("hidden-form");
             $('#has_copyright_material').addClass("hidden-form");
+            $('#has_copyright_material_comment').addClass("hidden-form");
         }
     );
 
     $('#thesis_dispensationFromConsultation_yes').click(
         function() {
             $('#has_dispensation').removeClass("hidden-form");
+            $('#has_dispensation_comments').removeClass("hidden-form");
         }
     );
     $('#thesis_dispensationFromConsultation_no').click(
         function() {
             $('#has_dispensation').addClass("hidden-form");
+            $('#has_dispensation_comments').addClass("hidden-form");
         }
     );
     $('#thesis_dispensationSelect_end_date').click(

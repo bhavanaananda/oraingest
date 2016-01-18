@@ -2,8 +2,8 @@
 	<ul>
 		<% constraints.each do |name, count| %>
 		<li>
-			<a class="facet_select" href="?search=<%= facet.to_s %>:<%= name %>">
-				<%= name %></a>
+
+			<%= link_to name, dash_path(profile="#{facet.to_s}:#{name}") %>
 			<span class="count"><%= count %></span>
 		</li>
 		<% end %>

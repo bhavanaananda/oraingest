@@ -11,10 +11,10 @@ gem 'sqlite3'
 # in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 4.0.0'
-  
+
   # Use Uglifier as compressor for JavaScript assets
   gem 'uglifier', '>= 1.3.0'
-  
+
   # Use CoffeeScript for .js.coffee assets and views
   gem 'coffee-rails', '~> 4.0.0'
 
@@ -41,8 +41,6 @@ gem 'sufia', "~> 3.7.2"
 gem 'kaminari'
 gem 'jettywrapper', "~> 1.5.0"
 
-# gem 'font-awesome-sass-rails'
-# gem "font-awesome-rails"
 gem 'font-awesome-sass'
 
 
@@ -77,6 +75,7 @@ group :development, :test do
   gem 'pry-doc' #to browse Ruby source
   gem 'pry-byebug' #debugger
   gem 'pry-stack_explorer' #navigate the call stack and frames
+  gem 'pry-rescue' #catch unhandled exception in pry
 end
 
 group :development do
@@ -92,6 +91,11 @@ group :test do
   gem 'mock_redis'  # Used so redis does not need to be present during tests
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
+  gem 'minitest-rails-capybara'
+  gem 'minitest-reporters'
 end
 
 gem 'god'
+gem 'datacite_mds'   # gem to interface with Datacite MDS
+gem 'hashids'     # generates hash ids based on a number
+gem 'figaro'

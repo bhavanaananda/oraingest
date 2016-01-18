@@ -1,0 +1,18 @@
+<li><span><%= facet.to_s.gsub('_', ' ').capitalize %></span>
+<ul>
+	<%  facet_names, facet_counts = [], [] %>
+	<% constraints.each_with_index do |x, idx| %>
+		<% facet_names.push(x) if idx.even? %>
+		<% facet_counts.push(x) if idx.odd? %>
+	<% end %>
+	<li>
+		<% facet_names.size.times do |n| %>
+
+		<% h = Hash["facet", facet.upcase.to_sym, "value", facet_names[n]] %>		
+		<%= link_to "#{facet_names[n]} (#{facet_counts[n]})",  { controller: "reviewing", apply_filter: [h]}, class: "facet_select" %>
+			</br>
+		<% end %>
+
+	</li>
+</ul>
+</li>

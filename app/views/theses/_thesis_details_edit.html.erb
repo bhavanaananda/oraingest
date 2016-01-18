@@ -1,7 +1,7 @@
 <div class="fieldset">
   <p class="small">Type of degree</p>
   <%= f.select( :degreeName, options_for_select(Sufia.config.thesis_degree_types, selected: @thesis.degreeName.first), { include_blank: 'Select a degree type' }, data: {"progress" => "discoverability"}   ) %>
-  <div class="hidden-form"> 
+  <div class="hidden-form">
 	  <p class="small">Level of degree</p>
 		<%= f.text_field :degreeType, value: @thesis.degreeType.first, readonly: true, style: 'width: 20%' %>
   </div>
@@ -9,6 +9,9 @@
 
 
 <div class="fieldset">
-  <p class="small">Year leave to supplicate granted</p>
+  <p class="small">Date your leave to supplicate (LTS) was granted</p>
   <%= f.date_field :dateOfAward, value: @thesis.dateOfAward.first, style: 'width: 20%', data: {"progress" => "discoverability"} %>
+  <% desc = "Please provide the date leave to supplicate was granted (DD/MM/YY), details can be found on your LTS letter or student record in eVision" %>
+  <% tipTitle = "LTS date" %>
+  <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => tipTitle , :tipDescription => desc } %>
 </div>

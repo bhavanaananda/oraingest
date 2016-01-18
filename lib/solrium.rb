@@ -19,6 +19,14 @@ module Solrium
   end
 
 
+  def self.values
+    @hash.values
+  end
+
+  def self.attributes
+    @hash.keys
+  end  
+
   # Gets the Solr field name, given its equivalent readable name.
   #
   # @param field [Symbol] the human-readable attribute, e.g. :title
@@ -38,6 +46,8 @@ module Solrium
     @hash.key(solr_field).to_s.downcase.to_sym
   end
 
+
+  # let's add all known Solr attributes with humanised names
   self.add_attr :ID, 'id'
   self.add_attr :STATUS, 'MediatedSubmission_status_ssim'
   self.add_attr :TITLE, 'desc_metadata__title_tesim'
@@ -47,9 +57,14 @@ module Solrium
   self.add_attr :DATE_PUBLISHED, 'desc_metadata__datePublished_tesim'
   self.add_attr :DATE_ACCEPTED, 'desc_metadata__dateAccepted_tesim'
   self.add_attr :CREATOR, 'desc_metadata__creatorName_tesim'
-  self.add_attr :CURRENT_REVIEWER, 
-  				'MediatedSubmission_current_reviewer_id_ssim'
+  self.add_attr :CURRENT_REVIEWER,
+    'MediatedSubmission_current_reviewer_id_ssim'
   self.add_attr :RT_TICKETS, 'MediatedSubmission_all_email_threads_ssim'
-  self.add_attr :SUBJECT, "desc_metadata__subject_sim"
+  self.add_attr :SUBJECT, "desc_metadata__subject_tesim"
+  self.add_attr :MODEL, "active_fedora_model_ssi"
+  self.add_attr :CONTRIBUTOR, "desc_metadata__contributor_tesim"
 
+  self.add_attr :KEYWORD, "desc_metadata__keyword_sim"
+  self.add_attr :PUBLISHER, "desc_metadata__publisher_sim"
+  self.add_attr :FEDORA_MODEL, "active_fedora_model_ssi"  
 end

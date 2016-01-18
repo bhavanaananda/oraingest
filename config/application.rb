@@ -9,16 +9,19 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
-# Load application ENV vars and merge with existing ENV vars. Loaded here, we can use values in initializers.
-ENV.update YAML.load_file('config/solr.yml')[Rails.env]
+
+
 
 module OraHydra
   class Application < Rails::Application
-    
+
     config.generators do |g|
       g.test_framework :rspec, :spec => true
     end
 
+    config.solr = YAML.load_file('config/solr.yml')
+    config.redis = YAML.load_file('config/redis.yml')
+    config.doi = YAML.load_file('config/doi_credentials.yml')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -69,7 +72,7 @@ module OraHydra
     #config.active_record.whitelist_attributes = true
 
     # Enable the asset pipeline
-    config.assets.enabled = true    
+    config.assets.enabled = true
     # Default SASS Configuration, check out https://github.com/rails/sass-rails for details
     config.assets.compress = !Rails.env.development?
     # Version of your assets, change this if you want to expire all your assets

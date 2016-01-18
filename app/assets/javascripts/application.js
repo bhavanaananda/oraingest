@@ -25,7 +25,6 @@
 //
 // Required by Blacklight
 //= require blacklight/blacklight
-//= require_tree .
 //
 //= require bootstrap-dropdown
 //= require bootstrap-button
@@ -52,3 +51,4 @@
 // require hydra/batch_select
 // this needs to be after batch_select so that the form ids get setup correctly
 // require sufia/batch_edit
+//= require_tree .

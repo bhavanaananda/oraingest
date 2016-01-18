@@ -1,6 +1,11 @@
 <h4>Select files to upload</h4>
-<p>Two copies of your thesis should be submitted to the research archive. An archive version and a dissemination version. For more information about what 
-to deposit to the archive please see the <a href="http://ox.libguides.com/what_to_deposit"  target="_blank">Digital theses and ORA LibGuide</a>.</p>
+<% if @model == "thesis" %>
+    <p>
+            Two copies of your thesis should be submitted to the research archive. An archive version and a dissemination version. For more information about what
+    to deposit to the archive please see the <a href="http://ox.libguides.com/what_to_deposit"  target="_blank">Digital theses and ORA LibGuide</a>.
+
+    </p>
+<% end %>
 <%= render partial: 'shared/upload/tos_checkbox' %>
 <%= render partial: 'shared/upload/alerts', :locals => { :editpath => editpath } %>
 <%= form_for(record, :html => {:multipart => true, :id => 'fileupload'}) do |f| %>

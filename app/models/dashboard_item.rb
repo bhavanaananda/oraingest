@@ -1,72 +1,43 @@
 class DashboardItem
-  include ActiveModel::Model
 
+  attr_reader :title, :abstract, :creator, :status, :type, :depositor,
+    :reviewer, :date_published, :date_accepted, :id
 
-  # any instance variables we want to expose to the world as-is, without
-  # any mainpulation
-  attr_reader :id
-
-
-  # constructs a DashboardItem object based on a SolrResponse document.
-  # Reads the properties defined in Solrium module.
-  #
-  # @param solr_response_item [SolrResponse] the hash-like representation
-  # of a Solr document
-  def initialize(solr_response_item)
-    Solrium.each do |nice_name, solr_name|
-      self.instance_variable_set("@#{nice_name.to_s.downcase}", solr_response_item[solr_name])
-    end
+  def initialize(solr_doc)
+    @id = solr_doc.id
+    @title = trim_text(solr_doc.title, 300)
+    @abstract = trim_text(solr_doc.abstract, 300)
+    @creator = solr_doc.creator
+    @status = solr_doc.status
+    @type = solr_doc.type
+    @depositor = solr_doc.depositor
+    @reviewer = solr_doc.current_reviewer
+    @date_published = solr_doc.date_published
+    @date_accepted = solr_doc.date_accepted
   end
-
 
   def is_it_claimed?
     self.status == 'Claimed'
   end
 
-  # define explicit getters for instance variables we want to refine
-  # before exposing to the outside
-  def title
-    @title ? trim_text(@title.first, 300) : ""
-  end
-
-  def abstract
-    @abstract ? trim_text(@abstract.first, 300) : ""
-  end
-
-  def creator
-    @creator ? @creator.join('; ') : ""
-  end
-
-  def status
-    @status ? @status.first : ""
-  end
-
-  def type
-    @type ? @type.first : ""
-  end
-
-  def depositor
-    @depositor ? @depositor.first : ""
-  end
-
-  def reviewer
-    @reviewer ? @reviewer.first : ""
-  end
 
   def date
-    if  @date_published && @date_published.size >  0
-      @date_published.first
-    elsif  @date_accepted && @date_accepted.size >  0
-      @date_accepted.first
+    if !self.date_published.empty?
+      self.date_published
+    elsif !self.date_accepted.empty?
+      self.date_accepted
     else
-      " "
+      ""
     end
   end
-  
+
   def date_type
-    dt = " "
-    dt = "published" if @date_published && @date_published.first
-    dt = "accepted" if @date_accepted && @date_accepted.first && dt == " "
+    dt = ""
+    if !self.date_published.empty?
+      dt = "published"
+    elsif self.date_published.empty? && !self.date_accepted.empty?
+      dt = "accepted"
+    end
     dt
   end
 

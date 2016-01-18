@@ -1,0 +1,19 @@
+<span class="label label-primary">
+
+	<% if current_user.present? %>
+
+		<% h1 = Hash["facet", :STATUS, "value", :Claimed] %>
+		<% h2 = Hash["facet", :CURRENT_REVIEWER, "value", current_user.email] %>
+		<%= link_to "   All claimed by #{current_user}"  ,  { controller: "reviewing", apply_filter: [h1, h2]}, class: "fa fa-bookmark fa-sm" %>
+		</br>
+		</br>
+		<% h3 = Hash["facet", :STATUS, "value", :Claimed, "predicate", :NOT] %>		
+		<%= link_to "   All unclaimed items"  ,  { controller: "reviewing", apply_filter: [h3]}, class: "fa fa-bookmark fa-sm" %>
+		</br>
+		</br>		
+		<%= link_to "   Show all items"  ,  { controller: "reviewing", apply_filter: ['all']}, class: "fa fa-bookmark fa-sm" %>
+
+	<% end %>
+	</br>
+	</br>
+</span>

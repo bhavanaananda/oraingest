@@ -1,6 +1,6 @@
 <section class="form-step">
 
-<div>
+<div class="alert-box notice">
   <i class="fa fa-info-circle fa-2x pull-left"></i>
       <% lib_guide = "Digital theses and ORA" %>
 		<p>Help and guidance regarding thesis deposit to ORA can be found at the  Oxford LibGuide:  <%= link_to lib_guide, 
@@ -158,13 +158,14 @@
         </div>
         <%= render partial: 'shared/file_info_fields_edit', :locals => { :f => f, :article => @thesis } %>
         <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f, :accessRights => @thesis.accessRights, :embargo_type => "metadata" } %>
+        <div class="padding-side-25">
+          <%= render partial: 'shared/comments', :locals => { :f => f, :@model => @thesis } %>
+        </div>
       </div>
-
-        <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
+      <% if can? :review, :all %>
+          <%= render partial: 'navigate', locals: { main_text: 'Continue to Step 7', sub_text: 'Review workflow' } %>
+      <% end %>
     </section>
-
-
-
 
 
     <% if can? :review, :all %>

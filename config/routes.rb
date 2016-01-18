@@ -3,8 +3,8 @@ OraHydra::Application.routes.draw do
   get "dashboard/index"
 
 
-  # route for new adshboard
-  get '/dash', to: 'fred_dashboard#index'
+  # route for new dashboard
+  get '/dash', to: 'reviewing#index'
 
 
   mount Qa::Engine => '/qa'
@@ -25,6 +25,12 @@ OraHydra::Application.routes.draw do
     devise_for :users
   end
 
+
+  OraHydra::Application.routes.draw do
+    mount Resque::Server.new, at: "/resque"
+  end
+
+
   if defined?(Sufia::ResqueAdmin)
     namespace :admin do
       constraints Sufia::ResqueAdmin do
@@ -33,9 +39,16 @@ OraHydra::Application.routes.draw do
       end
     end
   end
-  
+
   get 'deposit_licence', to: 'static#deposit_licence'
   get 'data_deposit_licence', to: 'static#data_deposit_licence'
+
+
+  concern :paginatable do
+    get '(page/:page)', :action => :index, :on => :collection, :as => ''
+  end
+
+  resources :dash, :concerns => :paginatable
 
   resources 'reviewer_dashboard', :only=>:index do
     collection do
@@ -87,7 +100,7 @@ OraHydra::Application.routes.draw do
     end
   end
 
-  #mount Hydra::Collections::Engine => '/' 
+  #mount Hydra::Collections::Engine => '/'
   mount Sufia::Engine => '/'
 
   # The priority is based upon order of creation:
@@ -104,7 +117,7 @@ OraHydra::Application.routes.draw do
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
- # Sample resource route with options:
+  # Sample resource route with options:
   #   resources :products do
   #     member do
   #       get 'short'

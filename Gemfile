@@ -2,10 +2,9 @@ source 'https://rubygems.org'
 
 #ruby=2.1.5
 
-gem 'rails', '4.0.3'
+gem 'rails', '4.0.13'
 
-gem 'mysql2'
-gem 'sqlite3'
+gem 'mysql2', '~> 0.3.18'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -18,8 +17,6 @@ group :assets do
   # Use CoffeeScript for .js.coffee assets and views
   gem 'coffee-rails', '~> 4.0.0'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', :platforms => :ruby
 end
 
 # Use jquery as the JavaScript library
@@ -51,10 +48,9 @@ gem 'font-awesome-sass'
 gem 'unicorn'
 
 gem "bootstrap-sass"
-gem "devise"
+gem "devise", "~> 3.5.5"
 gem "devise-guests", "~> 0.3"
 gem 'devise-remote-user'
-gem "unicode", :platforms => [:mri_18, :mri_19]
 
 gem 'qa'
 
@@ -91,8 +87,8 @@ group :test do
   gem 'mock_redis'  # Used so redis does not need to be present during tests
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
-  gem 'minitest-rails-capybara'
-  gem 'minitest-reporters'
+  # gem 'minitest-rails-capybara'
+  # gem 'minitest-reporters'
 end
 
 gem 'god'

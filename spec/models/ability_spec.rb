@@ -16,7 +16,8 @@ describe User do
     context 'when user is a reviewer' do 
       
       before do
-        user.stub(:reviewer?) {true}
+        # user.stub(:reviewer?) {true}
+        allow(user).to receive_messages(:reviewer? => true )
       end
       
       it 'user.can? :review' do

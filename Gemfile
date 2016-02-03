@@ -17,6 +17,9 @@ group :assets do
   # Use CoffeeScript for .js.coffee assets and views
   gem 'coffee-rails', '~> 4.0.0'
 
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'therubyracer', :platforms => :ruby  
+
 end
 
 # Use jquery as the JavaScript library
@@ -87,7 +90,6 @@ group :test do
   gem 'mock_redis'  # Used so redis does not need to be present during tests
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
-  # gem 'minitest-rails-capybara'
   gem 'minitest-reporters'
 end
 

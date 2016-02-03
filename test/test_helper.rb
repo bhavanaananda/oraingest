@@ -4,7 +4,6 @@ require 'rails/test_help'
 require 'simplecov'
 require 'coveralls'
 # require 'webmock/minitest'
-require 'minitest/rails/capybara'
 require "minitest/pride"
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter

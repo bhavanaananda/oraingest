@@ -43,6 +43,7 @@ GEM
       tzinfo (~> 0.3.37)
     acts_as_follower (0.2.1)
     addressable (2.4.0)
+    ansi (1.5.0)
     arel (4.0.2)
     awesome_print (1.6.1)
     backports (3.6.7)
@@ -167,6 +168,7 @@ GEM
     god (0.13.7)
     hashdiff (0.2.3)
     hashids (1.0.2)
+    hashie (3.4.3)
     highline (1.7.8)
     hike (1.2.3)
     hirb (0.7.3)
@@ -254,6 +256,11 @@ GEM
     mini_magick (4.3.6)
     mini_portile2 (2.0.0)
     minitest (4.7.5)
+    minitest-reporters (0.14.24)
+      ansi
+      builder
+      minitest (>= 2.12, < 5.0)
+      powerbar
     mock_redis (0.16.0)
     mono_logger (1.1.0)
     multi_json (1.11.2)
@@ -288,6 +295,8 @@ GEM
       mimemagic (= 0.3.0)
     parslet (1.7.1)
       blankslate (>= 2.0, <= 4.0)
+    powerbar (1.0.17)
+      hashie (>= 1.1.0)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -541,6 +550,7 @@ DEPENDENCIES
   jquery-validation-rails
   kaminari
   meta_request
+  minitest-reporters
   mock_redis
   mysql2 (~> 0.3.18)
   paperclip (>= 3.1.0)

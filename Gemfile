@@ -88,7 +88,7 @@ group :test do
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
   # gem 'minitest-rails-capybara'
-  # gem 'minitest-reporters'
+  gem 'minitest-reporters'
 end
 
 gem 'god'

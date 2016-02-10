@@ -6,10 +6,6 @@ require 'coveralls'
 # require 'webmock/minitest'
 require "minitest/pride"
 
-SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-SimpleCov.start do
-end
-
 require 'minitest/reporters'
 Minitest::Reporters.use!(
   Minitest::Reporters::ProgressReporter.new,

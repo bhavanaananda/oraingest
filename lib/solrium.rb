@@ -1,4 +1,5 @@
 
+
 # This module is responsible for mapping between Solr-style field names and
 # sensible attribute names for our objects and views. Can be used to
 # quickly initialize classes, e.g. see DashboardItem
@@ -6,7 +7,7 @@
 
 module Solrium
   def self.add_attr(key,value)
-    @hash ||= {}
+    @hash ||= Hash.new
     @hash[key]=value
   end
 
@@ -25,7 +26,7 @@ module Solrium
 
   def self.attributes
     @hash.keys
-  end  
+  end
 
   # Gets the Solr field name, given its equivalent readable name.
   #
@@ -42,8 +43,9 @@ module Solrium
   # @param field [String] the Solr field name, e.g.
   # "desc_metadata__title_tesim"
   # @return [Symbol] the corresponding human-readable attribute, e.g. :title
-  def self.reverse_lookup(solr_field)
-    @hash.key(solr_field).to_s.downcase.to_sym
+  def self.reverse_lookup(solr_field, ret_val=:sym)
+    ret_val == :string ? @hash.key(solr_field).to_s.downcase : 
+                      @hash.key(solr_field).to_s.downcase.to_sym
   end
 
 
@@ -63,8 +65,6 @@ module Solrium
   self.add_attr :SUBJECT, "desc_metadata__subject_tesim"
   self.add_attr :MODEL, "active_fedora_model_ssi"
   self.add_attr :CONTRIBUTOR, "desc_metadata__contributor_tesim"
-
   self.add_attr :KEYWORD, "desc_metadata__keyword_sim"
   self.add_attr :PUBLISHER, "desc_metadata__publisher_sim"
-  self.add_attr :FEDORA_MODEL, "active_fedora_model_ssi"  
 end

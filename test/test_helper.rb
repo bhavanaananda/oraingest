@@ -18,6 +18,11 @@ Minitest::Reporters.use!(
 )
 
 
+class ActionController::TestCase
+  include Devise::TestHelpers
+end
+
+
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #

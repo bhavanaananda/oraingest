@@ -18,9 +18,15 @@ namespace :test do
 end
 
 
-Coveralls::RakeTask.new(test_with_coveralls: [:spec, 'test:unit', 'coveralls:push'])  
+Coveralls::RakeTask.new
+task :test_with_coveralls => [:spec, 'test:unit', 'coveralls:push']
+
 
 Rake::TestTask.new(test_all: [:spec, 'test:unit'])
 
 
 OraHydra::Application.load_tasks
+
+
+
+

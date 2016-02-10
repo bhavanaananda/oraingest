@@ -17,7 +17,6 @@ namespace :ora do
 
     end
 
-
   end
 
 end

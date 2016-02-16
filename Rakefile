@@ -4,12 +4,9 @@
 
 require File.expand_path('../config/application', __FILE__)
 require 'rake/testtask'
+require 'coveralls/rake/task'
 
 namespace :test do
-	Rake::TestTask.new(:all) do |t|
-		t.libs = %w(lib test)
-		t.pattern = "test/**/*_test.rb"
-	end
 
 	%w(features functional helpers integration performance unit).each do |name|
 		Rake::TestTask.new(name) do |t|
@@ -17,9 +14,19 @@ namespace :test do
 		t.pattern = "test/#{ name }/**/*_test.rb"
 		end
 	end
+
 end
 
-task test: ["test:all"]
+
+Coveralls::RakeTask.new
+task :test_with_coveralls => [:spec, 'test:unit', 'coveralls:push']
+
+
+Rake::TestTask.new(test_all: [:spec, 'test:unit'])
 
 
 OraHydra::Application.load_tasks
+
+
+
+

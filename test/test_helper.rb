@@ -4,12 +4,7 @@ require 'rails/test_help'
 require 'simplecov'
 require 'coveralls'
 # require 'webmock/minitest'
-require 'minitest/rails/capybara'
 require "minitest/pride"
-
-SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-SimpleCov.start do
-end
 
 require 'minitest/reporters'
 Minitest::Reporters.use!(
@@ -17,6 +12,11 @@ Minitest::Reporters.use!(
   ENV,
   Minitest.backtrace_filter
 )
+
+
+class ActionController::TestCase
+  include Devise::TestHelpers
+end
 
 
 class ActiveSupport::TestCase

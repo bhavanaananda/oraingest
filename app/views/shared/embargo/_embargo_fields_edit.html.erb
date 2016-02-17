@@ -53,18 +53,18 @@
         <span></span>Yes
       </label>
 
-      <% if can? :review, :all %>
-        <label panel='dataset-embargo-<%= panel_id %>'>
-          <%= f_a.radio_button :embargoStatus, "Embargoed", :checked => (accessRights[0].embargoStatus[0] == "Embargoed"),
-            data: {"progress" => "documentation"}, :class => "#{req_class} embargoed" %>
-          <span></span>After a certain period
-        </label>
-        <label>
-          <%= f_a.radio_button :embargoStatus, "Closed access", :checked => (accessRights[0].embargoStatus[0] == "Closed access"),
-            data: {"progress" => "documentation"}, :class => "#{req_class}" %>
-          <span></span>No
-        </label>
-      <% end %>
+      <% if (embargo_type == "metadata" and  can? :review, :all) or embargo_type != "metadata" %>
+            <label panel='dataset-embargo-<%= panel_id %>'>
+              <%= f_a.radio_button :embargoStatus, "Embargoed", :checked => (accessRights[0].embargoStatus[0] == "Embargoed"),
+                data: {"progress" => "documentation"}, :class => "#{req_class} embargoed" %>
+              <span></span>After a certain period
+            </label>
+            <label>
+              <%= f_a.radio_button :embargoStatus, "Closed access", :checked => (accessRights[0].embargoStatus[0] == "Closed access"),
+                data: {"progress" => "documentation"}, :class => "#{req_class}" %>
+              <span></span>No
+            </label>
+       <% end %>
 
     </fieldset>
   
@@ -101,4 +101,3 @@
       :startOption => startOption, :embargo_type => embargo_type } %>
   </div>
 <% end %>
-

@@ -417,6 +417,8 @@ Sufia.config do |config|
 
   config.thesis_degree_types = {
       'DPhil' => 'DPhil',
+      'D.M' => 'D.M',
+      'D.Clin.Psych' => 'D.Clin.Psych',      
       'MSc' => 'MSc',
       'MSc by Research' => 'MSc by Research',
       'MPhil' => 'MPhil',

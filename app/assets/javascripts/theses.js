@@ -8,6 +8,8 @@ $(document).ready(function() {
             switch (this.value) {
                 case 'DPhil':
                 case 'PhD':
+                case 'D.M':
+                case 'D.Clin.Psych':
                     degree_type = 'Doctoral'
                     break;
                 case 'MSc':

@@ -8,7 +8,6 @@ rvm:
 before_script:
   - cp ./.travis.database.yml ./config/database.yml
   - cp config/doi_credentials_example.yml config/doi_credentials.yml
-  - cp config/databank_credentials_example.yml config/databank_credentials.yml
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
 

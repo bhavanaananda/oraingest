@@ -7,7 +7,6 @@ require "dataset_agreement"
 require "rdf"
 require 'uri'
 require "fileutils"
-require 'ora/databank'
 
 class Dataset < ActiveFedora::Base
   include Hydra::AccessControls::Permissions
@@ -98,10 +97,6 @@ class Dataset < ActiveFedora::Base
       elsif location =~ /\A#{URI::regexp}\z/
         dsid_location = location
       end
-    elsif location.is_a?(Hash) && ['silo', 'dataset', 'filename'].all? {|k| location.key? k}
-      filename = File.basename(location['filename'])
-      @databank = Databank.new(Sufia.config.databank_credentials['host'], username=Sufia.config.databank_credentials['username'], password=Sufia.config.databank_credentials['password'])
-      dsid_location = @databank.getUrl(location['silo'], dataset=location['dataset'], filename=location['filename'])
     end
     dsid_location
   end
@@ -128,7 +123,7 @@ class Dataset < ActiveFedora::Base
   def delete_content(dsid)
     location = self.file_location(dsid)
     opts = self.datastream_opts(dsid)
-    #TODO: Delete file in Databank and ORA, if location is url
+    #TODO: Delete file in ORA, if location is url
     if self.is_on_disk?(location)
       delete_file(location)
       self.datastreams.delete(dsid)
@@ -143,12 +138,6 @@ class Dataset < ActiveFedora::Base
     # Check the datastream associated to the file has remote location of file
     location = self.file_location(dsid)
     unless self.is_url?(location)
-      return false
-    end
-    # Check the remote location (url) is correct
-    begin
-      timeout(5) { @stream = open(location, :http_basic_authentication=>[Sufia.config.databank_credentials['username'], Sufia.config.databank_credentials['password']]) }
-    rescue
       return false
     end
     if @stream.status[0].to_i < 200 || @stream.status[0].to_i > 299 

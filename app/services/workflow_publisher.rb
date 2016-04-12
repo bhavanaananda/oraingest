@@ -11,23 +11,23 @@ class WorkflowPublisher
     @parent_model = model
   end
 
-  def perform_action(current_user)    
+  def perform_action(current_user)
     mint_and_check_doi
     send_email(current_user) if Rails.env.production?
     publish_record(current_user)
   end
 
   private
-  
+
   def target_workflow_id
     'MediatedSubmission'
   end
-  
+
   def target_workflow
     @target_workflow ||= parent_model.workflows.select{|wf| wf.identifier.first == target_workflow_id}.first
   end
-  
-  def current_status 
+
+  def current_status
     target_workflow.current_status
   end
 
@@ -44,8 +44,8 @@ class WorkflowPublisher
 
   def send_email(current_user)
     record_url = Rails.application.routes.url_helpers.url_for(
-      controller: parent_model.model_klass.tableize, 
-      action: 'show', 
+      controller: parent_model.model_klass.tableize,
+      action: 'show',
       id: parent_model.id
     )
     data = {'record_id' => parent_model.id, 'record_url' => record_url, 'doi_requested'=>parent_model.doi_requested?}
@@ -79,7 +79,7 @@ class WorkflowPublisher
 
   def ready_to_publish?
     return unless target_workflow
-    
+
     queue_option = Sufia.config.publish_to_queue_options[parent_model.model_klass.downcase]
     return unless queue_option && queue_option.include?(current_status)
 
@@ -140,24 +140,15 @@ class WorkflowPublisher
       open_access_content.select { |key| key.start_with?('content') }
     ).length.to_s
     msg << "Open access datastreams: %s." % open_access_content.join(', ')
-    if @parent_model.instance_of? Dataset
-      Resque.enqueue(
-        DatabankPublishRecordJob, 
-        @parent_model.id.to_s, 
-        open_access_content, 
-        @parent_model.model_klass, 
-        number_of_files
-      )
-    else
-      # Add to ora publish queue
-      args = {
-        'pid' => @parent_model.id.to_s,
-        'datastreams' => open_access_content,
-        'model' => @parent_model.model_klass,
-        'numberOfFiles' => number_of_files
-      }
-      Resque.redis.rpush(Sufia.config.ora_publish_queue_name, args.to_json)
-    end
+
+    # Add to ora publish queue
+    args = {
+      'pid' => @parent_model.id.to_s,
+      'datastreams' => open_access_content,
+      'model' => @parent_model.model_klass,
+      'numberOfFiles' => number_of_files
+    }
+    Resque.redis.rpush(Sufia.config.ora_publish_queue_name, args.to_json)
     return status, msg
   end
 

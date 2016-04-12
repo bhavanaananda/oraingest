@@ -15,7 +15,6 @@
 
 # -*- encoding : utf-8 -*-
 
-require "ora/databank"
 require "open-uri"
 
 class DatasetFilesController < ApplicationController
@@ -50,11 +49,6 @@ class DatasetFilesController < ApplicationController
     if @dataset.is_on_disk?(location)
       send_file location, :type => opts['mimeType']
     elsif @dataset.is_url?(location)
-      begin
-        timeout(10) { @stream = open(location, :http_basic_authentication=>[Sufia.config.databank_credentials['username'], Sufia.config.databank_credentials['password']]) }
-      rescue
-        render :status => 502
-      end
       if @stream.status[0].to_i < 200 || @stream.status[0].to_i > 299 
         render :status => @stream.status[0].to_i
       end

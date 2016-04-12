@@ -18,7 +18,6 @@ describe DatasetAgreement do
       it { is_expected.to respond_to(:agreementType) }
       it { is_expected.to respond_to(:annotation) }
       it { is_expected.to respond_to(:digitalSizeAllocated) }
-      it { is_expected.to respond_to(:dataStorageSilo) }
       it { is_expected.to respond_to(:status) }
       it { is_expected.to respond_to(:contributor) }
       it { is_expected.to respond_to(:references) }

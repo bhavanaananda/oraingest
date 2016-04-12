@@ -19,9 +19,10 @@ module OraHydra
       g.test_framework :rspec, :spec => true
     end
 
-    config.solr = YAML.load_file('config/solr.yml')
-    config.redis = YAML.load_file('config/redis.yml')
-    config.doi = YAML.load_file('config/doi_credentials.yml')
+    current_file_dir = (File.dirname(__FILE__))
+    config.solr = YAML.load_file(File.expand_path('solr.yml', current_file_dir))
+    config.redis = YAML.load_file(File.expand_path('redis.yml', current_file_dir))
+    config.doi = YAML.load_file(File.expand_path('doi_credentials.yml', current_file_dir))
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

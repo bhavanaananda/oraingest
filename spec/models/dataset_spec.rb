@@ -239,12 +239,6 @@ describe Dataset do
       @dataset.save!
       @location = @dataset.file_location(@dsid)
       dataset_id = @dataset.id.gsub('uuid:', '')
-      @new_loc = {
-        'silo' => 'sandbox',
-        'dataset' => dataset_id,
-        'filename' => 'test.txt',
-        'url' => "http://10.0.0.173/sandbox/datasets/#{dataset_id}/test.txt" }
-      @dataset.update_datastream_location(@dsid, @new_loc)
       @dataset.save!
     end
 
@@ -258,20 +252,8 @@ describe Dataset do
       opts = @dataset.datastream_opts(@dsid)
       expect(opts).to be_a(Hash)
       expect(opts.keys).to include(*expected_keys)
-      expect(opts['dsLocation']).to be_a(Hash)
-      expect(opts['dsLocation']).to eq(@new_loc)
     end
 
-    it 'returns the file location' do
-      loc = @dataset.file_location(@dsid)
-      expect(loc).not_to be_empty
-      expect(loc).to eq(@new_loc['url'])
-    end
-
-    it 'is a url' do
-      loc = @dataset.file_location(@dsid)
-      expect(@dataset.is_url?(loc)).to be true
-    end
 
   end
 
@@ -282,7 +264,7 @@ describe Dataset do
       @file = StringIO.new
       @file.write("Hello world!")
       @dsid = @dataset.add_content(@file, 'test.txt')
-      dataset_id = @dataset.id.gsub('uuid:', '')    
+      dataset_id = @dataset.id.gsub('uuid:', '')
       @dataset.save!
       @location = @dataset.file_location(@dsid)
       @dataset.delete_content(@dsid)
@@ -343,25 +325,6 @@ describe Dataset do
       expect(@dataset.is_on_disk?(@location)).to be true
     end
 
-    it 'deletes the file locally' do
-      @new_loc = {
-        'silo' => 'sandbox',
-        'dataset' => @dataset_id,
-        'filename' => 'test.txt',
-        'url' => "http://10.0.0.173/sandbox/datasets/#{@dataset_id}/test.txt" }
-      
-      stub_request(:get, "http://sandbox_user:sandbox@10.0.0.173/sandbox/datasets/#{@dataset_id}/test.txt").
-         with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
-         to_return(:status => 200, :body => "", :headers => {})
-       
-      @dataset.update_datastream_location(@dsid, @new_loc)
-      @dataset.save!
-      ans = @dataset.delete_local_copy(@dsid, @location)
-      expect(ans).to eq(1)
-      expect(@dataset.is_on_disk?(@location)).to be false
-    end
-
-
   end
 
   describe '.delete_dir' do
@@ -371,7 +334,7 @@ describe Dataset do
       @file = StringIO.new
       @file.write("Hello world!")
       @dsid = @dataset.add_content(@file, 'test.txt')
-      dataset_id = @dataset.id.gsub('uuid:', '')    
+      dataset_id = @dataset.id.gsub('uuid:', '')
       @dataset.save!
       @location = @dataset.file_location(@dsid)
     end

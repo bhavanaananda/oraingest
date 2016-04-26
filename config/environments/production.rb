@@ -71,5 +71,15 @@ OraHydra::Application.configure do
   config.eager_load = true
 
   Rails.application.routes.default_url_options[:host] = 'oradeposit.bodleian.ox.ac.uk'
+
+
+  # Configure email sending
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      :address              => 'smtp.ox.ac.uk',
+      :port                 => 587,
+      :enable_starttls_auto => false
+  }  
+
 end
 

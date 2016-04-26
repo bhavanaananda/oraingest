@@ -18,8 +18,8 @@ class ContactFormController < ApplicationController
       flash[:error] << @contact_form.errors.full_messages.map { |s| s.to_s }.join(",")
       render :new
     end
-  rescue
-      flash[:error] = 'Sorry, this message was not delivered.'
+  rescue Exception => e
+      flash[:error] = "Sorry, this message was not delivered, because #{e.message}"
       render :new
   end
 

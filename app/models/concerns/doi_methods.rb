@@ -154,8 +154,8 @@ def doi_data
         if cr.role.include?(RDF::DC.creator)
           doi_data[:creator] << c
         else
-          matching_roles1 = cr.role.map { |role| Sufia.config.role_labels[role] if Sufia.config.role_labels.include?(role) && contributorTypes.include?(Sufia.config.role_labels[role]) }
-          matching_roles2 = cr.role.select { |role| contributorTypes.include?(role) }
+          matching_roles1 = cr.role.map { |role| Sufia.config.role_labels[role] if Sufia.config.role_labels.include?(role) && contributorTypes.include?(Sufia.config.role_labels[role]) }.compact
+          matching_roles2 = cr.role.select { |role| contributorTypes.include?(role) }.compact
           if matching_roles1
             c[:type] = matching_roles1.first
           elsif matching_roles2

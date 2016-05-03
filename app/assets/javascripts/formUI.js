@@ -95,6 +95,7 @@ function displayDoi() {
       $("#doiNote").show();
     }
     $('#dataset_accessRights_embargoStatus_open_access').trigger('click');
+    $('#dataset_accessRights_embargoStatus_open_access').prop('checked', true);
     $("#catalog_accessRights").hide();
   } else {
     $("#workflow_submit_involves_hidden").val('false');

@@ -42,7 +42,7 @@
       <%= f_p.text_field :datePublished, :required => true, :value => p.datePublished.first || Time.now.year, data: {"progress" => "citation" } %>
       <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Year published" , :tipDescription => "Enter the year the data have been or will be published, i.e. made publicly available." } %>
     </div>
-    <%= f.fields_for :workflows, wf do |f_wf| %>
+
       <% if !doi_registered && @files.any? %>
         <h4 class="padding-side-25">Register a DOI</h4>
         <div class="fieldset small">
@@ -67,7 +67,6 @@
           In order to obtain a DOI for a dataset, the DOI requires a landing/record page in order to resolve. The catalogue record for the data is therefore made automatically freely available in ORA.
         </div>
       <% end %>
-    <% end #fields for workflows %>
 
     <% p.hasDocument.each do |p2| %>
       <%= f_p.fields_for :hasDocument, p2 do |f_p2| %>

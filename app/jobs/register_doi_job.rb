@@ -109,7 +109,7 @@ class RegisterDoiJob
           payload[:contributor].each do |contributor|
 
             typ = contributor.has_key?(:type) ?
-              contributor.has_key?(:type) : ""
+                contributor[:type] : ""
 
             data.contributor(contributorType: typ) do
               if contributor.kind_of?(String)

@@ -107,7 +107,7 @@ class WorkflowPublisher
       unless parent_model.doi_registered?
         payload = parent_model.doi_data
 
-        error = validate_required_fields(payload).blank?
+        error = validate_required_fields(payload)
         unless error.blank?
           status = false
           msg << error

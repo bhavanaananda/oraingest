@@ -156,9 +156,9 @@ def doi_data
         else
           matching_roles1 = cr.role.map { |role| Sufia.config.role_labels[role] if Sufia.config.role_labels.include?(role) && contributorTypes.include?(Sufia.config.role_labels[role]) }.compact
           matching_roles2 = cr.role.select { |role| contributorTypes.include?(role) }.compact
-          if matching_roles1.size!=0
+          if matching_roles1 && !matching_roles1.empty?
             c[:type] = matching_roles1.first
-          elsif matching_roles2.size!=0
+          elsif matching_roles2 && !matching_roles2.empty?
             c[:type] = matching_roles2.first
           else
             c[:type] = "Other"
